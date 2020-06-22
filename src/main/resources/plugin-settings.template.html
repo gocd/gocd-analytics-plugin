@@ -1,0 +1,203 @@
+<div data-plugin-style-id="analytics-plugin">
+    <style>
+        [data-plugin-style-id="analytics-plugin"] fieldset {
+            padding: 20px;
+            background-color: transparent;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+
+        [data-plugin-style-id="analytics-plugin"] fieldset legend {
+            font-size: 0.875rem;
+            background-color: #fff;
+            padding: 5px;
+        }
+
+        [data-plugin-style-id="analytics-plugin"] label.form-help-content {
+            color: #666;
+            font-style: italic;
+            clear: both;
+            font-size: 0.82rem;
+        }
+
+        [data-plugin-style-id="analytics-plugin"] span.asterisk {
+            color: #f00;
+        }
+
+        [data-plugin-style-id="analytics-plugin"] input[type=text] {
+            padding: 0 0.5rem;
+        }
+    </style>
+
+    <fieldset>
+        <legend>Analytics Database (Postgres) Configuration</legend>
+
+        <div class="form_item_block">
+            <input style="display:none;" type="text" ng-model="connection" ng-required="false"/>
+            <span class="form_error"
+                  ng-show="GOINPUTNAME[connection].$error.server">{{GOINPUTNAME[connection].$error.server}}</span>
+        </div>
+
+        <div class="form_item_block">
+            <label>Hostname or IP address: <span class='asterisk'>*</span></label>
+            <input type="text" ng-model="host" ng-required="true"/>
+            <span class="form_error"
+                  ng-show="GOINPUTNAME[host].$error.server">{{GOINPUTNAME[host].$error.server}}</span>
+        </div>
+
+        <div class="form_item_block">
+            <label>Port: </label>
+            <input type="text" ng-model="port" ng-required="false" placeholder="5432"/>
+            <span class="form_error"
+                  ng-show="GOINPUTNAME[port].$error.server">{{GOINPUTNAME[port].$error.server}}</span>
+        </div>
+
+        <div class="form_item_block">
+            <label>Username: <span class='asterisk'>*</span></label>
+            <input type="text" ng-model="username" ng-required="true" placeholder="postgres_username"/>
+            <span class="form_error"
+                  ng-show="GOINPUTNAME[username].$error.server">{{GOINPUTNAME[username].$error.server}}</span>
+        </div>
+
+        <div class="form_item_block">
+            <label>Password: </label>
+            <input type="password" ng-model="password" ng-required="false" placeholder="postgres_password"/>
+            <span class="form_error"
+                  ng-show="GOINPUTNAME[password].$error.server">{{GOINPUTNAME[password].$error.server}}</span>
+        </div>
+
+        <div class="form_item_block">
+            <label>Database name: <span class='asterisk'>*</span></label>
+            <input type="text" ng-model="name" ng-required="true"/>
+            <span class="form_error"
+                  ng-show="GOINPUTNAME[name].$error.server">{{GOINPUTNAME[name].$error.server}}</span>
+        </div>
+
+        <div class="form_item_block">
+            <input type="checkbox" ng-model="use_ssl" ng-required="false" ng-true-value="true" ng-false-value="false"/>
+            <label>Enable SSL</label>
+            <span class="form_error"
+                  ng-show="GOINPUTNAME[use_ssl].$error.server">{{GOINPUTNAME[use_ssl].$error.server}}</span>
+        </div>
+
+        <div ng-show="use_ssl == 'true'">
+            <fieldset>
+                <legend>SSL Configuration</legend>
+                <div class="form_item_block">
+                    <label>SSL Mode:</label>
+                    <input type="text" ng-model="ssl_mode"/>
+                    <span class="form_error" ng-show="GOINPUTNAME[ssl_mode].$error.server">{{GOINPUTNAME[ssl_mode].$error.server}}</span>
+                    <label class="form-help-content">
+                        Indicates the verification level of the server certificate when SSL is used. This flag
+                        corresponds to <b>sslmode</b> connection parameter which is passed on to “libpq” library used by
+                        Postgres.
+                        For more details, take a look at <a
+                            href="https://www.postgresql.org/docs/current/static/libpq-ssl.html#LIBPQ-SSL-PROTECTION"
+                            target="_blank">libpq</a> SSL support documentation.
+                    </label>
+                </div>
+
+                <div class="form_item_block">
+                    <label>Root Certificate:</label>
+                    <input type="text" ng-model="root_cert" ng-required="true"/>
+                    <span class="form_error" ng-show="GOINPUTNAME[root_cert].$error.server">{{GOINPUTNAME[root_cert].$error.server}}</span>
+                    <label class="form-help-content">
+                        Full path to the root certificate file. This property needs to be configured if SSL connection is
+                        used.
+                        This file should be placed in the GoCD Server’s configuration directory. This property
+                        corresponds to <b>sslrootcert</b> connection parameter which is passed
+                        on to “libpq” library used by Postgres.
+                    </label>
+                </div>
+
+                <div class="form_item_block">
+                    <label>Client Certificate:</label>
+                    <input type="text" ng-model="client_cert" ng-required="true"/>
+                    <span class="form_error" ng-show="GOINPUTNAME[client_cert].$error.server">{{GOINPUTNAME[client_cert].$error.server}}</span>
+                    <label class="form-help-content">
+                        Full path to Client certificate file. The certificate in this file will be provided when Postgres server
+                        requests a trusted client certificate.
+                        This file should be placed in the GoCD Server’s configuration directory.
+                        This property corresponds to <b>sslcert</b> connection parameter which is passed on to “libpq”
+                        library used by Postgres.
+                    </label>
+                </div>
+
+                <div class="form_item_block">
+                    <label>Client Key:</label>
+                    <input type="text" ng-model="client_key" ng-required="true"/>
+                    <span class="form_error" ng-show="GOINPUTNAME[client_key].$error.server">{{GOINPUTNAME[client_key].$error.server}}</span>
+                    <label class="form-help-content">
+                        Full path to RSA private key file for the client certificate. The key file should be placed in the GoCD
+                        Server’s configuration directory and must not allow any access
+                        to world or group (can be done using: chmod 600 client.key). This property corresponds to <b>sslkey</b>
+                        connection parameters which is passed on to “libpq”
+                        library used by Postgres.
+                    </label>
+                </div>
+
+                <div class="form_item_block">
+                    <label>Client PKCS8 Key:</label>
+                    <input type="text" ng-model="client_pkcs8_key" ng-required="true"/>
+                    <span class="form_error" ng-show="GOINPUTNAME[client_pkcs8_key].$error.server">{{GOINPUTNAME[client_pkcs8_key].$error.server}}</span>
+                    <label class="form-help-content">
+                        Full path to PKCS8 encoded client key file. This should be placed in the GoCD Server’s configuration
+                        directory.
+                        This file is required for a successful connection to be established when trusted client
+                        certificates are used for authentication.
+                        OpenSSL can be used to create a PKCS8 encoded file from a RSA key file by executing openssl
+                        pkcs8 -topk8 -outform DER -in client.key -nocrypt > client_pkcs8.key
+                    </label>
+                </div>
+            </fieldset>
+        </div>
+
+        <div ng-click="advanced = !advanced" ng-init="advanced = false">
+            <span ng-show="advanced == false"><span class="symbol">▶</span> Show</span>
+            <span ng-show="advanced == true"><span class="symbol">▼</span> Hide</span>
+            advanced configuration
+        </div>
+
+        <div ng-show="advanced == true">
+            <fieldset>
+                <div class="form_item_block">
+                    <label>Maximum active connections in pool: </label>
+                    <input type="text" placeholder="10" ng-model="max_connections_active"/>
+                    <span class="form_error" ng-show="GOINPUTNAME[max_connections_active].$error.server">{{GOINPUTNAME[max_connections_active].$error.server}}</span>
+                    <label class="form-help-content">
+                        The maximum number of active connections that can be allocated from the database connection pool at the same time. Defaults to: 10.
+                    </label>
+                </div>
+
+                <div class="form_item_block">
+                    <label>Maximum idle connections in pool: </label>
+                    <input type="text" placeholder="8" ng-model="max_connections_idle"/>
+                    <span class="form_error" ng-show="GOINPUTNAME[max_connections_idle].$error.server">{{GOINPUTNAME[max_connections_idle].$error.server}}</span>
+                    <label class="form-help-content">
+                        The maximum number of connections that can remain idle in the pool. Excess idle connections are destroyed on return to the pool. Defaults to: 8.
+                    </label>
+                </div>
+
+                <div class="form_item_block">
+                    <label>Maximum connection wait time: </label>
+                    <input type="text" placeholder="-1" ng-model="max_connection_wait_time"/>
+                    <span class="form_error" ng-show="GOINPUTNAME[max_connection_wait_time].$error.server">{{GOINPUTNAME[max_connection_wait_time].$error.server}}</span>
+                    <label class="form-help-content">
+                        The maximum number of milliseconds that the pool will wait for a connection to be returned before throwing an exception.
+                        A value less than or equal to zero means the pool is set to wait indefinitely. Defaults to: -1 (indefinite, no timeout).
+                    </label>
+                </div>
+
+                <div class="form_item_block">
+                    <label>Periodic cleanup time: </label>
+                    <input type="text" placeholder="00:00" ng-model="periodic_cleanup_time"/>
+                    <span class="form_error" ng-show="GOINPUTNAME[periodic_cleanup_time].$error.server">{{GOINPUTNAME[periodic_cleanup_time].$error.server}}</span>
+                    <label class="form-help-content">
+                        This is the time of the day when the plugin schedules cleanup tasks in background to delete Jobs, Stages and Agent Utilization data older than 30 days.
+                        The time should be in the format 'HH:mm', where Hour in (0-23) and minutes in (0-59). Defaults to: 00:00 (midnight).
+                    </label>
+                </div>
+            </fieldset>
+        </div>
+    </fieldset>
+</div>

@@ -1,0 +1,43 @@
+@import "./color-variables.scss";
+
+.highcharts-color-#{$idx-passed} { fill: $color-passed; stroke: $color-passed; }
+.highcharts-color-#{$idx-failed} { fill: $color-failed; stroke: $color-failed; }
+.highcharts-color-#{$idx-cancelled} { fill: $color-cancelled; stroke: $color-cancelled; }
+.highcharts-color-#{$idx-waiting} { fill: $color-waiting; stroke: $color-waiting; }
+.highcharts-color-#{$idx-building} { fill: $color-building; stroke: $color-building; }
+.highcharts-color-#{$idx-jobwait} { fill: $color-jobwait; stroke: $color-jobwait; }
+.highcharts-color-#{$idx-jobbuild} { fill: $color-jobbuild; stroke: $color-jobbuild; }
+.highcharts-color-#{$idx-info} { fill: $color-info; stroke: $color-info; }
+
+.highcharts-markers .highcharts-point {
+  &.highcharts-color-#{$idx-passed},
+  &.highcharts-color-#{$idx-failed},
+  &.highcharts-color-#{$idx-cancelled} {
+    stroke: $dark-grey;
+    stroke-width: 1px;
+  }
+}
+// set fill opacity to 1 so that th alpha will be honored in the chart colors defined above
+.highcharts-area, .highcharts-column-series, .highcharts-pie-series, .highcharts-funnel-series {
+  fill-opacity: 1;
+}
+
+.highcharts-area-series .highcharts-graph {
+  stroke: $dark-grey;
+  stroke-width: 0.75;
+}
+
+.result-passed {
+  color: $color-passed;
+  fill: $color-passed;
+}
+
+.result-failed {
+  color: $color-failed;
+  fill: $color-failed;
+}
+
+.result-cancelled {
+  color: $color-cancelled;
+  fill: $color-cancelled;
+}

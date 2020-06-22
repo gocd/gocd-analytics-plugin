@@ -1,0 +1,4 @@
+CREATE TABLE workflows (
+  id SERIAL PRIMARY KEY,
+  start_time TIMESTAMP WITH TIME ZONE
+);

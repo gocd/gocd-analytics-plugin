@@ -1,0 +1,27 @@
+.info-message {
+    position: relative;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.1);
+    font-size: 15px;
+    font-weight: 400;
+    margin: 30px 20px;
+    padding: 7px 10px;
+    background-color: #DCEFFB;
+    color:            #777777;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
+
+.info-message p {
+    margin: 0;
+    padding: 0;
+    padding-left: 36px;
+}
+
+.info-message .fa-info-circle {
+    position: absolute;
+    font-size: 1.2rem;
+    top: calc(50% - .6rem);
+    left: 10px;
+}

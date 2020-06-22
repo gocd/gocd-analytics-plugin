@@ -1,0 +1,132 @@
+.ui-variants-controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 100;
+
+  transform: translate(100%, -100%);
+
+  opacity: 0.5;
+
+  overflow: hidden;
+  text-align: right;
+
+  width: 50px;
+  min-height: 55px;
+
+  transition: all 0.25s;
+
+  .toggle {
+    margin-top: 10px;
+    margin-right: 10px;
+    border: none;
+    vertical-align: middle;
+    border-radius: 32px;
+
+    -webkit-box-shadow: 0px 0px 15px 0px rgba(0,174,255,1);
+    -moz-box-shadow: 0px 0px 15px 0px rgba(0,174,255,1);
+    box-shadow: 0px 0px 15px 0px rgba(0,174,255,1);
+
+    height: 32px;
+    width: 32px;
+    display: inline-block;
+    content: url("../images/coffee.svg");
+    background: rgba(255, 255, 255, 0.85);
+    cursor: pointer;
+  }
+
+  .presets {
+    display: none;
+
+    input[type="radio"] {
+      display: none;
+    }
+
+    label {
+      cursor: pointer;
+      padding: 3px 8px;
+      background: #fff;
+      color: #666;
+      border: 1px solid #666;
+      border-radius: 3px;
+      font-size: 12px;
+      margin-right: 10px;
+    }
+
+    input[type="radio"]:checked + label {
+      background: #666;
+      color: #fff;
+      border-color: #fd0;
+    }
+  }
+
+  button:focus { outline: 0; }
+}
+
+body:hover {
+  .ui-variants-controls {
+    transform: translate(0, 0);
+
+    &:hover, &.open {
+      opacity: 1;
+    }
+
+    &.open {
+      width: 100%;
+
+      .presets {
+        display: inline;
+      }
+
+      background: rgba(15, 212, 232, 0.4);
+
+      .toggle {
+        margin-left: 20px;
+        -webkit-box-shadow: 0px 0px 15px 0px rgba(0,255,102,1);
+        -moz-box-shadow: 0px 0px 15px 0px rgba(0,255,102,1);
+        box-shadow: 0px 0px 15px 0px rgba(0,255,102,1);
+      }
+    }
+  }
+}
+
+.dev-tools-inspector {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  background: rgba(32, 128, 128, 0.3);
+  padding: 5px;
+
+  button {
+    display: inline-block;
+    margin: 0;
+    margin-left: 0.5rem;
+
+    &:first-of-type {
+      margin-left: 0;
+    }
+  }
+
+  textarea {
+    display: inline-block;
+    vertical-align: top;
+    resize: both;
+    margin-left: 10vw;
+    width: 60vw;
+    font-family: "Lucida Console", Monaco, monospace;
+  }
+
+  .success, .failure {
+    display: "inline-block";
+    font-weight: bold;
+    margin-right: 0.5rem;
+  }
+
+  .success {
+    color: #1DA921;
+  }
+
+  .failure {
+    color: #F00;
+  }
+}

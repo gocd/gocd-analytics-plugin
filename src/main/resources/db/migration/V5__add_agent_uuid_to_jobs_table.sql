@@ -1,0 +1,1 @@
+ALTER TABLE jobs ADD COLUMN agent_uuid varchar(225);

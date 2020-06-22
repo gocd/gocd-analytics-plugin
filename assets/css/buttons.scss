@@ -1,0 +1,21 @@
+@import "./color-variables.scss";
+
+.upstream-button {
+  cursor: pointer;
+
+  fill: $warm-grey;
+  stroke: $warm-grey;
+
+  text {
+    transform: translate(7px, -4px);
+    fill: white;
+  }
+}
+
+.highcharts-reset-zoom {
+  cursor: pointer;
+
+  text {
+    transform: translate(-2px, -4px);
+  }
+}

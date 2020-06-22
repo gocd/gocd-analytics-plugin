@@ -1,0 +1,186 @@
+@import "./color-variables.scss";
+
+#workflow-trends-chart {
+  overflow-y: hidden;
+  background: #F4F8F9;
+}
+
+.vsm-trends-container {
+  overflow-y: auto;
+}
+
+.vsm-trends {
+  border-collapse: collapse;
+  width: 100%;
+  height: calc(100vh - 140px);
+  overflow-y: auto;
+  font-size: 13px;
+  background: #ffffff;
+}
+
+.vsm-trends-table {
+  width: 100%;
+  background: white;
+}
+
+.header-item.vsm-trend-column {
+  padding-left: 15px;
+}
+
+.vsm-trends tr td {
+  padding-left: 10px;
+  border-bottom: 1px solid #e9edef;
+  height: 60px;
+  font-size: 13px;
+}
+
+.vsm-trends-table-header {
+  display: flex;
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
+  font-size: 13px;
+  box-sizing: border-box;
+  background: #E7EEF0;
+  > div:last-child {
+    width: 10%;
+  }
+}
+
+.table-cell {
+  text-align: left;
+  padding: 0 5px;
+}
+
+.started-at-column {
+  width: 15%;
+}
+
+.completed-at-column {
+  width: 15%;
+}
+
+.vsm-trend-column {
+  width: 50%;
+  .highcharts-tracker, .highcharts-point, .highcharts-halo {
+    cursor: pointer;
+  }
+}
+
+.time-taken-column {
+  width: 10%
+}
+
+.more-info-column {
+  width: 10%
+}
+
+.drilldown-button-column {
+  width: 10%;
+}
+
+.header-item {
+  font-weight: 600
+}
+
+.sparkline {
+  margin-left: 50px;
+}
+
+.highcharts-container {
+  overflow: visible !important;
+}
+
+.highcharts-tooltip {
+  font-size: 12px;
+}
+
+.workflow-metrics {
+  display: flex;
+  background: white;
+  padding: 12px 0;
+  font-size: 15px;
+  color: #444;
+  width: 100%;
+  height: 60px;
+  .contextual-help {
+    margin: 0 3px;
+  }
+}
+
+.workflow-metric-item {
+  margin: 0;
+  border-left: 2px solid #e9edef;
+  text-align: center;
+  width: 250px;
+  height: 60px;
+  &:first-child {
+    border: 0;
+  }
+
+  .val {
+    padding-right: 35px;
+    padding-top: 3px;
+    font-weight: 600;
+    font-size: 16px;
+  }
+}
+
+.hovered-workflow-column {
+  border: 3px solid #d2d2d2;
+}
+
+.workflow-drildown-button {
+  width: 100px;
+  height: 32px;
+  font-size: 14px;
+  font-weight: 500;
+  color: black;
+  border-radius: 5px;
+  background-color: #E7D2E9;
+  border: 1px solid #E7D2E9;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.highcharts-tooltip-container {
+  &.hidden-tooltip {
+    // Highcharts hides the tooltip by setting `visibility: hidden`
+    //
+    // This is problematic because the hidden tooltip can block the
+    // mouseover on its parent chart or even another chart above it,
+    // thus making the tooltip inaccessible to certain data points.
+    //
+    // Using display: none is buggy in that Highcharts is not
+    // able to properly calculate the tooltip size before revealing
+    // the tooltip. Therefore, we need to render it off-screen (yuck).
+    position: fixed !important;
+    transform: translate(-100vw, -100vh);
+  }
+}
+
+.spinner-overlay {
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: 1;
+  background: rgba(275, 275, 275, 0.8);
+
+  .spinner {
+    font-size: 1.5rem;
+    font-weight: 300;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.drilldown-button {
+  cursor: pointer;
+  border: 1px solid #ccc;
+  font-size: 12px;
+  white-space: nowrap;
+  padding: 5px 10px;
+  font-weight: 400;
+  border-radius: 3px;
+}

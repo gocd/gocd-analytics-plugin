@@ -1,0 +1,61 @@
+@import "~jquery-ui/themes/base/tooltip.css";
+
+.contextual-help {
+  color:     #666;
+  cursor: help;
+  margin-left: 50px;
+  font-size: 13px;
+}
+
+.ui-tooltip-content.tooltip-content {
+  font-size: 11px;
+  color: #fff;
+  padding: 4px 8px;
+}
+
+.ui-tooltip-content.tooltip-content a {
+  padding-left: 5px;
+  color: #0277bd;
+  text-decoration: none;
+}
+
+.ui-tooltip.tooltip-container {
+  background-color: rgb(25,25,25);
+  background-color: rgba(25,25,25,0.92);
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  box-shadow: unset;
+}
+
+.ui-tooltip.tooltip-container::before {
+  left: -8px;
+  top: 10px;
+  position: absolute;
+  display: block;
+  content: "";
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: none;
+  border-right: 8px solid rgb(25,25,25);
+  border-right: 8px solid rgba(25,25,25,0.92);
+}
+
+.bar-chart .highcharts-tooltip-box {
+  stroke: #777;
+}
+
+.point-tooltip-footer {
+  border-top: 1px dotted #777;
+  margin-top: 6px;
+  padding-top: 4px;
+  font-size: 11px;
+  font-style: italic;
+}
+
+/* remove the text-shadow when tooltip has useHTML flag set */
+div.highcharts-tooltip.highcharts-label {
+  filter: none;
+}

@@ -1,0 +1,156 @@
+@import "./color-variables.scss";
+
+$drillup-button-outer-width: 75px;
+$chart-cumulative-padding: 60px;
+
+.highcharts-container {
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
+
+.highcharts-container {
+  border-bottom-left-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  -moz-border-bottom-right-radius: 5px;
+}
+
+.highcharts-title {
+  font-weight: 600;
+  font-size: 16px;
+  width: 100%;
+  padding: 0 0 0.2rem;
+  border-bottom: solid 1px $light-grey;
+  min-height: 35px;
+
+  .auxiliary-text {
+    font-size: 11px;
+    font-weight: normal;
+    color: $warm-grey;
+    line-height: 1.5;
+  }
+
+  .title-text, .auxiliary-text {
+    display: block;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - #{$chart-cumulative-padding});
+  }
+}
+
+#pipeline-instances-chart {
+  .highcharts-subtitle {
+    max-width: calc(100% - 40px);
+    width: calc(100% - 40px) !important;
+  }
+}
+
+.highcharts-subtitle {
+  font-size: 14px;
+  color: #444;
+  padding: 0 0 0.3rem;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - #{$chart-cumulative-padding} - #{$drillup-button-outer-width});
+
+  .auxiliary-metrics {
+    background-color: #f2f2f2;
+    width: 100%;
+    text-align: center;
+    padding: 6px 0;
+    white-space: nowrap;
+
+    .auxiliary-metric {
+      border-right: 1px solid #ddd;
+      display: inline-block;
+      width: 24.5%;
+      vertical-align: middle;
+
+      &.failure-rate {
+        border: none;
+      }
+
+      .metric-title {
+        padding: 0px 5px 5px 5px;
+        color: #666;
+        font-size: 13px;
+        max-height: 20px;
+        white-space: normal;
+      }
+
+      .metric-value {
+        padding: 0 5px;
+        color: #000;
+        font-size: 18px;
+
+        .value-desc {
+          font-size: 12px;
+        }
+      }
+
+      .contextual-help {
+        margin: 0 3px;
+      }
+    }
+  }
+}
+
+.highcharts-legend-item:hover text {
+  fill: $link-color;
+}
+
+.highcharts-legend-item-hidden * {
+  // have to use !important here becuase the prior cascading rule does too :(
+  fill: $legend-disabled !important;
+  stroke: $legend-disabled !important;
+}
+
+.highcharts-legend-box {
+  stroke-linecap: round;
+  stroke-width: 1px;
+  stroke: $light-grey;
+}
+
+.highcharts-axis-title {
+  fill: $warm-grey;
+  color: $warm-grey;
+  stroke: $warm-grey;
+}
+
+.highcharts-axis-labels {
+  text, span, tspan {
+    white-space: nowrap !important;
+  }
+
+  tspan {
+    &.pipeline-key,&.stage-key,&.job-key,
+    &.p-key,&.s-key,&.j-key {
+      font-weight: bold;
+    }
+  }
+}
+
+.trend-line .highcharts-graph {
+  stroke-dasharray: 1, 1;
+  stroke-width: 1px;
+}
+
+.highcharts-loading {
+  .highcharts-loading-inner {
+    font-size: 1.5rem;
+    font-weight: 300;
+  }
+}
+
+.highcharts-no-data text {
+  font-size: 16px;
+}
+
+.hidden {
+  display: none;
+}

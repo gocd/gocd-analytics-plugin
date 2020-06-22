@@ -1,0 +1,11 @@
+.area-chart {
+  .highcharts-tracker, .highcharts-point, .highcharts-halo {
+    cursor: pointer;
+  }
+
+  .pipeline-runs, .job-runs {
+    .highcharts-axis-title {
+      font-style: oblique;
+    }
+  }
+}

@@ -1,0 +1,31 @@
+.bar-chart {
+  .drilldown-series {
+    cursor: pointer;
+  }
+
+  .highcharts-point {
+    stroke-width: 0px;
+  }
+
+  .highcharts-xaxis-labels {
+    text, span {
+      font-size: 12px;
+    }
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    &.small text, &.small span, {
+      font-size: 11px;
+    }
+
+    &.medium text, &.medium span, {
+      font-size: 14px;
+    }
+
+    &.large text, &.large span {
+      font-size: 16px;
+    }
+  }
+}

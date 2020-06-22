@@ -1,0 +1,38 @@
+// DO NOT put any styles in here, ONLY variable declarations please!
+// As this file is imported by several *.scss partials, any style declarations
+// (and block comments) will be duplicated in the final bundle output. Variable
+// declarations and line-comments) by themselves generate no output, so please
+// only use these here.
+
+// status names color indices
+$idx-passed:    0;
+$idx-failed:    1;
+$idx-cancelled: 2;
+$idx-waiting:   3;
+$idx-building:  4;
+$idx-jobwait:   5;
+$idx-jobbuild:  6;
+$idx-info:      7;
+
+// series colors
+$color-passed: #00C853;
+$color-failed: #FA2D2D;
+$color-cancelled: #FFC11B;
+$color-waiting: rgba(51, 54, 78, 0.6);
+$color-building: rgba(148, 57, 158, 0.5);
+$color-jobwait: rgba(51, 54, 78, 0.8);
+$color-jobbuild: rgba(1, 191, 192, 0.7);
+$color-info: #000;
+
+// text colors
+$warm-grey: #777;
+$light-grey: #CCC;
+$dark-grey: #333;
+
+$base-text: #050505;
+
+$link-color: #1585CF;
+$legend-disabled: #BBB;
+
+//background colors
+$warm-building: #E7D2E9

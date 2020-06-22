@@ -1,0 +1,13 @@
+@import "./color-variables.scss";
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-size: 16px; // esp important for rem units
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  color: $base-text;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

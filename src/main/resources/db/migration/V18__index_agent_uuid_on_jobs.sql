@@ -1,0 +1,1 @@
+CREATE INDEX idx_jobs_agent_uuid ON jobs(agent_uuid);

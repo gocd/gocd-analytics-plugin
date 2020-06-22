@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2018 ThoughtWorks, Inc.
+  -->
+<configuration
+        xmlns="http://ch.qos.logback/xml/ns/logback"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://ch.qos.logback/xml/ns/logback http://ch.qos.logback/xml/ns/logback/logback.xsd"
+        debug="false"
+        scan="false">
+
+    <appender name="FileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${gocd.server.log.dir:-${GO_SERVER_LOG_DIR:-logs}}/plugin-com.thoughtworks.gocd.analytics.custom.log</file>
+        <encoder>
+            <pattern>
+                ${gocd.server.logback.defaultPattern:-%date{ISO8601} %-5level [%thread] %logger{0}:%line - %msg%n}
+            </pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${gocd.server.log.dir:-${GO_SERVER_LOG_DIR:-logs}}/plugin-com.thoughtworks.gocd.analytics.custom.log.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <maxFileSize>${gocd.server.logback.defaultRollingFileAppender.rotation.maxFileSize:-10 MB}</maxFileSize>
+            <maxHistory>${gocd.server.logback.defaultRollingFileAppender.rotation.maxHistory:-50}</maxHistory>
+            <totalSizeCap>${gocd.server.logback.defaultRollingFileAppender.rotation.totalSizeCap:-512 MB}</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <root level="WARN">
+        <appender-ref ref="FileAppender"/>
+    </root>
+
+    <logger name="org.flywaydb" level="INFO"/>
+</configuration>

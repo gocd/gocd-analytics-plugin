@@ -1,0 +1,247 @@
+/*
+ * Copyright 2020 ThoughtWorks, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+plugins {
+  id "com.moowork.node" version "1.2.0"
+}
+apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-helpers/master/helper.gradle?_=${(int) (new Date().toInstant().epochSecond / 60)}"
+apply plugin: 'java'
+
+node {
+  version = "14.3.0"
+}
+
+group = 'com.thoughtworks.gocd'
+
+gocdPlugin {
+  id = 'com.thoughtworks.gocd.analytics'
+  pluginVersion = '3.0.0'
+  goCdVersion = '20.5.0'
+  name = 'GoCD Analytics Plugin'
+  description = 'GoCD Analytics Plugin'
+  vendorName = 'ThoughtWorks, Inc.'
+  vendorUrl = 'https://github.com/gocd/gocd-analytics-plugin'
+
+  githubRepo {
+    owner = System.getenv('GITHUB_USER') ?: 'bob'
+    repo = 'gocd-analytics-plugin'
+    token = System.getenv('GITHUB_TOKEN') ?: 'bad-token'
+  }
+
+  pluginProject = project
+
+  prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
+  assetsToRelease = [project.tasks.findByName('jar')]
+}
+
+version = gocdPlugin.fullVersion(project)
+sourceCompatibility = 11
+targetCompatibility = 11
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+  jcenter()
+  mavenLocal()
+}
+
+sourceSets {
+  test {
+    java {
+      compileClasspath += configurations.compileOnly
+      runtimeClasspath += configurations.compileOnly
+    }
+  }
+
+  integrationTest {
+    java.srcDirs = ['src/integration/java']
+    resources.srcDirs += ['src/testdata']
+    compileClasspath += main.output + configurations.compileOnly
+    runtimeClasspath += main.output + configurations.compileOnly
+  }
+}
+
+configurations {
+  integrationTestImplementation.extendsFrom testImplementation
+  integrationTestRuntime.extendsFrom testRuntime
+}
+
+dependencies {
+  compileOnly group: 'cd.go.plugin', name: 'go-plugin-api', version: '20.3.0'
+  implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.0'
+  implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
+  implementation group: 'commons-io', name: 'commons-io', version: '2.5'
+  implementation group: 'commons-codec', name: 'commons-codec', version: '1.10'
+  implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.9'
+  implementation group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.1.1'
+  implementation group: 'org.mybatis', name: 'mybatis', version: '3.4.5'
+  implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+  implementation group: 'com.google.code.gson', name: 'gson', version: '2.6.2'
+  implementation group: 'com.google.guava', name: 'guava', version: '19.0'
+  implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+  implementation group: 'org.flywaydb', name: 'flyway-core', version: '4.2.0'
+  implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
+
+  testImplementation group: 'junit', name: 'junit', version: '4.12'
+  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.3.2'
+  testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
+  testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: '1.3'
+  testImplementation group: 'org.skyscreamer', name: 'jsonassert', version: '1.5.0'
+  testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.10.2'
+  testImplementation group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.16.1'
+  testImplementation group: 'org.skyscreamer', name: 'jsonassert', version: '1.3.0'
+  testImplementation group: 'cd.go.plugin', name: 'go-plugin-api', version: '20.3.0'
+
+  integrationTestImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+}
+
+clean.doFirst {
+    delete "${rootDir}/src/main/resources-generated"
+    delete "${rootDir}/build"
+}
+
+task generateWebpackAssets(type: NpmTask) {
+  inputs.files(fileTree('node_modules'))
+  inputs.files(fileTree('assets'))
+  inputs.file('package.json')
+  inputs.file('package-lock.json')
+  inputs.file('config/webpack.config.js')
+
+  outputs.dir('build/resources/webpack')
+
+  dependsOn npm_install
+  args = ['run', System.getenv('FOR_ENVIRONMENT') == 'development' ? 'webpack-dev' : 'webpack-prod']
+}
+
+def props = [
+  'db.host'    : System.getenv('DB_HOST') ? System.getenv('DB_HOST') : 'localhost',
+  'db.user'    : System.getenv('DB_USER') ? System.getenv('DB_USER') : 'postgres',
+  'db.password': System.getenv('DB_PASSWORD') ? System.getenv('DB_PASSWORD') : 'postgres',
+  'db.port'    : System.getenv('DB_PORT') ? System.getenv('DB_PORT') : '5432',
+  'db.name'    : System.getenv('DB_NAME') ? System.getenv('DB_PORT') : 'gocd_test'
+]
+project.ext.testSystemProperties = props
+
+task dropDB(type: Exec) {
+  outputs.upToDateWhen { false }
+
+  commandLine = ['dropdb', '--if-exists', '--host', project.testSystemProperties['db.host'], '--port', project.testSystemProperties['db.port'], '--username', project.testSystemProperties['db.user'], project.testSystemProperties['db.name']]
+  standardOutput = System.out
+  errorOutput = System.err
+
+  doFirst {
+    logger.lifecycle("Attempting to drop DB '${project.testSystemProperties['db.name']}' on '${project.testSystemProperties['db.host']}'")
+  }
+}
+
+task createDB(type: Exec) {
+  dependsOn dropDB
+  outputs.upToDateWhen { false }
+  commandLine = ['createdb', '--host', project.testSystemProperties['db.host'], '--port', project.testSystemProperties['db.port'], '--username', project.testSystemProperties['db.user'], project.testSystemProperties['db.name']]
+
+  standardOutput = System.out
+  errorOutput = System.err
+
+  doFirst {
+    logger.lifecycle("Attempting to create DB '${project.testSystemProperties['db.name']}' on '${project.testSystemProperties['db.host']}'")
+  }
+}
+
+task prepareDb() {
+  dependsOn createDB
+}
+
+task integrationTest(type: Test, description: 'Runs the DB integration tests.') {
+  systemProperties(props)
+  dependsOn prepareDb
+  testClassesDirs = sourceSets.integrationTest.output
+  classpath = sourceSets.integrationTest.runtimeClasspath
+
+  shouldRunAfter test
+}
+
+task packageAssetSourceMaps(type: Zip) {
+  dependsOn generateWebpackAssets
+
+  from "${project.buildDir}/resources/webpack"
+  destinationDirectory = file("${project.buildDir}/libs")
+  archiveFileName = "${project.name}-${project.version}-source-maps.zip"
+  include '**/*.map'
+
+  preserveFileTimestamps = false
+  reproducibleFileOrder = true
+}
+
+task packageAssets(type: Zip) {
+  dependsOn packageAssetSourceMaps
+
+  from "${project.buildDir}/resources/webpack"
+  destinationDirectory = file("${project.buildDir}/resources")
+  archiveFileName = 'assets.zip'
+  exclude '**/*.map'
+
+  preserveFileTimestamps = false
+  reproducibleFileOrder = true
+}
+
+processResources {
+  from("src/main/resource-templates") {
+    filesMatching('plugin.xml') {
+      expand project.pluginDesc
+    }
+
+    filesMatching('plugin.properties') {
+      expand project.pluginDesc
+    }
+  }
+
+  from packageAssets
+}
+
+task lint(type: NpmTask) {
+  inputs.files(fileTree('node_modules'))
+  inputs.files(fileTree('assets/js'))
+  inputs.file('package.json')
+  inputs.file('package-lock.json')
+
+  dependsOn npm_install
+  args = ['run', 'lint']
+}
+
+task assetSpecs(type: NpmTask) {
+  inputs.files(fileTree('node_modules'))
+  inputs.files(fileTree('spec'))
+  inputs.file('package.json')
+  inputs.file('package-lock.json')
+  inputs.file('config/webpack.config.js')
+  inputs.file('config/karma.config.js')
+
+  dependsOn npm_install
+  args = ['run', 'specs-ci']
+}
+
+test.dependsOn lint
+test.dependsOn assetSpecs
+check.dependsOn integrationTest
+
+test {
+  useJUnitPlatform()
+}
+
+jar {
+  from(configurations.compileClasspath) {
+    into "lib/"
+  }
+}
