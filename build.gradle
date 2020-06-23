@@ -127,7 +127,7 @@ task generateWebpackAssets(type: NpmTask) {
 
 def props = [
   'db.host'    : System.getenv('DB_HOST') ? System.getenv('DB_HOST') : 'localhost',
-  'db.user'    : System.getenv('DB_USER') ? System.getenv('DB_USER') : 'postgres',
+  'db.user'    : System.getenv('DB_USER') ? System.getenv('DB_USER') : 'go',
   'db.password': System.getenv('DB_PASSWORD') ? System.getenv('DB_PASSWORD') : 'postgres',
   'db.port'    : System.getenv('DB_PORT') ? System.getenv('DB_PORT') : '5432',
   'db.name'    : System.getenv('DB_NAME') ? System.getenv('DB_PORT') : 'gocd_test'
