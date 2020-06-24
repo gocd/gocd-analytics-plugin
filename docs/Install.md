@@ -10,9 +10,47 @@ Table of Contents
 
 ### GoCD Server
 
-- The GoCD server version **19.8.0** or higher.
+- GoCD server version **20.5.0** or higher is needed.
 
-### Postgres
+### Highcharts JS
+
+Highcharts JS is a Javascript charting library. It is used by the GoCD analytics plugin. Unfortunately Highcharts JS is incompatible with any open-source license and due to that reason it cannot be distributed along with the plugin. Highcharts is distributed by [Highsoft](https://shop.highsoft.com/) and you need to get a license from them before using it.
+
+If you have a license or have some reason to believe that you don't need one, you can get the required Javascript files from the locations below:
+
+https://code.highcharts.com/6.1.3/modules/no-data-to-display.src.js
+https://code.highcharts.com/6.1.3/modules/xrange.src.js
+https://code.highcharts.com/6.1.3/highcharts.src.js
+
+This plugin is known to work with the three files mentioned above (version 6.1.3 of Highcharts JS). Once you get those files, they need to be placed in a directory called `analytics-assets` in GoCD's server directory. It is usually `/var/lib/go-server` on Linux and `C:\Program Files (x86)\Go Server` on Windows. See the [GoCD installation documentation](https://docs.gocd.org/current/installation/installing_go_server.html) for your operating system to find the right directory.
+
+Once the files mentioned above are placed in the directory `analytics-assets`, the tree structure will look like this:
+
+```
+$ cd /var/lib/go-server/; tree .
+.
+├── LICENSE
+├─ analytics-assets
+│   ├── highcharts.src.js
+│   ├── no-data-to-display.src.js
+│   └── xrange.src.js
+├── artifacts
+├── bin
+├── config
+├── cruise.war
+├── db
+├── felix-cache
+├── lib
+├── logs
+├── plugins
+├── plugins_work
+├── run
+├── work
+├── wrapper
+└── wrapper-config
+```
+
+### PostgreSQL
 
 - This plugin requires PostgreSQL `v9.6`.
 
@@ -48,6 +86,9 @@ Table of Contents
 
 ## Installation
 
- - Copy the file `build/libs/gocd-analytics-plugin-VERSION.jar` to the GoCD server under `${GO_SERVER_DIR}/plugins/external`
-and restart the server.
- - The `GO_SERVER_DIR` is usually `/var/lib/go-server` on **Linux** and `C:\Program Files\Go Server` on **Windows**.
+ - Copy the file `build/libs/gocd-analytics-plugin-VERSION.jar` (or the one downloaded from [GitHub Releases](https://github.com/gocd/gocd-analytics-plugin/releases)) to the GoCD server under `${GO_SERVER_DIR}/plugins/external` and restart the server.
+ - The `GO_SERVER_DIR` is usually `/var/lib/go-server` on **Linux** and `C:\Program Files (x86)\Go Server` on **Windows**.
+
+<hr>
+
+Once the plugin is installed and the server is restarted, the plugin [can be configured](./Configure.md).
