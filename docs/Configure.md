@@ -1,6 +1,6 @@
 # GoCD Analytics Plugin
 
-This plugin requires an **empty** PostgreSQL database for its data. If you are using the GoCD with PostgreSQL as the database backend, please note that the database schema that you use for analytics data should be separate from the schema used by GoCD. It is recommended that you use PostgreSQL versions 9.6 or later.
+This plugin requires an **empty** PostgreSQL database for its data. If you are using the GoCD with PostgreSQL as the database backend, please note that the database schema that you use for analytics data should be separate from the schema used by GoCD. It is recommended that you use PostgreSQL versions 9.6.
 
 Once you've installed the plugin and started the GoCD server, you can provide it with the credentials of your PostgreSQL database. To do this:
 
