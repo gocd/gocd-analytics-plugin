@@ -19,7 +19,9 @@ Highcharts JS is a Javascript charting library. It is used by the GoCD analytics
 If you have a license or have some reason to believe that you don't need one, you can get the required Javascript files from the locations below:
 
 https://code.highcharts.com/6.1.3/modules/no-data-to-display.src.js
+
 https://code.highcharts.com/6.1.3/modules/xrange.src.js
+
 https://code.highcharts.com/6.1.3/highcharts.src.js
 
 This plugin is known to work with the three files mentioned above (version 6.1.3 of Highcharts JS). Once you get those files, they need to be placed in a directory called `analytics-assets` in GoCD's server directory. It is usually `/var/lib/go-server` on Linux and `C:\Program Files (x86)\Go Server` on Windows. See the [GoCD installation documentation](https://docs.gocd.org/current/installation/installing_go_server.html) for your operating system to find the right directory.
