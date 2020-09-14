@@ -94,7 +94,7 @@ dependencies {
   implementation group: 'org.flywaydb', name: 'flyway-core', version: '4.2.0'
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
 
-  testImplementation group: 'junit', name: 'junit', version: '4.12'
+  testImplementation group: 'junit', name: 'junit', version: '4.13'
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.3.2'
   testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
   testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: '1.3'
