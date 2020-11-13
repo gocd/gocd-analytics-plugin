@@ -130,14 +130,14 @@ def props = [
   'db.user'    : System.getenv('DB_USER') ? System.getenv('DB_USER') : 'postgres',
   'db.password': System.getenv('DB_PASSWORD') ? System.getenv('DB_PASSWORD') : 'postgres',
   'db.port'    : System.getenv('DB_PORT') ? System.getenv('DB_PORT') : '5432',
-  'db.name'    : System.getenv('DB_NAME') ? System.getenv('DB_PORT') : 'gocd_test'
+  'db.name'    : System.getenv('DB_NAME') ? System.getenv('DB_NAME') : 'gocd_test'
 ]
 project.ext.testSystemProperties = props
 
 task dropDB(type: Exec) {
   outputs.upToDateWhen { false }
 
-  commandLine = ['dropdb', '--if-exists', '--host', project.testSystemProperties['db.host'], '--port', project.testSystemProperties['db.port'], '--username', project.testSystemProperties['db.user'], project.testSystemProperties['db.name']]
+  commandLine = ['dropdb', '-w', '--if-exists', '--host', project.testSystemProperties['db.host'], '--port', project.testSystemProperties['db.port'], '--username', project.testSystemProperties['db.user'], project.testSystemProperties['db.name']]
   standardOutput = System.out
   errorOutput = System.err
 
@@ -149,7 +149,7 @@ task dropDB(type: Exec) {
 task createDB(type: Exec) {
   dependsOn dropDB
   outputs.upToDateWhen { false }
-  commandLine = ['createdb', '--host', project.testSystemProperties['db.host'], '--port', project.testSystemProperties['db.port'], '--username', project.testSystemProperties['db.user'], project.testSystemProperties['db.name']]
+  commandLine = ['createdb', '-w', '--host', project.testSystemProperties['db.host'], '--port', project.testSystemProperties['db.port'], '--username', project.testSystemProperties['db.user'], project.testSystemProperties['db.name']]
 
   standardOutput = System.out
   errorOutput = System.err
