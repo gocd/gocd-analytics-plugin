@@ -27,4 +27,6 @@ jobs:
         with:
           java-version: 15
       - name: Build with Gradle
+        env:
+          PGPASSWORD: postgres
         run: ./gradlew assemble check
