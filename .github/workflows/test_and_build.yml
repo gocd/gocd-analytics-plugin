@@ -32,5 +32,5 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 15
-      - name: Test with Gradle
+      - name: Build and release with Gradle
         run: ./gradlew githubRelease
