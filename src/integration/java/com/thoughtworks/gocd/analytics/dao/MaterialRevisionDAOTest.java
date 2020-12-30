@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
@@ -49,7 +50,7 @@ public class MaterialRevisionDAOTest implements DAOIntegrationTest {
 
     @Test
     public void shouldInsertAMaterialRevisionRecord() {
-        ZonedDateTime buildTriggerTime = ZonedDateTime.now();
+        ZonedDateTime buildTriggerTime = ZonedDateTime.now().truncatedTo(ChronoUnit.MICROS);
         MaterialRevision materialRevision = new MaterialRevision("fingerprint1", "revision1", null, buildTriggerTime);
 
         materialRevisionDAO.insert(sqlSession, materialRevision);

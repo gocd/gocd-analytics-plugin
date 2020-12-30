@@ -29,6 +29,7 @@ import java.sql.SQLException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class StageDAOIntegrationTest implements DAOIntegrationTest {
     @Test
     public void shouldInsertAStageAndSuccessfullyRetrieveIt() {
         PipelineInstance pipelineInstance = new PipelineInstance(1, "pip01", 5, 0, PASSED, TEST_TS, TEST_TS.plusMinutes(10));
-        Stage expected = stageWith("pip01", 1, "stage", 1, PASSED, PASSED, 5, ZonedDateTime.now());
+        Stage expected = stageWith("pip01", 1, "stage", 1, PASSED, PASSED, 5, ZonedDateTime.now().truncatedTo(ChronoUnit.MICROS));
 
         stageDAO.insert(sqlSession, expected);
 
