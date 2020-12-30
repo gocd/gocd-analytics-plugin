@@ -10,6 +10,18 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:9.6
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 20s
+          --health-retries 10
+        ports:
+          - 5432:5432
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -18,12 +30,27 @@ jobs:
           java-version: 15
       - name: Test with Gradle
         run: ./gradlew assemble check
+        env:
+          PGPASSWORD: postgres
   previewGithubRelease:
     needs: test
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:9.6
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 20s
+          --health-retries 10
+        ports:
+          - 5432:5432
     env:
       GITHUB_USER:  "gocd"
       GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      PGPASSWORD: postgres
     steps:
       - uses: actions/checkout@v2
         with:
