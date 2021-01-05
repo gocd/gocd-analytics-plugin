@@ -27,6 +27,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -63,14 +64,14 @@ public class PipelineMapperIntegrationTest {
         pipelineInstance.setCreatedAt(createdAt);
         mapper.insert(pipelineInstance);
         PipelineInstance beforeUpdate = mapper.allPipelineInstancesFor(pipelineInstance.getName(), null, ZonedDateTime.now()).get(0);
-        assertThat(beforeUpdate.getCreatedAt().toInstant().truncatedTo(ChronoUnit.SECONDS), is(createdAt.toInstant().truncatedTo(ChronoUnit.SECONDS)));
+        assertThat(beforeUpdate.getCreatedAt().toInstant().truncatedTo(SECONDS), is(createdAt.toInstant().truncatedTo(SECONDS)));
 
         pipelineInstance.setId(beforeUpdate.getId());
         pipelineInstance.setCreatedAt(ZonedDateTime.now());
         mapper.update(pipelineInstance);
 
         PipelineInstance afterUpdate = mapper.allPipelineInstancesFor(pipelineInstance.getName(), null, ZonedDateTime.now()).get(0);
-        assertThat(afterUpdate.getCreatedAt().toInstant().truncatedTo(ChronoUnit.MICROS), is(createdAt.toInstant().truncatedTo(ChronoUnit.MICROS)));
+        assertThat(afterUpdate.getCreatedAt().toInstant().truncatedTo(SECONDS), is(createdAt.toInstant().truncatedTo(SECONDS)));
     }
 
     @Test
