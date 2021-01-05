@@ -63,14 +63,14 @@ public class PipelineMapperIntegrationTest {
         pipelineInstance.setCreatedAt(createdAt);
         mapper.insert(pipelineInstance);
         PipelineInstance beforeUpdate = mapper.allPipelineInstancesFor(pipelineInstance.getName(), null, ZonedDateTime.now()).get(0);
-        assertThat(beforeUpdate.getCreatedAt().toInstant(), is(createdAt.toInstant().truncatedTo(ChronoUnit.MICROS)));
+        assertThat(beforeUpdate.getCreatedAt().toInstant().truncatedTo(ChronoUnit.MICROS), is(createdAt.toInstant().truncatedTo(ChronoUnit.MICROS)));
 
         pipelineInstance.setId(beforeUpdate.getId());
         pipelineInstance.setCreatedAt(ZonedDateTime.now());
         mapper.update(pipelineInstance);
 
         PipelineInstance afterUpdate = mapper.allPipelineInstancesFor(pipelineInstance.getName(), null, ZonedDateTime.now()).get(0);
-        assertThat(afterUpdate.getCreatedAt().toInstant(), is(createdAt.toInstant().truncatedTo(ChronoUnit.MICROS)));
+        assertThat(afterUpdate.getCreatedAt().toInstant().truncatedTo(ChronoUnit.MICROS), is(createdAt.toInstant().truncatedTo(ChronoUnit.MICROS)));
     }
 
     @Test
