@@ -7,7 +7,7 @@
     "specs-ci": "karma start config/karma.config.js --single-run --no-auto-watch --color"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.30",
+    "@fortawesome/fontawesome-svg-core": "^1.2.34",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "crel": "^3.1.0",
     "d3": "^5.16.0",
