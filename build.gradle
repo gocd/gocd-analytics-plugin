@@ -204,6 +204,8 @@ processResources {
   }
 
   from packageAssets
+
+  dependsOn "generateResources" // defined in gocd-plugin-gradle-task-helpers
 }
 
 task lint(type: NpmTask) {
