@@ -29,8 +29,8 @@ import com.thoughtworks.gocd.analytics.pluginhealth.PluginHealthMessageService;
 import com.thoughtworks.gocd.analytics.pluginhealth.PluginHealthState;
 import com.thoughtworks.gocd.analytics.serialization.adapters.DefaultZonedDateTimeTypeAdapter;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,8 +38,7 @@ import java.util.Map;
 
 import static com.thoughtworks.gocd.analytics.utils.DateUtils.UTC;
 import static com.thoughtworks.gocd.analytics.utils.Util.GSON;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class AgentStatusRequestExecutorTest {
@@ -64,7 +63,7 @@ public class AgentStatusRequestExecutorTest {
         return agentTransition;
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         apiRequest = mock(GoPluginApiRequest.class);
         sqlSession = mock(SqlSession.class);
@@ -86,8 +85,8 @@ public class AgentStatusRequestExecutorTest {
         Map<String, String> responseJson = GSON.fromJson(response.responseBody(), new TypeToken<Map<String, String>>() {
         }.getType());
 
-        assertThat(response.responseCode(), is(200));
-        assertThat(responseJson.get("status"), is("success"));
+        assertEquals(200, response.responseCode());
+        assertEquals("success", responseJson.get("status"));
         verify(agentDAO).updateOrInsert(sqlSession, agentFrom("agent_uuid", true, "100", "agent_hostname", "127.0.0.1", "rh", "enabled"));
         ZonedDateTime transitionTime = ZonedDateTime.parse("2018-02-15T06:31:28.998+0000", DateTimeFormatter.ofPattern(DefaultZonedDateTimeTypeAdapter.DATE_PATTERN).withZone(UTC));
         verify(agentTransitionDAO).insertTransition(sqlSession, agentTransitionFrom("agent_uuid", "enabled", "building", "building", transitionTime));
@@ -102,12 +101,12 @@ public class AgentStatusRequestExecutorTest {
         Map<String, String> responseJson = GSON.fromJson(response.responseBody(), new TypeToken<Map<String, String>>() {
         }.getType());
 
-        assertThat(response.responseCode(), is(200));
-        assertThat(responseJson.get("status"), is("success"));
+        assertEquals(200, response.responseCode());
+        assertEquals("success", responseJson.get("status"));
         verify(pluginHealthMessageService).update(any(PluginHealthState.class));
-        verifyZeroInteractions(agentDAO);
-        verifyZeroInteractions(agentTransitionDAO);
-        verifyZeroInteractions(agentUtilizationUpdater);
+        verifyNoMoreInteractions(agentDAO);
+        verifyNoMoreInteractions(agentTransitionDAO);
+        verifyNoMoreInteractions(agentUtilizationUpdater);
     }
 
     private String agentJSON() {

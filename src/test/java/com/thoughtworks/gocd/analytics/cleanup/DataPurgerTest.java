@@ -23,8 +23,8 @@ import com.thoughtworks.gocd.analytics.dao.AgentUtilizationDAO;
 import com.thoughtworks.gocd.analytics.dao.JobDAO;
 import com.thoughtworks.gocd.analytics.dao.StageDAO;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 
@@ -38,7 +38,7 @@ public class DataPurgerTest {
     private SessionFactory sessionFactory;
     private DataPurger dataPurger;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         jobDAO = mock(JobDAO.class);
         stageDAO = mock(StageDAO.class);

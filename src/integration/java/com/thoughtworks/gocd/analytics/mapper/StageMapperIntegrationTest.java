@@ -19,31 +19,30 @@ package com.thoughtworks.gocd.analytics.mapper;
 import com.thoughtworks.gocd.analytics.TestDBConnectionManager;
 import com.thoughtworks.gocd.analytics.models.PipelineInstance;
 import com.thoughtworks.gocd.analytics.models.Stage;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StageMapperIntegrationTest {
     private TestDBConnectionManager manager;
     private StageMapper mapper;
     private PipelineWorkflowMapper pipelineWorkflowMapper;
 
-    @Before
+    @BeforeEach
     public void before() throws SQLException, InterruptedException {
         manager = new TestDBConnectionManager();
         mapper = manager.getSqlSession().getMapper(StageMapper.class);
         pipelineWorkflowMapper = manager.getSqlSession().getMapper(PipelineWorkflowMapper.class);
     }
 
-    @After
+    @AfterEach
     public void after() throws InterruptedException, SQLException {
         manager.shutdown();
     }
@@ -54,13 +53,13 @@ public class StageMapperIntegrationTest {
         Stage stageNamedWithUppercase = stageFrom(pipelineNamedWithUpperCase.getName(), 1, "STAGE", 1, "Passed", "Passed", 5);
         mapper.insert(stageNamedWithUppercase);
 
-        assertThat(mapper.allStages("PIPELINE").size(), is(1));
+        assertEquals(1, mapper.allStages("PIPELINE").size());
         long stageId = mapper.allStages("PIPELINE").get(0).getId();
 
-        assertThat(mapper.One("PIPELINE", 1, "STAGE", 1).getId(), is(stageId));
-        assertThat(mapper.One("PIPELINE", 1, "stage", 1).getId(), is(stageId));
-        assertThat(mapper.One("pipeline", 1, "STAGE", 1).getId(), is(stageId));
-        assertThat(mapper.One("pipeline", 1, "stage", 1).getId(), is(stageId));
+        assertEquals(stageId, mapper.One("PIPELINE", 1, "STAGE", 1).getId());
+        assertEquals(stageId, mapper.One("PIPELINE", 1, "stage", 1).getId());
+        assertEquals(stageId, mapper.One("pipeline", 1, "STAGE", 1).getId());
+        assertEquals(stageId, mapper.One("pipeline", 1, "stage", 1).getId());
     }
 
     @Test

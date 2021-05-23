@@ -16,20 +16,19 @@
 
 package com.thoughtworks.gocd.analytics.models;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class IntegerFieldTest {
     @Test
     public void shouldValidateThatAFieldIsEitherEmptyOrHasAnIntegerValue() {
         IntegerField field = new IntegerField("key1", "display1", "default1", false, false, "1");
 
-        assertThat(field.doValidate(""), is(nullValue()));
-        assertThat(field.doValidate("not-a-number"), is("display1 must be an integer."));
-        assertThat(field.doValidate("10"), is(nullValue()));
-        assertThat(field.doValidate("-10"), is(nullValue()));
+        assertNull(field.doValidate(""));
+        assertEquals("display1 must be an integer.", field.doValidate("not-a-number"));
+        assertNull(field.doValidate("10"));
+        assertNull(field.doValidate("-10"));
     }
 }

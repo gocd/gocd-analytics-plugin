@@ -22,7 +22,7 @@ import com.thoughtworks.gocd.analytics.dao.AgentTransitionDAO;
 import com.thoughtworks.gocd.analytics.models.AgentTransition;
 import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,9 +34,7 @@ import static com.thoughtworks.gocd.analytics.AnalyticTypes.PARAM_AGENT_UUID;
 import static com.thoughtworks.gocd.analytics.AvailableAnalytics.AGENT_STATE_TRANSITION;
 import static com.thoughtworks.gocd.analytics.executors.notification.AgentStatusRequestExecutorTest.agentTransitionFrom;
 import static com.thoughtworks.gocd.analytics.utils.DateUtils.UTC;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -66,7 +64,7 @@ public class AgentStateTransitionExecutorTest {
         AgentStateTransitionExecutor executor = new AgentStateTransitionExecutor(request, agentTransitionDAO, sessionFactory);
         GoPluginApiResponse response = executor.execute();
 
-        assertThat(response.responseCode(), is(200));
+        assertEquals(200, response.responseCode());
         String expectedResponse = "{" +
                 "\"data\":\"{\\\"transitions\\\":[{\\\"uuid\\\":\\\"agent_uuid\\\",\\\"agent_config_state\\\":\\\"enabled\\\",\\\"agent_state\\\":\\\"building\\\",\\\"build_state\\\":\\\"building\\\",\\\"transition_time\\\":\\\"2018-03-22T12:34:56.000+0000\\\"}],\\\"uuid\\\":\\\"agent_uuid\\\"}\"," +
                 "\"view_path\":\"agent-state-transition-chart.html\"}";

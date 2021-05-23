@@ -21,7 +21,7 @@ import com.thoughtworks.gocd.analytics.SessionFactory;
 import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
 import com.thoughtworks.gocd.analytics.models.AnalyticsResponseBody;
 import com.thoughtworks.gocd.analytics.utils.ViewUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.postgresql.util.PSQLException;
 import org.postgresql.util.PSQLState;
 
@@ -29,8 +29,7 @@ import java.util.Collections;
 
 import static com.thoughtworks.gocd.analytics.db.TransactionAware.ERROR_DB_CONNECT_FAILURE;
 import static com.thoughtworks.gocd.analytics.db.TransactionAware.ERROR_PLUGIN_NOT_CONFIGURED;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
 public class AbstractSessionFactoryAwareExecutorTest {
@@ -47,8 +46,8 @@ public class AbstractSessionFactoryAwareExecutorTest {
         GoPluginApiResponse actualResponse = executor.execute();
         String expectedResponseBody = new AnalyticsResponseBody(Collections.EMPTY_MAP, "error-message.html?msg=" + ViewUtils.jsUriEncode(ERROR_DB_CONNECT_FAILURE + ": Connection refused")).toJson();
 
-        assertThat(actualResponse.responseBody(), is(expectedResponseBody));
-        assertThat(actualResponse.responseCode(), is(200));
+        assertEquals(expectedResponseBody, actualResponse.responseBody());
+        assertEquals(200, actualResponse.responseCode());
     }
 
     @Test
@@ -63,8 +62,8 @@ public class AbstractSessionFactoryAwareExecutorTest {
         GoPluginApiResponse actualResponse = executor.execute();
         String expectedResponseBody = new AnalyticsResponseBody(Collections.EMPTY_MAP, "error-message.html?msg=" + ViewUtils.jsUriEncode(ERROR_PLUGIN_NOT_CONFIGURED)).toJson();
 
-        assertThat(actualResponse.responseBody(), is(expectedResponseBody));
-        assertThat(actualResponse.responseCode(), is(200));
+        assertEquals(expectedResponseBody, actualResponse.responseBody());
+        assertEquals(200, actualResponse.responseCode());
     }
 
     @Test
@@ -79,7 +78,7 @@ public class AbstractSessionFactoryAwareExecutorTest {
         GoPluginApiResponse actualResponse = executor.execute();
         String expectedResponseBody = new AnalyticsResponseBody(Collections.EMPTY_MAP, "error-message.html").toJson();
 
-        assertThat(actualResponse.responseBody(), is(expectedResponseBody));
-        assertThat(actualResponse.responseCode(), is(200));
+        assertEquals(expectedResponseBody, actualResponse.responseBody());
+        assertEquals(200, actualResponse.responseCode());
     }
 }

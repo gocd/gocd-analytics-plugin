@@ -16,13 +16,11 @@
 
 package com.thoughtworks.gocd.analytics.utils;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UtilTest {
 
@@ -30,16 +28,16 @@ public class UtilTest {
     public void listFromCommaSeparatedString_shouldParseCommaSeparatedStringWithoutSpace() throws Exception {
         String csvStringWithoutSpace = "uid,sAmAccountName,mail,displayName,name";
         List<String> resultOfWithoutSpace = Util.listFromCommaSeparatedString(csvStringWithoutSpace);
-        assertThat(resultOfWithoutSpace, hasSize(5));
-        assertThat(resultOfWithoutSpace, contains("uid", "sAmAccountName", "mail", "displayName", "name"));
+        assertEquals(5, resultOfWithoutSpace.size());
+        assertEquals(List.of("uid", "sAmAccountName", "mail", "displayName", "name"), resultOfWithoutSpace);
     }
 
     @Test
     public void listFromCommaSeparatedString_shouldParseCommaSeparatedStringWithSpace() throws Exception {
         String csvStringWithoutSpace = "uid   ,    sAmAccountName        ,          mail ,         displayName       ,        name";
         List<String> resultOfWithoutSpace = Util.listFromCommaSeparatedString(csvStringWithoutSpace);
-        assertThat(resultOfWithoutSpace, hasSize(5));
-        assertThat(resultOfWithoutSpace, contains("uid", "sAmAccountName", "mail", "displayName", "name"));
+        assertEquals(5, resultOfWithoutSpace.size());
+        assertEquals(List.of("uid", "sAmAccountName", "mail", "displayName", "name"), resultOfWithoutSpace);
     }
 
     @Test
@@ -50,7 +48,7 @@ public class UtilTest {
                 "displayName,\n" +
                 "name";
         List<String> resultOfWithoutSpace = Util.listFromCommaSeparatedString(csvStringWithoutSpace);
-        assertThat(resultOfWithoutSpace, hasSize(5));
-        assertThat(resultOfWithoutSpace, contains("uid", "sAmAccountName", "mail", "displayName", "name"));
+        assertEquals(5, resultOfWithoutSpace.size());
+        assertEquals(List.of("uid", "sAmAccountName", "mail", "displayName", "name"), resultOfWithoutSpace);
     }
 }

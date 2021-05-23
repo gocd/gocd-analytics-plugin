@@ -26,9 +26,9 @@ import com.thoughtworks.gocd.analytics.models.PipelineInstance;
 import com.thoughtworks.gocd.analytics.models.Stage;
 import com.thoughtworks.gocd.analytics.pluginhealth.PluginHealthMessageService;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.time.ZoneId;
@@ -37,8 +37,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static com.thoughtworks.gocd.analytics.StageMother.stageWith;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
 public class StageStatusRequestExecutorTest {
@@ -47,7 +46,7 @@ public class StageStatusRequestExecutorTest {
     private StageDAO stageDAO;
     private JobDAO jobDAO;
 
-    @Before
+    @BeforeEach
     public void before() throws SQLException, InterruptedException {
         pipelineDAO = new PipelineDAO();
         stageDAO = new StageDAO();
@@ -55,7 +54,7 @@ public class StageStatusRequestExecutorTest {
         manager = new TestDBConnectionManager();
     }
 
-    @After
+    @AfterEach
     public void after() throws InterruptedException, SQLException {
         manager.shutdown();
     }
@@ -70,29 +69,29 @@ public class StageStatusRequestExecutorTest {
         try (SqlSession sqlSession = manager.getSessionFactory().openSession()) {
             List<PipelineInstance> pipelineInstances = pipelineDAO.instancesForPipeline(sqlSession, "pipeline-name", null, ZonedDateTime.now());
 
-            assertThat(pipelineInstances.size(), is(1));
+            assertEquals(1, pipelineInstances.size());
             PipelineInstance instance = pipelineInstances.get(0);
-            assertThat(instance.getCounter(), is(1));
-            assertThat(instance.getResult(), is("Passed"));
-            assertThat(instance.getTotalTimeSecs(), is(2));
-            assertThat(instance.getTimeWaitingSecs(), is(1));
+            assertEquals(1, instance.getCounter());
+            assertEquals("Passed", instance.getResult());
+            assertEquals(2, instance.getTotalTimeSecs());
+            assertEquals(1, instance.getTimeWaitingSecs());
 
             List<Stage> stages = stageDAO.all(sqlSession, "pipeline-name");
 
-            assertThat(stages.size(), is(1));
+            assertEquals(1, stages.size());
             Stage expected = stageWith("pipeline-name", 1, "stage-name", 1,
                     "Passed", "Passed", 2, toZondedDateTimeInUTC("2018-04-13T14:25:29.165+0000"),
                     "success", "changes", toZondedDateTimeInUTC("2018-04-13T14:25:31.165+0000"), 1);
-            assertThat(stages.get(0), is(expected));
+            assertEquals(expected, stages.get(0));
 
             List<Job> jobs = jobDAO.all(sqlSession, "pipeline-name");
 
-            assertThat(jobs.size(), is(1));
+            assertEquals(1, jobs.size());
             Job job = jobFrom("pipeline-name", 1, "stage-name", 1,
                     "job-name", "Passed", toZondedDateTimeInUTC("2018-04-13T14:25:29.165+0000"),
                     toZondedDateTimeInUTC("2018-04-13T14:25:31.165+0000"), toZondedDateTimeInUTC("2018-04-13T14:25:30.165+0000"),
                     1, 1, 2, "uuid");
-            assertThat(jobs.get(0), is(job));
+            assertEquals(job, jobs.get(0));
         }
     }
 

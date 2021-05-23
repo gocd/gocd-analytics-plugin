@@ -18,25 +18,24 @@ package com.thoughtworks.gocd.analytics.db;
 
 import com.thoughtworks.gocd.analytics.TestDBConnectionManager;
 import com.thoughtworks.gocd.analytics.models.PluginSettings;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DBAccessTest {
     private DBAccess db;
 
-    @Before
+    @BeforeEach
     public void before() {
         db = new DBAccess();
     }
 
-    @After
+    @AfterEach
     public void after() throws SQLException, InterruptedException {
         if (db.database() != null) {
             db.database().clean();
@@ -46,7 +45,7 @@ public class DBAccessTest {
 
     @Test
     public void shouldNotBeAbleToConnectToDbWithoutConfig() {
-        assertThat(db.canConnectToDB(), is(false));
+        assertEquals(false, db.canConnectToDB());
     }
 
     @Test
@@ -63,12 +62,12 @@ public class DBAccessTest {
         } catch (Exception ignored) {
         }
 
-        assertThat(db.canConnectToDB(), is(false));
+        assertEquals(false, db.canConnectToDB());
     }
 
     @Test
     public void shouldBeAbleToConnectWithValidConfig() throws SQLException, InterruptedException {
         db.initialize(TestDBConnectionManager.connectionSettings());
-        assertThat(db.canConnectToDB(), is(true));
+        assertEquals(true, db.canConnectToDB());
     }
 }

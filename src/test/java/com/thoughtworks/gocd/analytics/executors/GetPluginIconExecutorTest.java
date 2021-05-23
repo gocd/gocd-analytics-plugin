@@ -21,12 +21,11 @@ import com.google.gson.reflect.TypeToken;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.thoughtworks.gocd.analytics.utils.Util;
 import org.apache.commons.codec.binary.Base64;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GetPluginIconExecutorTest {
 
@@ -35,8 +34,8 @@ public class GetPluginIconExecutorTest {
         GoPluginApiResponse response = new GetPluginIconExecutor().execute();
         Map<String, String> hashMap = new Gson().fromJson(response.responseBody(), new TypeToken<Map<String, String>>() {
         }.getType());
-        assertThat(hashMap.size(), is(2));
-        assertThat(hashMap.get("content_type"), is("image/png"));
-        assertThat(Util.readResourceBytes("/gocd_72_72_icon.png"), is(Base64.decodeBase64(hashMap.get("data"))));
+        assertEquals(2, hashMap.size());
+        assertEquals("image/png", hashMap.get("content_type"));
+        assertEquals(hashMap.get("data"), new String(Base64.encodeBase64(Util.readResourceBytes("/gocd_72_72_icon.png"))));
     }
 }

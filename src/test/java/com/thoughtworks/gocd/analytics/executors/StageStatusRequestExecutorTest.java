@@ -33,8 +33,8 @@ import com.thoughtworks.gocd.analytics.pluginhealth.PluginHealthMessageService;
 import com.thoughtworks.gocd.analytics.pluginhealth.PluginHealthState;
 import com.thoughtworks.gocd.analytics.utils.Builder;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -44,8 +44,7 @@ import java.util.Map;
 
 import static com.thoughtworks.gocd.analytics.MaterialRevisionMother.materialRevisionFrom;
 import static com.thoughtworks.gocd.analytics.utils.Util.GSON;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class StageStatusRequestExecutorTest {
@@ -61,7 +60,7 @@ public class StageStatusRequestExecutorTest {
     private WorkflowAllocatorFactory workflowAllocatorFactory;
     private MaterialRevisionDAO materialRevisionDAO;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         apiRequest = mock(GoPluginApiRequest.class);
         jobDAO = mock(JobDAO.class);
@@ -86,9 +85,9 @@ public class StageStatusRequestExecutorTest {
         GoPluginApiResponse response = executor.execute();
 
         assertSuccess(response);
-        verifyZeroInteractions(jobDAO);
-        verifyZeroInteractions(stageDAO);
-        verifyZeroInteractions(pipelineDAO);
+        verifyNoMoreInteractions(jobDAO);
+        verifyNoMoreInteractions(stageDAO);
+        verifyNoMoreInteractions(pipelineDAO);
     }
 
     @Test
@@ -156,9 +155,9 @@ public class StageStatusRequestExecutorTest {
 
         assertSuccess(response);
         verify(pluginHealthMessageService).update(any(PluginHealthState.class));
-        verifyZeroInteractions(jobDAO);
-        verifyZeroInteractions(stageDAO);
-        verifyZeroInteractions(pipelineDAO);
+        verifyNoMoreInteractions(jobDAO);
+        verifyNoMoreInteractions(stageDAO);
+        verifyNoMoreInteractions(pipelineDAO);
     }
 
     @Test
@@ -190,8 +189,8 @@ public class StageStatusRequestExecutorTest {
         Map<String, String> responseJson = GSON.fromJson(response.responseBody(), new TypeToken<Map<String, String>>() {
         }.getType());
 
-        assertThat(response.responseCode(), is(200));
-        assertThat(responseJson.get("status"), is("success"));
+        assertEquals(200, response.responseCode());
+        assertEquals("success", responseJson.get("status"));
     }
 
     private Stage stageWith(String stageName, int stageCounter, int timeWaiting, int duration) {

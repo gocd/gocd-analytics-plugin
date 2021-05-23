@@ -19,14 +19,13 @@ package com.thoughtworks.gocd.analytics.pluginhealth;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.request.GoApiRequest;
 import com.thoughtworks.go.plugin.api.response.GoApiResponse;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Collections;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,7 +33,7 @@ public class PluginHealthMessageNotifierTest {
 
     private GoApplicationAccessor accessor;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         accessor = mock(GoApplicationAccessor.class);
     }
@@ -51,11 +50,11 @@ public class PluginHealthMessageNotifierTest {
 
         GoApiRequest goApiRequest = captor.getValue();
 
-        assertThat(goApiRequest.apiVersion(), is("1.0"));
-        assertThat(goApiRequest.api(), is("go.processor.server-health.add-messages"));
-        assertThat(goApiRequest.pluginIdentifier().getExtension(), is("analytics"));
-        assertThat(goApiRequest.pluginIdentifier().getSupportedExtensionVersions(), is(Collections.singletonList("1.0")));
-        assertThat(goApiRequest.requestBody(), is("[{\"type\":\"error\",\"message\":\"error message\"}]"));
+        assertEquals("1.0", goApiRequest.apiVersion());
+        assertEquals("go.processor.server-health.add-messages", goApiRequest.api());
+        assertEquals("analytics", goApiRequest.pluginIdentifier().getExtension());
+        assertEquals(Collections.singletonList("1.0"), goApiRequest.pluginIdentifier().getSupportedExtensionVersions());
+        assertEquals("[{\"type\":\"error\",\"message\":\"error message\"}]", goApiRequest.requestBody());
     }
 
     @Test
@@ -69,6 +68,6 @@ public class PluginHealthMessageNotifierTest {
 
         GoApiRequest goApiRequest = captor.getValue();
 
-        assertThat(goApiRequest.requestBody(), is("[]"));
+        assertEquals("[]", goApiRequest.requestBody());
     }
 }

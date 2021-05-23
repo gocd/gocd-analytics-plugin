@@ -19,35 +19,32 @@ package com.thoughtworks.gocd.analytics;
 import com.thoughtworks.gocd.analytics.db.PostgresqlDatabase;
 import com.thoughtworks.gocd.analytics.mapper.*;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import static com.thoughtworks.gocd.analytics.TestDBConnectionManager.connectionSettings;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SessionFactoryIntegrationTest {
     private PostgresqlDatabase postgresqlDatabase;
-    private SessionFactory sessionFactory;
     private SqlSession sqlSession;
 
-    @Before
+    @BeforeEach
     public void before() throws InterruptedException, SQLException {
         postgresqlDatabase = new PostgresqlDatabase(connectionSettings());
         postgresqlDatabase.connect();
 
-        sessionFactory = new SessionFactory();
+        SessionFactory sessionFactory = new SessionFactory();
         sessionFactory.initialize(postgresqlDatabase.dataSource());
         sqlSession = sessionFactory.openSession();
     }
 
-    @After
+    @AfterEach
     public void after() throws SQLException, InterruptedException {
         sqlSession.close();
         postgresqlDatabase.clean();
@@ -55,7 +52,7 @@ public class SessionFactoryIntegrationTest {
     }
 
     @Test
-    public void shouldRegisterAllMappers() throws SQLException, InterruptedException {
+    public void shouldRegisterAllMappers() {
         Collection<Class<?>> expected = new ArrayList<>();
         expected.add(JobMapper.class);
         expected.add(StageMapper.class);
@@ -68,7 +65,7 @@ public class SessionFactoryIntegrationTest {
         expected.add(PipelineWorkflowMapper.class);
 
         Collection<Class<?>> actual = sqlSession.getConfiguration().getMapperRegistry().getMappers();
-        assertThat(expected, containsInAnyOrder(actual.toArray()));
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test

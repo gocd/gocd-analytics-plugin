@@ -16,48 +16,49 @@
 
 package com.thoughtworks.gocd.analytics.models;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Set;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class VSMGraphTest {
     @Test
     public void shouldSerializeFromJSON() {
         VSMGraph vsmGraph = VSMGraph.fromJSON(simpleGraph);
 
-        assertThat(vsmGraph.currentPipeline, is("P4"));
-        assertThat(vsmGraph.levels.size(), is(2));
+        assertEquals("P4", vsmGraph.currentPipeline);
+        assertEquals(2, vsmGraph.levels.size());
 
-        assertThat(vsmGraph.levels.get(0).nodes.size(), is(1));
+        assertEquals(1, vsmGraph.levels.get(0).nodes.size());
         VSMGraph.MaterialNode materialNode = (VSMGraph.MaterialNode) vsmGraph.levels.get(0).nodes.get(0);
 
-        assertThat(materialNode.id, is("3795dca7e793e62cfde2e8e2898efee05bde08c99700cff0ec96d68ad4522629"));
-        assertThat(materialNode.dependents, containsInAnyOrder("P1", "P2", "P4"));
-        assertThat(materialNode.parents.size(), is(0));
-        assertThat(materialNode.type, is("GIT"));
-        assertThat(materialNode.materialRevisions.size(), is(1));
-        assertThat(materialNode.materialRevisions.get(0).modifications.size(), is(1));
-        assertThat(materialNode.materialRevisions.get(0).modifications.get(0).revision, is("2a13c2e8cf1661d905099e7297dba3c5b58bce7c"));
+        assertEquals("3795dca7e793e62cfde2e8e2898efee05bde08c99700cff0ec96d68ad4522629", materialNode.id);
+        assertTrue(materialNode.dependents.containsAll(Set.of("P1", "P2", "P4")));
+        assertEquals(0, materialNode.parents.size());
+        assertEquals("GIT", materialNode.type);
+        assertEquals(1, materialNode.materialRevisions.size());
+        assertEquals(1, materialNode.materialRevisions.get(0).modifications.size());
+        assertEquals("2a13c2e8cf1661d905099e7297dba3c5b58bce7c", materialNode.materialRevisions.get(0).modifications.get(0).revision);
 
-        assertThat(vsmGraph.levels.get(1).nodes.size(), is(1));
+        assertEquals(1, vsmGraph.levels.get(1).nodes.size());
         VSMGraph.PipelineNode pipelineNode = (VSMGraph.PipelineNode) vsmGraph.levels.get(1).nodes.get(0);
 
-        assertThat(pipelineNode.id, is("P1"));
-        assertThat(pipelineNode.parents, contains("3795dca7e793e62cfde2e8e2898efee05bde08c99700cff0ec96d68ad4522629"));
-        assertThat(pipelineNode.dependents, contains("P3"));
-        assertThat(pipelineNode.type, is("PIPELINE"));
-        assertThat(pipelineNode.instances.size(), is(1));
-        assertThat(pipelineNode.instances.get(0).counter, is(1));
-        assertThat(pipelineNode.instances.get(0).label, is("1"));
-        assertThat(pipelineNode.instances.get(0).label, is("1"));
-        assertThat(pipelineNode.instances.get(0).stages.size(), is(1));
-        assertThat(pipelineNode.instances.get(0).stages.get(0).name, is("defaultStage"));
-        assertThat(pipelineNode.instances.get(0).stages.get(0).duration, is(30));
-        assertThat(pipelineNode.instances.get(0).stages.get(0).status, is("Passed"));
-        assertThat(pipelineNode.instances.get(0).stages.get(0).counter, is(1));
+        assertEquals("P1", pipelineNode.id);
+        assertTrue(pipelineNode.parents.contains("3795dca7e793e62cfde2e8e2898efee05bde08c99700cff0ec96d68ad4522629"));
+        assertTrue(pipelineNode.dependents.contains("P3"));
+        assertEquals("PIPELINE", pipelineNode.type);
+        assertEquals(1, pipelineNode.instances.size());
+        assertEquals(1, pipelineNode.instances.get(0).counter);
+        assertEquals("1", pipelineNode.instances.get(0).label);
+        assertEquals("1", pipelineNode.instances.get(0).label);
+        assertEquals(1, pipelineNode.instances.get(0).stages.size());
+        assertEquals("defaultStage", pipelineNode.instances.get(0).stages.get(0).name);
+        assertEquals(30, pipelineNode.instances.get(0).stages.get(0).duration);
+        assertEquals("Passed", pipelineNode.instances.get(0).stages.get(0).status);
+        assertEquals(1, pipelineNode.instances.get(0).stages.get(0).counter);
     }
 
     @Test
@@ -67,9 +68,9 @@ public class VSMGraphTest {
         List<String> pipelines = vsmGraph.pipelinesInWorkflow("3795dca7e793e62cfde2e8e2898efee05bde08c99700cff0ec96d68ad4522629", "P4");
 
         List<VSMGraph.Level> levels = vsmGraph.levels;
-        assertThat(pipelines.size(), is(4));
-        assertThat(pipelines, contains(levels.get(1).nodes.get(0).id, levels.get(1).nodes.get(1).id,
-                levels.get(2).nodes.get(0).id, levels.get(3).nodes.get(0).id));
+        assertEquals(4, pipelines.size());
+        assertEquals(List.of(levels.get(1).nodes.get(0).id, levels.get(1).nodes.get(1).id,
+                levels.get(2).nodes.get(0).id, levels.get(3).nodes.get(0).id), pipelines);
     }
 
     @Test
@@ -79,8 +80,8 @@ public class VSMGraphTest {
         List<String> pipelines = vsmGraph.pipelinesInWorkflow("P1", "P4");
 
         List<VSMGraph.Level> levels = vsmGraph.levels;
-        assertThat(pipelines.size(), is(3));
-        assertThat(pipelines, contains(levels.get(1).nodes.get(0).id, levels.get(2).nodes.get(0).id, levels.get(3).nodes.get(0).id));
+        assertEquals(3, pipelines.size());
+        assertEquals(List.of(levels.get(1).nodes.get(0).id, levels.get(2).nodes.get(0).id, levels.get(3).nodes.get(0).id), pipelines);
     }
 
     @Test
@@ -97,8 +98,8 @@ public class VSMGraphTest {
 
         List<String> pipelines = vsmGraph.pipelinesInWorkflow("9e02d1ae843b55f2cf77af4dbaba38e2dfaf8f86d4ca4c890a4ba9396bfc26c8", "P3");
 
-        assertThat(pipelines.size(), is(2));
-        assertThat(pipelines, contains("P2", "P3"));
+        assertEquals(2, pipelines.size());
+        assertEquals(List.of("P2", "P3"), pipelines);
     }
 
     String simpleGraph = "{\n" +

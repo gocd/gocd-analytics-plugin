@@ -16,12 +16,10 @@
 
 package com.thoughtworks.gocd.analytics;
 
-import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.thoughtworks.gocd.analytics.executors.RequestExecutor;
 import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
-import com.thoughtworks.gocd.analytics.pluginhealth.PluginHealthMessageService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +27,7 @@ import java.util.List;
 public class CallTrackingExecutor implements RequestExecutor {
     static List<AnalyticsRequest> requests = new ArrayList<>();
 
-    private AnalyticsRequest request;
+    private final AnalyticsRequest request;
 
     public CallTrackingExecutor(AnalyticsRequest request, SessionFactory sessionFactory) {
         this.request = request;

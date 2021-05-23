@@ -16,13 +16,12 @@
 
 package com.thoughtworks.gocd.analytics.utils;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DateUtilsTest {
     @Test
@@ -40,18 +39,18 @@ public class DateUtilsTest {
         ZonedDateTime midnight = ZonedDateTime.parse("2011-01-01T00:00:00.000+0000", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
         ZonedDateTime midnightPlusOneSecond = ZonedDateTime.parse("2011-01-01T00:00:01.000+0000", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
 
-        assertThat(DateUtils.durationTillEndOfDayInSeconds(dateTimeInUTC), is(14399));
-        assertThat(DateUtils.durationTillEndOfDayInSeconds(dateTimeInIST), is(14399));
+        assertEquals(14399, DateUtils.durationTillEndOfDayInSeconds(dateTimeInUTC));
+        assertEquals(14399, DateUtils.durationTillEndOfDayInSeconds(dateTimeInIST));
 
-        assertThat(DateUtils.durationTillEndOfDayInSeconds(feb28NonLeapYear), is(14399));
-        assertThat(DateUtils.durationTillEndOfDayInSeconds(feb29LeapYear), is(14399));
-        assertThat(DateUtils.durationTillEndOfDayInSeconds(dec31), is(14399));
-        assertThat(DateUtils.durationTillEndOfDayInSeconds(jan1), is(14399));
+        assertEquals(14399, DateUtils.durationTillEndOfDayInSeconds(feb28NonLeapYear));
+        assertEquals(14399, DateUtils.durationTillEndOfDayInSeconds(feb29LeapYear));
+        assertEquals(14399, DateUtils.durationTillEndOfDayInSeconds(dec31));
+        assertEquals(14399, DateUtils.durationTillEndOfDayInSeconds(jan1));
 
-        assertThat(DateUtils.durationTillEndOfDayInSeconds(midnightMinusTwoSeconds), is(1));
-        assertThat(DateUtils.durationTillEndOfDayInSeconds(midnightMinusOneSecond), is(0));
-        assertThat(DateUtils.durationTillEndOfDayInSeconds(midnight), is(86399));
-        assertThat(DateUtils.durationTillEndOfDayInSeconds(midnightPlusOneSecond), is(86398));
+        assertEquals(1, DateUtils.durationTillEndOfDayInSeconds(midnightMinusTwoSeconds));
+        assertEquals(0, DateUtils.durationTillEndOfDayInSeconds(midnightMinusOneSecond));
+        assertEquals(86399, DateUtils.durationTillEndOfDayInSeconds(midnight));
+        assertEquals(86398, DateUtils.durationTillEndOfDayInSeconds(midnightPlusOneSecond));
     }
 
     @Test
@@ -68,24 +67,24 @@ public class DateUtilsTest {
         ZonedDateTime midnightPlusOneSecond = ZonedDateTime.parse("2011-01-01T00:00:01.000+0000", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
         ZonedDateTime midnightPlusTwoSeconds = ZonedDateTime.parse("2011-01-01T00:00:02.000+0000", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
 
-        assertThat(DateUtils.durationFromStartOfDayInSeconds(dateTimeInUTC), is(36000));
-        assertThat(DateUtils.durationFromStartOfDayInSeconds(dateTimeInIST), is(36000));
-        assertThat(DateUtils.durationFromStartOfDayInSeconds(feb28NonLeapYear), is(36000));
-        assertThat(DateUtils.durationFromStartOfDayInSeconds(feb29LeapYear), is(36000));
-        assertThat(DateUtils.durationFromStartOfDayInSeconds(dec31), is(36000));
-        assertThat(DateUtils.durationFromStartOfDayInSeconds(jan1), is(36000));
+        assertEquals(36000, DateUtils.durationFromStartOfDayInSeconds(dateTimeInUTC));
+        assertEquals(36000, DateUtils.durationFromStartOfDayInSeconds(dateTimeInIST));
+        assertEquals(36000, DateUtils.durationFromStartOfDayInSeconds(feb28NonLeapYear));
+        assertEquals(36000, DateUtils.durationFromStartOfDayInSeconds(feb29LeapYear));
+        assertEquals(36000, DateUtils.durationFromStartOfDayInSeconds(dec31));
+        assertEquals(36000, DateUtils.durationFromStartOfDayInSeconds(jan1));
 
-        assertThat(DateUtils.durationFromStartOfDayInSeconds(midnightPlusTwoSeconds), is(2));
-        assertThat(DateUtils.durationFromStartOfDayInSeconds(midnightPlusOneSecond), is(1));
-        assertThat(DateUtils.durationFromStartOfDayInSeconds(midnight), is(0));
-        assertThat(DateUtils.durationFromStartOfDayInSeconds(midnightMinusOneSecond), is(86399));
+        assertEquals(2, DateUtils.durationFromStartOfDayInSeconds(midnightPlusTwoSeconds));
+        assertEquals(1, DateUtils.durationFromStartOfDayInSeconds(midnightPlusOneSecond));
+        assertEquals(0, DateUtils.durationFromStartOfDayInSeconds(midnight));
+        assertEquals(86399, DateUtils.durationFromStartOfDayInSeconds(midnightMinusOneSecond));
     }
 
     @Test
     public void shouldComputeDurationBetweenDatesInSeconds() throws Exception {
         ZonedDateTime now = ZonedDateTime.now();
 
-        assertThat(DateUtils.durationBetweenInSeconds(now, now.plusSeconds(10)), is(10));
+        assertEquals(10, DateUtils.durationBetweenInSeconds(now, now.plusSeconds(10)));
 
     }
 }

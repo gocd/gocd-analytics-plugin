@@ -21,10 +21,10 @@ import com.thoughtworks.gocd.analytics.cleanup.DataPurgeScheduler;
 import com.thoughtworks.gocd.analytics.db.DBAccess;
 import com.thoughtworks.gocd.analytics.models.PluginSettings;
 import com.thoughtworks.gocd.analytics.pluginhealth.PluginHealthMessageService;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class BootstrapTest {
@@ -36,7 +36,7 @@ public class BootstrapTest {
     private Initializable plugin;
     private Bootstrap bootstrap;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         dbAccess = mock(DBAccess.class);
         dataPurgeScheduler = mock(DataPurgeScheduler.class);

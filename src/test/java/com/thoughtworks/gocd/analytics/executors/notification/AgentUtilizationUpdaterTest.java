@@ -23,8 +23,8 @@ import com.thoughtworks.gocd.analytics.models.AgentStatusRequest;
 import com.thoughtworks.gocd.analytics.models.AgentUtilization;
 import com.thoughtworks.gocd.analytics.utils.DateUtils;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.time.Duration;
@@ -32,8 +32,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -43,7 +42,7 @@ public class AgentUtilizationUpdaterTest {
     private SqlSession sqlSession;
     private ArgumentCaptor<AgentUtilization> captor;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         agentUtilizationDAO = mock(AgentUtilizationDAO.class);
         sqlSession = mock(SqlSession.class);
@@ -64,7 +63,7 @@ public class AgentUtilizationUpdaterTest {
                 .withUtilizationDate(agentStatusRequest.getTransitionTime())
                 .create();
 
-        assertThat(captor.getValue(), is(expectedUtilization));
+        assertEquals(expectedUtilization, captor.getValue());
     }
 
     @Test
@@ -81,11 +80,11 @@ public class AgentUtilizationUpdaterTest {
 
         new AgentUtilizationUpdater(agentUtilizationDAO).update(sqlSession, agentStatusRequest);
 
-        assertThat(captor.getValue(), is(agentUtilization));
-        assertThat(agentUtilization.getIdleDurationSecs(), is((int) Duration.between(lastTransitionTime.toInstant(), currentTransitionTime.toInstant()).getSeconds()));
-        assertThat(agentUtilization.getLastTransitionTime(), is(agentStatusRequest.getTransitionTime()));
-        assertThat(agentUtilization.getLastKnownState(), is(agentStatusRequest.getAgentState()));
-        assertThat(agentUtilization.getUtilizationDate(), is(lastTransitionTime));
+        assertEquals(agentUtilization, captor.getValue());
+        assertEquals((int) Duration.between(lastTransitionTime.toInstant(), currentTransitionTime.toInstant()).getSeconds(), agentUtilization.getIdleDurationSecs());
+        assertEquals(agentStatusRequest.getTransitionTime(), agentUtilization.getLastTransitionTime());
+        assertEquals(agentStatusRequest.getAgentState(), agentUtilization.getLastKnownState());
+        assertEquals(lastTransitionTime, agentUtilization.getUtilizationDate());
     }
 
     @Test
@@ -102,11 +101,11 @@ public class AgentUtilizationUpdaterTest {
 
         new AgentUtilizationUpdater(agentUtilizationDAO).update(sqlSession, agentStatusRequest);
 
-        assertThat(captor.getValue(), is(agentUtilization));
-        assertThat(agentUtilization.getBuildingDurationSecs(), is((int) Duration.between(lastTransitionTime.toInstant(), currentTransitionTime.toInstant()).getSeconds()));
-        assertThat(agentUtilization.getLastTransitionTime(), is(agentStatusRequest.getTransitionTime()));
-        assertThat(agentUtilization.getLastKnownState(), is(agentStatusRequest.getAgentState()));
-        assertThat(agentUtilization.getUtilizationDate(), is(lastTransitionTime));
+        assertEquals(agentUtilization, captor.getValue());
+        assertEquals((int) Duration.between(lastTransitionTime.toInstant(), currentTransitionTime.toInstant()).getSeconds(), agentUtilization.getBuildingDurationSecs());
+        assertEquals(agentStatusRequest.getTransitionTime(), agentUtilization.getLastTransitionTime());
+        assertEquals(agentStatusRequest.getAgentState(), agentUtilization.getLastKnownState());
+        assertEquals(lastTransitionTime, agentUtilization.getUtilizationDate());
     }
 
     @Test
@@ -123,11 +122,11 @@ public class AgentUtilizationUpdaterTest {
 
         new AgentUtilizationUpdater(agentUtilizationDAO).update(sqlSession, agentStatusRequest);
 
-        assertThat(captor.getValue(), is(agentUtilization));
-        assertThat(agentUtilization.getCancelledDurationSecs(), is((int) Duration.between(lastTransitionTime.toInstant(), currentTransitionTime.toInstant()).getSeconds()));
-        assertThat(agentUtilization.getLastTransitionTime(), is(agentStatusRequest.getTransitionTime()));
-        assertThat(agentUtilization.getLastKnownState(), is(agentStatusRequest.getAgentState()));
-        assertThat(agentUtilization.getUtilizationDate(), is(lastTransitionTime));
+        assertEquals(agentUtilization, captor.getValue());
+        assertEquals((int) Duration.between(lastTransitionTime.toInstant(), currentTransitionTime.toInstant()).getSeconds(), agentUtilization.getCancelledDurationSecs());
+        assertEquals(agentStatusRequest.getTransitionTime(), agentUtilization.getLastTransitionTime());
+        assertEquals(agentStatusRequest.getAgentState(), agentUtilization.getLastKnownState());
+        assertEquals(lastTransitionTime, agentUtilization.getUtilizationDate());
     }
 
     @Test
@@ -144,11 +143,11 @@ public class AgentUtilizationUpdaterTest {
 
         new AgentUtilizationUpdater(agentUtilizationDAO).update(sqlSession, agentStatusRequest);
 
-        assertThat(captor.getValue(), is(agentUtilization));
-        assertThat(agentUtilization.getLostContactDurationSecs(), is((int) Duration.between(lastTransitionTime.toInstant(), currentTransitionTime.toInstant()).getSeconds()));
-        assertThat(agentUtilization.getLastTransitionTime(), is(agentStatusRequest.getTransitionTime()));
-        assertThat(agentUtilization.getLastKnownState(), is(agentStatusRequest.getAgentState()));
-        assertThat(agentUtilization.getUtilizationDate(), is(lastTransitionTime));
+        assertEquals(agentUtilization, captor.getValue());
+        assertEquals((int) Duration.between(lastTransitionTime.toInstant(), currentTransitionTime.toInstant()).getSeconds(), agentUtilization.getLostContactDurationSecs());
+        assertEquals(agentStatusRequest.getTransitionTime(), agentUtilization.getLastTransitionTime());
+        assertEquals(agentStatusRequest.getAgentState(), agentUtilization.getLastKnownState());
+        assertEquals(lastTransitionTime, agentUtilization.getUtilizationDate());
     }
 
     @Test
@@ -165,11 +164,11 @@ public class AgentUtilizationUpdaterTest {
 
         new AgentUtilizationUpdater(agentUtilizationDAO).update(sqlSession, agentStatusRequest);
 
-        assertThat(captor.getValue(), is(agentUtilization));
-        assertThat(agentUtilization.getLostContactDurationSecs(), is((int) Duration.between(lastTransitionTime.toInstant(), currentTransitionTime.toInstant()).getSeconds()));
-        assertThat(agentUtilization.getLastTransitionTime(), is(agentStatusRequest.getTransitionTime()));
-        assertThat(agentUtilization.getLastKnownState(), is(agentStatusRequest.getAgentState()));
-        assertThat(agentUtilization.getUtilizationDate(), is(lastTransitionTime));
+        assertEquals(agentUtilization, captor.getValue());
+        assertEquals((int) Duration.between(lastTransitionTime.toInstant(), currentTransitionTime.toInstant()).getSeconds(), agentUtilization.getLostContactDurationSecs());
+        assertEquals(agentStatusRequest.getTransitionTime(), agentUtilization.getLastTransitionTime());
+        assertEquals(agentStatusRequest.getAgentState(), agentUtilization.getLastKnownState());
+        assertEquals(lastTransitionTime, agentUtilization.getUtilizationDate());
     }
 
     @Test
@@ -186,11 +185,11 @@ public class AgentUtilizationUpdaterTest {
 
         new AgentUtilizationUpdater(agentUtilizationDAO).update(sqlSession, agentStatusRequest);
 
-        assertThat(captor.getValue(), is(agentUtilization));
-        assertThat(agentUtilization.getUnknownDurationSecs(), is((int) Duration.between(lastTransitionTime.toInstant(), currentTransitionTime.toInstant()).getSeconds()));
-        assertThat(agentUtilization.getLastTransitionTime(), is(agentStatusRequest.getTransitionTime()));
-        assertThat(agentUtilization.getLastKnownState(), is(agentStatusRequest.getAgentState()));
-        assertThat(agentUtilization.getUtilizationDate(), is(lastTransitionTime));
+        assertEquals(agentUtilization, captor.getValue());
+        assertEquals((int) Duration.between(lastTransitionTime.toInstant(), currentTransitionTime.toInstant()).getSeconds(), agentUtilization.getUnknownDurationSecs());
+        assertEquals(agentStatusRequest.getTransitionTime(), agentUtilization.getLastTransitionTime());
+        assertEquals(agentStatusRequest.getAgentState(), agentUtilization.getLastKnownState());
+        assertEquals(lastTransitionTime, agentUtilization.getUtilizationDate());
     }
 
     @Test
@@ -211,18 +210,18 @@ public class AgentUtilizationUpdaterTest {
 
         new AgentUtilizationUpdater(agentUtilizationDAO).update(sqlSession, agentStatusRequest);
 
-        assertThat(captor.getValue(), is(agentUtilization));
-        assertThat(agentUtilization.getUnknownDurationSecs(), is(DateUtils.durationTillEndOfDayInSeconds(yesterday)));
-        assertThat(agentUtilization.getLastTransitionTime(), is(yesterday));
-        assertThat(agentUtilization.getLastKnownState(), is("Unknown"));
-        assertThat(agentUtilization.getUtilizationDate(), is(yesterday));
+        assertEquals(agentUtilization, captor.getValue());
+        assertEquals(DateUtils.durationTillEndOfDayInSeconds(yesterday), agentUtilization.getUnknownDurationSecs());
+        assertEquals(yesterday, agentUtilization.getLastTransitionTime());
+        assertEquals("Unknown", agentUtilization.getLastKnownState());
+        assertEquals(yesterday, agentUtilization.getUtilizationDate());
 
         AgentUtilization utilizationForCurrentTransitionDate = captor2.getValue();
-        assertThat(utilizationForCurrentTransitionDate.getUuid(), is(agentStatusRequest.getUuid()));
-        assertThat(utilizationForCurrentTransitionDate.getUtilizationDate(), is(agentStatusRequest.getTransitionTime()));
-        assertThat(utilizationForCurrentTransitionDate.getLastKnownState(), is(agentStatusRequest.getAgentState()));
-        assertThat(utilizationForCurrentTransitionDate.getLastTransitionTime(), is(agentStatusRequest.getTransitionTime()));
-        assertThat(utilizationForCurrentTransitionDate.getUnknownDurationSecs(), is(DateUtils.durationFromStartOfDayInSeconds(agentStatusRequest.getTransitionTime())));
+        assertEquals(agentStatusRequest.getUuid(), utilizationForCurrentTransitionDate.getUuid());
+        assertEquals(agentStatusRequest.getTransitionTime(), utilizationForCurrentTransitionDate.getUtilizationDate());
+        assertEquals(agentStatusRequest.getAgentState(), utilizationForCurrentTransitionDate.getLastKnownState());
+        assertEquals(agentStatusRequest.getTransitionTime(), utilizationForCurrentTransitionDate.getLastTransitionTime());
+        assertEquals(DateUtils.durationFromStartOfDayInSeconds(agentStatusRequest.getTransitionTime()), utilizationForCurrentTransitionDate.getUnknownDurationSecs());
     }
 
     @Test
@@ -242,24 +241,24 @@ public class AgentUtilizationUpdaterTest {
 
         new AgentUtilizationUpdater(agentUtilizationDAO).update(sqlSession, agentStatusRequest);
 
-        assertThat(captor.getValue(), is(agentUtilization));
-        assertThat(agentUtilization.getUnknownDurationSecs(), is(DateUtils.durationTillEndOfDayInSeconds(twoDaysAgo)));
-        assertThat(agentUtilization.getLastTransitionTime(), is(twoDaysAgo));
-        assertThat(agentUtilization.getLastKnownState(), is("Unknown"));
-        assertThat(agentUtilization.getUtilizationDate(), is(twoDaysAgo));
+        assertEquals(agentUtilization, captor.getValue());
+        assertEquals(DateUtils.durationTillEndOfDayInSeconds(twoDaysAgo), agentUtilization.getUnknownDurationSecs());
+        assertEquals(twoDaysAgo, agentUtilization.getLastTransitionTime());
+        assertEquals("Unknown", agentUtilization.getLastKnownState());
+        assertEquals(twoDaysAgo, agentUtilization.getUtilizationDate());
 
         AgentUtilization utilizationForYesterday = captor2.getAllValues().get(0);
-        assertThat(utilizationForYesterday.getUuid(), is(agentStatusRequest.getUuid()));
-        assertThat(utilizationForYesterday.getUtilizationDate().toEpochSecond(), is(twoDaysAgo.plusDays(1).toEpochSecond()));
-        assertThat(utilizationForYesterday.getLastKnownState(), is("Unknown"));
-        assertThat(utilizationForYesterday.getLastTransitionTime().toEpochSecond(), is((twoDaysAgo.plusDays(1).toEpochSecond())));
+        assertEquals(agentStatusRequest.getUuid(), utilizationForYesterday.getUuid());
+        assertEquals(twoDaysAgo.plusDays(1).toEpochSecond(), utilizationForYesterday.getUtilizationDate().toEpochSecond());
+        assertEquals("Unknown", utilizationForYesterday.getLastKnownState());
+        assertEquals((twoDaysAgo.plusDays(1).toEpochSecond()), utilizationForYesterday.getLastTransitionTime().toEpochSecond());
 
         AgentUtilization utilizationForCurrentTransitionDate = captor2.getAllValues().get(1);
-        assertThat(utilizationForCurrentTransitionDate.getUuid(), is(agentStatusRequest.getUuid()));
-        assertThat(utilizationForCurrentTransitionDate.getUtilizationDate(), is(agentStatusRequest.getTransitionTime()));
-        assertThat(utilizationForCurrentTransitionDate.getLastKnownState(), is(agentStatusRequest.getAgentState()));
-        assertThat(utilizationForCurrentTransitionDate.getLastTransitionTime(), is(agentStatusRequest.getTransitionTime()));
-        assertThat(utilizationForCurrentTransitionDate.getUnknownDurationSecs(), is(DateUtils.durationFromStartOfDayInSeconds(agentStatusRequest.getTransitionTime())));
+        assertEquals(agentStatusRequest.getUuid(), utilizationForCurrentTransitionDate.getUuid());
+        assertEquals(agentStatusRequest.getTransitionTime(), utilizationForCurrentTransitionDate.getUtilizationDate());
+        assertEquals(agentStatusRequest.getAgentState(), utilizationForCurrentTransitionDate.getLastKnownState());
+        assertEquals(agentStatusRequest.getTransitionTime(), utilizationForCurrentTransitionDate.getLastTransitionTime());
+        assertEquals(DateUtils.durationFromStartOfDayInSeconds(agentStatusRequest.getTransitionTime()), utilizationForCurrentTransitionDate.getUnknownDurationSecs());
     }
 
     @Test
@@ -279,24 +278,24 @@ public class AgentUtilizationUpdaterTest {
 
         new AgentUtilizationUpdater(agentUtilizationDAO).update(sqlSession, agentStatusRequest);
 
-        assertThat(captor.getValue(), is(agentUtilization));
-        assertThat(agentUtilization.getUnknownDurationSecs(), is(DateUtils.durationTillEndOfDayInSeconds(twoDaysAgo)));
-        assertThat(agentUtilization.getLastTransitionTime(), is(twoDaysAgo));
-        assertThat(agentUtilization.getLastKnownState(), is("Unknown"));
-        assertThat(agentUtilization.getUtilizationDate(), is(twoDaysAgo));
+        assertEquals(agentUtilization, captor.getValue());
+        assertEquals(DateUtils.durationTillEndOfDayInSeconds(twoDaysAgo), agentUtilization.getUnknownDurationSecs());
+        assertEquals(twoDaysAgo, agentUtilization.getLastTransitionTime());
+        assertEquals("Unknown", agentUtilization.getLastKnownState());
+        assertEquals(twoDaysAgo, agentUtilization.getUtilizationDate());
 
         AgentUtilization utilizationForYesterday = captor2.getAllValues().get(0);
-        assertThat(utilizationForYesterday.getUuid(), is(agentStatusRequest.getUuid()));
-        assertThat(utilizationForYesterday.getUtilizationDate().toEpochSecond(), is(agentStatusRequest.getTransitionTime().minusDays(1).toEpochSecond()));
-        assertThat(utilizationForYesterday.getLastKnownState(), is("Unknown"));
-        assertThat(utilizationForYesterday.getLastTransitionTime().toEpochSecond(), is((agentStatusRequest.getTransitionTime().minusDays(1).toEpochSecond())));
+        assertEquals(agentStatusRequest.getUuid(), utilizationForYesterday.getUuid());
+        assertEquals(agentStatusRequest.getTransitionTime().minusDays(1).toEpochSecond(), utilizationForYesterday.getUtilizationDate().toEpochSecond());
+        assertEquals("Unknown", utilizationForYesterday.getLastKnownState());
+        assertEquals((agentStatusRequest.getTransitionTime().minusDays(1).toEpochSecond()), utilizationForYesterday.getLastTransitionTime().toEpochSecond());
 
         AgentUtilization utilizationForCurrentTransitionDate = captor2.getAllValues().get(1);
-        assertThat(utilizationForCurrentTransitionDate.getUuid(), is(agentStatusRequest.getUuid()));
-        assertThat(utilizationForCurrentTransitionDate.getUtilizationDate(), is(agentStatusRequest.getTransitionTime()));
-        assertThat(utilizationForCurrentTransitionDate.getLastKnownState(), is(agentStatusRequest.getAgentState()));
-        assertThat(utilizationForCurrentTransitionDate.getLastTransitionTime(), is(agentStatusRequest.getTransitionTime()));
-        assertThat(utilizationForCurrentTransitionDate.getUnknownDurationSecs(), is(DateUtils.durationFromStartOfDayInSeconds(agentStatusRequest.getTransitionTime())));
+        assertEquals(agentStatusRequest.getUuid(), utilizationForCurrentTransitionDate.getUuid());
+        assertEquals(agentStatusRequest.getTransitionTime(), utilizationForCurrentTransitionDate.getUtilizationDate());
+        assertEquals(agentStatusRequest.getAgentState(), utilizationForCurrentTransitionDate.getLastKnownState());
+        assertEquals(agentStatusRequest.getTransitionTime(), utilizationForCurrentTransitionDate.getLastTransitionTime());
+        assertEquals(DateUtils.durationFromStartOfDayInSeconds(agentStatusRequest.getTransitionTime()), utilizationForCurrentTransitionDate.getUnknownDurationSecs());
     }
 
     private ZonedDateTime timeWithMinusHours(int hours) {

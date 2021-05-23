@@ -23,7 +23,7 @@ import com.thoughtworks.gocd.analytics.dao.AgentUtilizationDAO;
 import com.thoughtworks.gocd.analytics.models.AgentUtilization;
 import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.time.ZonedDateTime;
@@ -35,8 +35,7 @@ import java.util.Map;
 import static com.thoughtworks.gocd.analytics.AnalyticTypes.PARAM_END_DATE;
 import static com.thoughtworks.gocd.analytics.AnalyticTypes.PARAM_START_DATE;
 import static com.thoughtworks.gocd.analytics.AvailableAnalytics.AGENTS_WITH_THE_HIGHEST_UTILIZATION;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -64,7 +63,7 @@ public class AgentsWithHighestUtilizationExecutorTest {
         AgentsWithHighestUtilizationExecutor executor = new AgentsWithHighestUtilizationExecutor(request, agentUtilizationDAO, sessionFactory);
         GoPluginApiResponse response = executor.execute();
 
-        assertThat(response.responseCode(), is(200));
+        assertEquals(200, response.responseCode());
         String expectedResponse = "{\n" +
                 "\"data\":\"[" +
                 "{\\\"agent_host_name\\\":\\\"host1\\\",\\\"uuid\\\":\\\"id1\\\",\\\"idle_duration_secs\\\":200,\\\"building_duration_secs\\\":100,\\\"cancelled_duration_secs\\\":0,\\\"lost_contact_duration_secs\\\":0,\\\"unknown_duration_secs\\\":0}," +

@@ -20,22 +20,22 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.thoughtworks.gocd.analytics.utils.Util;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GetViewRequestExecutorTest {
 
     @Test
     public void shouldRenderTheTemplateInJSON() throws Exception {
         GoPluginApiResponse response = new GetViewRequestExecutor().execute();
-        assertThat(response.responseCode(), is(200));
+        assertEquals(200, response.responseCode());
         Map<String, String> hashSet = new Gson().fromJson(response.responseBody(), new TypeToken<Map<String, String>>() {
         }.getType());
-        assertThat(hashSet, hasEntry("template", Util.readResource("/plugin-settings.template.html")));
+        assertEquals(Util.readResource("/plugin-settings.template.html"), hashSet.get("template"));
     }
 
     @Test
@@ -43,8 +43,8 @@ public class GetViewRequestExecutorTest {
         String template = Util.readResource("/plugin-settings.template.html").replaceAll("\\s+", " ");
 
         for (Map.Entry<String, com.thoughtworks.gocd.analytics.models.Field> fieldEntry : GetPluginConfigurationExecutor.FIELDS.entrySet()) {
-            assertThat(template, containsString("ng-model=\"" + fieldEntry.getKey() + "\""));
-            assertThat(template, containsString("<span class=\"form_error\" ng-show=\"GOINPUTNAME[" + fieldEntry.getKey() +
+            assertTrue(template.contains("ng-model=\"" + fieldEntry.getKey() + "\""));
+            assertTrue(template.contains("<span class=\"form_error\" ng-show=\"GOINPUTNAME[" + fieldEntry.getKey() +
                     "].$error.server\">{{GOINPUTNAME[" + fieldEntry.getKey() +
                     "].$error.server}}</span>"));
         }

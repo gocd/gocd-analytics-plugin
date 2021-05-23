@@ -23,8 +23,8 @@ import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
 import com.thoughtworks.gocd.analytics.models.Job;
 import com.thoughtworks.gocd.analytics.utils.DateUtils;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.skyscreamer.jsonassert.JSONAssert;
 
@@ -34,8 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.thoughtworks.gocd.analytics.AnalyticTypes.*;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -44,7 +43,7 @@ public class JobsHighestWaitTimeOnAgentExecutorTest {
     private ArgumentCaptor<ZonedDateTime> endDate;
     private ArgumentCaptor<ZonedDateTime> startDate;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         endDate = ArgumentCaptor.forClass(ZonedDateTime.class);
         startDate = ArgumentCaptor.forClass(ZonedDateTime.class);
@@ -85,9 +84,9 @@ public class JobsHighestWaitTimeOnAgentExecutorTest {
 
         JSONAssert.assertEquals(expectedResponse, response.responseBody(), true);
 
-        assertThat(this.startDate.getValue(), is(DateUtils.parseDate(startDate)));
-        assertThat(this.endDate.getValue(), is(DateUtils.parseDate(endDate)));
-        assertThat(response.responseCode(), is(200));
+        assertEquals(DateUtils.parseDate(startDate), this.startDate.getValue());
+        assertEquals(DateUtils.parseDate(endDate), this.endDate.getValue());
+        assertEquals(200, response.responseCode());
     }
 
     private Job jobFrom(String pipelineName, String stageName, String jobName, int timeWaitingSecs) {

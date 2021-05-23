@@ -19,29 +19,28 @@ package com.thoughtworks.gocd.analytics.dao;
 import com.thoughtworks.gocd.analytics.TestDBConnectionManager;
 import com.thoughtworks.gocd.analytics.models.Agent;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
 import static com.thoughtworks.gocd.analytics.AgentMother.agentWith;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AgentDAOTest implements DAOIntegrationTest {
     private SqlSession sqlSession;
     private TestDBConnectionManager manager;
     private AgentDAO agentDAO;
 
-    @Before
+    @BeforeEach
     public void before() throws SQLException, InterruptedException {
         agentDAO = new AgentDAO();
         manager = new TestDBConnectionManager();
         sqlSession = manager.getSqlSession();
     }
 
-    @After
+    @AfterEach
     public void after() throws InterruptedException, SQLException {
         manager.shutdown();
     }
@@ -54,12 +53,12 @@ public class AgentDAOTest implements DAOIntegrationTest {
 
         Agent agentFromDb = agentDAO.findByUuid(sqlSession, "uuid");
 
-        assertThat(agentFromDb.getHostName(), is("host_name"));
+        assertEquals("host_name", agentFromDb.getHostName());
         assertTrue(agentFromDb.isElastic());
-        assertThat(agentFromDb.getIpAddress(), is("127.0.0.1"));
-        assertThat(agentFromDb.getOperatingSystem(), is("rh"));
-        assertThat(agentFromDb.getFreeSpace(), is("100G"));
-        assertThat(agentFromDb.getConfigState(), is(ENABLED));
+        assertEquals("127.0.0.1", agentFromDb.getIpAddress());
+        assertEquals("rh", agentFromDb.getOperatingSystem());
+        assertEquals("100G", agentFromDb.getFreeSpace());
+        assertEquals(ENABLED, agentFromDb.getConfigState());
     }
 
     @Test
@@ -75,11 +74,11 @@ public class AgentDAOTest implements DAOIntegrationTest {
         agentDAO.updateOrInsert(sqlSession, updatedAgent);
 
         Agent agentFromDb = agentDAO.findByUuid(sqlSession, "uuid");
-        assertThat(agentFromDb.getHostName(), is("new_host_name"));
+        assertEquals("new_host_name", agentFromDb.getHostName());
         assertFalse(agentFromDb.isElastic());
-        assertThat(agentFromDb.getIpAddress(), is("127.1.1.1"));
-        assertThat(agentFromDb.getOperatingSystem(), is("new_rh"));
-        assertThat(agentFromDb.getFreeSpace(), is("new_100G"));
-        assertThat(agentFromDb.getConfigState(), is(DISABLED));
+        assertEquals("127.1.1.1", agentFromDb.getIpAddress());
+        assertEquals("new_rh", agentFromDb.getOperatingSystem());
+        assertEquals("new_100G", agentFromDb.getFreeSpace());
+        assertEquals(DISABLED, agentFromDb.getConfigState());
     }
 }

@@ -22,7 +22,7 @@ import com.thoughtworks.gocd.analytics.dao.JobDAO;
 import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
 import com.thoughtworks.gocd.analytics.models.Job;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.util.ArrayList;
@@ -31,8 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.thoughtworks.gocd.analytics.AnalyticTypes.*;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -70,7 +69,7 @@ public class JobBuildTimeOnAgentExecutorTest {
                 "}";
 
         JSONAssert.assertEquals(expectedResponse, response.responseBody(), true);
-        assertThat(response.responseCode(), is(200));
+        assertEquals(200, response.responseCode());
     }
 
     private Job jobFrom(String pipelineName, int pipelineCounter, String stageName, String jobName, String agentUUID) {

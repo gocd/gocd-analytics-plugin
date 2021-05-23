@@ -21,12 +21,9 @@ import com.thoughtworks.gocd.analytics.models.Agent;
 import com.thoughtworks.gocd.analytics.models.AgentUtilization;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
-import org.hamcrest.MatcherAssert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.time.ZoneId;
@@ -37,20 +34,17 @@ import java.util.List;
 import static com.thoughtworks.gocd.analytics.AgentMother.agentWith;
 import static com.thoughtworks.gocd.analytics.AgentUtilizationMother.agentUtilizationWith;
 import static com.thoughtworks.gocd.analytics.JobMother.jobWith;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AgentUtilizationDAOTest implements DAOIntegrationTest {
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
     private SqlSession sqlSession;
     private TestDBConnectionManager manager;
     private AgentUtilizationDAO dao;
     private JobDAO jobDao;
     private AgentDAO agentDAO;
 
-    @Before
+    @BeforeEach
     public void before() throws SQLException, InterruptedException {
         dao = new AgentUtilizationDAO();
         jobDao = new JobDAO();
@@ -59,7 +53,7 @@ public class AgentUtilizationDAOTest implements DAOIntegrationTest {
         sqlSession = manager.getSqlSession();
     }
 
-    @After
+    @AfterEach
     public void after() throws InterruptedException, SQLException {
         manager.shutdown();
     }
@@ -76,14 +70,14 @@ public class AgentUtilizationDAOTest implements DAOIntegrationTest {
 
         AgentUtilization utilization = dao.findUtilization(sqlSession, "uuid", utilizationDate);
 
-        assertThat(utilization.getUuid(), is("uuid"));
-        assertThat(utilization.getLastKnownState(), is("idle"));
-        assertThat(utilization.getUtilizationDate(), is(utilizationDate));
-        assertThat(utilization.getLastTransitionTime(), is(utilizationDate));
-        assertThat(utilization.getIdleDurationSecs(), is(100));
-        assertThat(utilization.getUnknownDurationSecs(), is(0));
-        assertThat(utilization.getCancelledDurationSecs(), is(0));
-        assertThat(utilization.getBuildingDurationSecs(), is(0));
+        assertEquals("uuid", utilization.getUuid());
+        assertEquals("idle", utilization.getLastKnownState());
+        assertEquals(utilizationDate, utilization.getUtilizationDate());
+        assertEquals(utilizationDate, utilization.getLastTransitionTime());
+        assertEquals(100, utilization.getIdleDurationSecs());
+        assertEquals(0, utilization.getUnknownDurationSecs());
+        assertEquals(0, utilization.getCancelledDurationSecs());
+        assertEquals(0, utilization.getBuildingDurationSecs());
     }
 
     @Test
@@ -97,11 +91,11 @@ public class AgentUtilizationDAOTest implements DAOIntegrationTest {
 
         AgentUtilization utilization = dao.findUtilization(sqlSession, "uuid", utilizationDate);
 
-        assertThat(utilization.getUuid(), is("uuid"));
-        assertThat(utilization.getLastKnownState(), is("idle"));
-        assertThat(utilization.getUtilizationDate(), is(utilizationDate));
-        assertThat(utilization.getLastTransitionTime(), is(utilizationDate));
-        assertThat(utilization.getIdleDurationSecs(), is(0));
+        assertEquals("uuid", utilization.getUuid());
+        assertEquals("idle", utilization.getLastKnownState());
+        assertEquals(utilizationDate, utilization.getUtilizationDate());
+        assertEquals(utilizationDate, utilization.getLastTransitionTime());
+        assertEquals(0, utilization.getIdleDurationSecs());
 
         ZonedDateTime currentTransitionTime = TEST_TS.plusHours(5).withZoneSameInstant(ZoneId.of("UTC"));
 
@@ -113,11 +107,11 @@ public class AgentUtilizationDAOTest implements DAOIntegrationTest {
 
         AgentUtilization utilizationAfterUpdate = dao.findUtilization(sqlSession, "uuid", utilizationDate);
 
-        assertThat(utilizationAfterUpdate.getUuid(), is("uuid"));
-        assertThat(utilizationAfterUpdate.getLastKnownState(), is("building"));
-        assertThat(utilizationAfterUpdate.getUtilizationDate(), is(utilizationDate));
-        assertThat(utilizationAfterUpdate.getLastTransitionTime(), is(currentTransitionTime));
-        assertThat(utilizationAfterUpdate.getIdleDurationSecs(), is(500));
+        assertEquals("uuid", utilizationAfterUpdate.getUuid());
+        assertEquals("building", utilizationAfterUpdate.getLastKnownState());
+        assertEquals(utilizationDate, utilizationAfterUpdate.getUtilizationDate());
+        assertEquals(currentTransitionTime, utilizationAfterUpdate.getLastTransitionTime());
+        assertEquals(500, utilizationAfterUpdate.getIdleDurationSecs());
     }
 
     @Test
@@ -133,15 +127,14 @@ public class AgentUtilizationDAOTest implements DAOIntegrationTest {
 
         AgentUtilization utilization = dao.findLatestUtilization(sqlSession, "uuid");
 
-        assertThat(utilization.getUtilizationDate(), is(twoDaysAgo));
+        assertEquals(twoDaysAgo, utilization.getUtilizationDate());
     }
 
     @Test
     public void shouldErrorOutWhileAddingUtilizationForInvalidAgentUuid() {
         AgentUtilization utilization = agentUtilizationWith("uuid", TEST_TS, "idle", TEST_TS, 0, 0, 0, "");
-        thrown.expect(PersistenceException.class);
 
-        dao.insert(sqlSession, utilization);
+        assertThrows(PersistenceException.class, () -> dao.insert(sqlSession, utilization));
     }
 
     @Test
@@ -175,11 +168,11 @@ public class AgentUtilizationDAOTest implements DAOIntegrationTest {
 
         List<AgentUtilization> agentUtilizations = dao.highestUtilization(sqlSession, now.minusDays(6), now.plusDays(1), 10);
 
-        assertThat(agentUtilizations, hasSize(2));
-        assertThat(agentUtilizations.get(0), is(agentUtilizationWith("agent-1", null, null, null,
-                10, 600, 0, "host_name-1")));
-        assertThat(agentUtilizations.get(1), is(agentUtilizationWith("agent-3", null, null, null,
-                55, 100, 0, "host_name-3")));
+        assertEquals(2, agentUtilizations.size());
+        assertEquals(agentUtilizationWith("agent-1", null, null, null,
+                10, 600, 0, "host_name-1"), agentUtilizations.get(0));
+        assertEquals(agentUtilizationWith("agent-3", null, null, null,
+                55, 100, 0, "host_name-3"), agentUtilizations.get(1));
     }
 
     @Test
@@ -193,19 +186,18 @@ public class AgentUtilizationDAOTest implements DAOIntegrationTest {
         dao.insert(sqlSession, agentUtilizationWith("agent-1", oneHourAgo, "idle", oneHourAgo, 10, 100, 0, ""));
         dao.insert(sqlSession, agentUtilizationWith("agent-1", oneDayAhead, "idle", oneDayAhead, 10, 100, 0, ""));
 
-        MatcherAssert.assertThat(dao.all(sqlSession, "agent-1").size(), is(3));
+        assertEquals(3, dao.all(sqlSession, "agent-1").size());
 
         dao.deleteUtilizationPriorTo(sqlSession, dateTime);
 
-        MatcherAssert.assertThat(dao.all(sqlSession, "agent-1").size(), is(2));
-        assertThat(dao.findUtilization(sqlSession, "agent-1", oneDayAhead).getUtilizationDate().toEpochSecond(), is(oneDayAhead.toEpochSecond()));
-        assertThat(dao.findUtilization(sqlSession, "agent-1", dateTime).getUtilizationDate().toEpochSecond(), is(dateTime.toEpochSecond()));
+        assertEquals(2, dao.all(sqlSession, "agent-1").size());
+        assertEquals(oneDayAhead.toEpochSecond(), dao.findUtilization(sqlSession, "agent-1", oneDayAhead).getUtilizationDate().toEpochSecond());
+        assertEquals(dateTime.toEpochSecond(), dao.findUtilization(sqlSession, "agent-1", dateTime).getUtilizationDate().toEpochSecond());
     }
 
-    private Agent insertAgent(String uuid, String hostName, boolean isElastic, String ipAddress, String os, String freeSpace, String configState) {
+    private void insertAgent(String uuid, String hostName, boolean isElastic, String ipAddress, String os, String freeSpace, String configState) {
         Agent agent = agentWith(uuid, hostName, isElastic, ipAddress, os, freeSpace, configState);
         agentDAO.updateOrInsert(sqlSession, agent);
 
-        return agent;
     }
 }

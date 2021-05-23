@@ -16,7 +16,7 @@
 
 package com.thoughtworks.gocd.analytics.models;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,53 +24,52 @@ import java.util.List;
 import java.util.Map;
 
 import static com.thoughtworks.gocd.analytics.utils.Util.GSON;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SslSettingsValidatorTest {
     @Test
     public void shouldNotGetErrMsgIfUsingSSLAndAllSSLFieldsAreNotBlank() throws Exception {
         List<Map<String, String>> results = getValidationResults("true", "1", "1", "1", "1", "1");
-        assertThat(results.isEmpty(), is(true));
+        assertEquals(true, results.isEmpty());
     }
 
     @Test
     public void shouldNotGetErrMsgIfUsingSSLAndSSLModeIsNull() throws Exception {
         List<Map<String, String>> results = getValidationResults("true", null, "1", "1", "1", "1");
-        assertThat(results.isEmpty(), is(true));
+        assertEquals(true, results.isEmpty());
     }
 
     @Test
     public void shouldNotGetErrMsgIfUsingSSLAndSSLModeIsBlank() throws Exception {
         List<Map<String, String>> results = getValidationResults("true", "", "1", "1", "1", "1");
-        assertThat(results.isEmpty(), is(true));
+        assertEquals(true, results.isEmpty());
     }
 
     @Test
     public void shouldGetErrMsgIfUsingSSLAndAnyFieldIsBlank() throws Exception {
         List<Map<String, String>> results = getValidationResults("true", "", "", "", "", "");
 
-        assertThat(results.size(), is(4));
-        assertThat(results.get(0).get("message"), is("Root Certificate must be provided if SSL is enabled."));
-        assertThat(results.get(0).get("key"), is("root_cert"));
-        assertThat(results.get(1).get("message"), is("Client Certificate must be provided if SSL is enabled."));
-        assertThat(results.get(1).get("key"), is("client_cert"));
-        assertThat(results.get(2).get("message"), is("Client Key must be provided if SSL is enabled."));
-        assertThat(results.get(2).get("key"), is("client_key"));
-        assertThat(results.get(3).get("message"), is("PKCS8 Client Key must be provided if SSL is enabled."));
-        assertThat(results.get(3).get("key"), is("client_pkcs8_key"));
+        assertEquals(4, results.size());
+        assertEquals("Root Certificate must be provided if SSL is enabled.", results.get(0).get("message"));
+        assertEquals("root_cert", results.get(0).get("key"));
+        assertEquals("Client Certificate must be provided if SSL is enabled.", results.get(1).get("message"));
+        assertEquals("client_cert", results.get(1).get("key"));
+        assertEquals("Client Key must be provided if SSL is enabled.", results.get(2).get("message"));
+        assertEquals("client_key", results.get(2).get("key"));
+        assertEquals("PKCS8 Client Key must be provided if SSL is enabled.", results.get(3).get("message"));
+        assertEquals("client_pkcs8_key", results.get(3).get("key"));
     }
 
     @Test
     public void shouldNotGetErrMsgIfUseSSLIsNullAndAFieldIsBlank() {
         List<Map<String, String>> results = getValidationResults(null, null, null, null, null, null);
-        assertThat(results.isEmpty(), is(true));
+        assertEquals(true, results.isEmpty());
     }
 
     @Test
     public void shouldNotGetErrMsgIfUseSSLIsFalseAndAFieldIsBlank() {
         List<Map<String, String>> results = getValidationResults("false", null, null, null, null, null);
-        assertThat(results.isEmpty(), is(true));
+        assertEquals(true, results.isEmpty());
     }
 
     private List<Map<String, String>> getValidationResults(String use_ssl,

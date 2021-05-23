@@ -16,14 +16,12 @@
 
 package com.thoughtworks.gocd.analytics.models;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import static junit.framework.TestCase.assertFalse;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StageStatusRequestTest {
 
@@ -218,9 +216,9 @@ public class StageStatusRequestTest {
         String serializedAgain = StageStatusRequest.GSON.toJson(request);
         JSONAssert.assertEquals(json, serializedAgain, true);
         StageStatusRequest.Job job = request.pipeline.stage.jobs.get(0);
-        Assert.assertEquals(2, job.duration());
-        Assert.assertEquals(1, job.timeWaiting());
-        Assert.assertEquals(1, job.timeBuilding());
+        assertEquals(2, job.duration());
+        assertEquals(1, job.timeWaiting());
+        assertEquals(1, job.timeBuilding());
     }
 
     @Test
@@ -289,8 +287,8 @@ public class StageStatusRequestTest {
 
         StageStatusRequest request = StageStatusRequest.fromJSON(json);
         StageStatusRequest.Job job = request.pipeline.stage.jobs.get(0);
-        Assert.assertEquals(10, job.duration());
-        Assert.assertEquals(10, job.timeWaiting());
+        assertEquals(10, job.duration());
+        assertEquals(10, job.timeWaiting());
     }
 
     @Test
@@ -328,8 +326,8 @@ public class StageStatusRequestTest {
 
         StageStatusRequest request = StageStatusRequest.fromJSON(json);
         StageStatusRequest.Job job = request.pipeline.stage.jobs.get(0);
-        Assert.assertEquals(10, job.duration());
-        Assert.assertEquals(0, job.timeBuilding());
+        assertEquals(10, job.duration());
+        assertEquals(0, job.timeBuilding());
     }
 
     @Test
@@ -371,7 +369,7 @@ public class StageStatusRequestTest {
 
         StageStatusRequest request = StageStatusRequest.fromJSON(json);
 
-        assertThat(request.pipeline.buildCause.get(0).fingerprint(), is("material_fingerprint"));
+        assertEquals("material_fingerprint", request.pipeline.buildCause.get(0).fingerprint());
     }
 
     @Test
@@ -401,7 +399,7 @@ public class StageStatusRequestTest {
 
         StageStatusRequest request = StageStatusRequest.fromJSON(json);
 
-        assertThat(request.pipeline.stage.previousStageName, is("previous-stage"));
-        assertThat(request.pipeline.stage.previousStageCounter, is(1));
+        assertEquals("previous-stage", request.pipeline.stage.previousStageName);
+        assertEquals(1, request.pipeline.stage.previousStageCounter);
     }
 }

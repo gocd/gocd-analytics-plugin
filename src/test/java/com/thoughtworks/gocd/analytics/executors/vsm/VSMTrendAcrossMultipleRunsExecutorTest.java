@@ -24,8 +24,8 @@ import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
 import com.thoughtworks.gocd.analytics.models.PipelineInstance;
 import org.apache.ibatis.session.SqlSession;
 import org.json.JSONException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.skyscreamer.jsonassert.JSONAssert;
 
@@ -35,10 +35,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.thoughtworks.gocd.analytics.AnalyticTypes.TYPE_VSM;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class VSMTrendAcrossMultipleRunsExecutorTest {
     @Mock
@@ -48,9 +47,9 @@ public class VSMTrendAcrossMultipleRunsExecutorTest {
     @Mock
     private PipelineDAO pipelineDAO;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
     }
 
     @Test
@@ -69,7 +68,7 @@ public class VSMTrendAcrossMultipleRunsExecutorTest {
 
         GoPluginApiResponse response = new VSMTrendAcrossMultipleRunsExecutor(analyticsRequest, sessionFactory, pipelineDAO).doExecute();
 
-        assertThat(response.responseCode(), is(200));
+        assertEquals(200, response.responseCode());
 
         String expectedResponse = "{\"data\":\"{" +
                 "\\\"pipelines\\\":[\\\"P2\\\",\\\"P3\\\",\\\"P4\\\"]," +
@@ -103,7 +102,7 @@ public class VSMTrendAcrossMultipleRunsExecutorTest {
 
         GoPluginApiResponse response = new VSMTrendAcrossMultipleRunsExecutor(analyticsRequest, sessionFactory, pipelineDAO).doExecute();
 
-        assertThat(response.responseCode(), is(200));
+        assertEquals(200, response.responseCode());
 
         String expectedResponse = "{\"data\":\"{" +
                 "\\\"pipelines\\\":[\\\"P1\\\",\\\"P2\\\",\\\"P3\\\",\\\"P4\\\"]," +
@@ -131,7 +130,7 @@ public class VSMTrendAcrossMultipleRunsExecutorTest {
 
         GoPluginApiResponse response = new VSMTrendAcrossMultipleRunsExecutor(analyticsRequest, sessionFactory, pipelineDAO).doExecute();
 
-        assertThat(response.responseCode(), is(200));
+        assertEquals(200, response.responseCode());
         JSONAssert.assertEquals("{\"data\":\"{}\",\"view_path\":\"info-message.html\"}", response.responseBody(), true);
     }
 

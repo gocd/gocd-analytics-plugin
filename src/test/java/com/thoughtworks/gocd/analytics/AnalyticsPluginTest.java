@@ -30,28 +30,24 @@ import com.thoughtworks.gocd.analytics.executors.job.JobsHighestWaitTimeExecutor
 import com.thoughtworks.gocd.analytics.executors.pipeline.PipelineBuildTimeExecutor;
 import com.thoughtworks.gocd.analytics.executors.pipeline.PipelinesHighestWaitTimeExecutor;
 import com.thoughtworks.gocd.analytics.executors.vsm.VSMTrendAcrossMultipleRunsExecutor;
-import com.thoughtworks.gocd.analytics.models.PluginSettings;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class AnalyticsPluginTest {
     private AnalyticsPlugin plugin;
-    private Bootstrap bootstrap;
-    @Mock
-    private PluginSettings pluginSettings;
     @Mock
     private DBAccess dbAccess;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
         CallTrackingExecutor.requests.clear();
 
         GoApplicationAccessor accessor = mock(GoApplicationAccessor.class);
@@ -60,7 +56,7 @@ public class AnalyticsPluginTest {
         plugin = new AnalyticsPlugin();
         plugin.initializeGoApplicationAccessor(accessor);
 
-        bootstrap = Bootstrap.instance().updateOnlyFromTests_DoNotUseThisInProduction(dbAccess, mock(DataPurgeScheduler.class));
+        Bootstrap.instance().updateOnlyFromTests_DoNotUseThisInProduction(dbAccess, mock(DataPurgeScheduler.class));
     }
 
     @Test

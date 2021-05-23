@@ -22,9 +22,9 @@ import com.thoughtworks.gocd.analytics.models.PipelineInstance;
 import com.thoughtworks.gocd.analytics.models.Stage;
 import com.thoughtworks.gocd.analytics.models.Workflow;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
@@ -34,8 +34,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.thoughtworks.gocd.analytics.StageMother.stageWith;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PipelineDAOIntegrationTest implements DAOIntegrationTest {
     private SqlSession sqlSession;
@@ -45,7 +44,7 @@ public class PipelineDAOIntegrationTest implements DAOIntegrationTest {
     private PipelineWorkflowDAO pipelineWorkflowDAO;
     private StageDAO stageDAO;
 
-    @Before
+    @BeforeEach
     public void before() throws SQLException, InterruptedException {
         pipelineDAO = new PipelineDAO();
         stageDAO = new StageDAO();
@@ -55,7 +54,7 @@ public class PipelineDAOIntegrationTest implements DAOIntegrationTest {
         sqlSession = manager.getSqlSession();
     }
 
-    @After
+    @AfterEach
     public void after() throws InterruptedException, SQLException {
         manager.shutdown();
     }
@@ -71,7 +70,7 @@ public class PipelineDAOIntegrationTest implements DAOIntegrationTest {
         List<Pipeline> expected = Collections.singletonList(new Pipeline("test", null));
         List<Pipeline> pipelines = pipelineDAO.allPipelines(sqlSession);
 
-        assertThat(pipelines, is(expected));
+        assertEquals(expected, pipelines);
     }
 
     @Test
@@ -84,9 +83,9 @@ public class PipelineDAOIntegrationTest implements DAOIntegrationTest {
 
         List<PipelineInstance> pipelineInstances = pipelineDAO.instancesForPipeline(sqlSession, "pip1", null, ZonedDateTime.now());
 
-        assertThat(pipelineInstances.size(), is(2));
-        assertThat(pipelineInstances.get(0).getName(), is("pip1"));
-        assertThat(pipelineInstances.get(1).getName(), is("pip1"));
+        assertEquals(2, pipelineInstances.size());
+        assertEquals("pip1", pipelineInstances.get(0).getName());
+        assertEquals("pip1", pipelineInstances.get(1).getName());
     }
 
     @Test
@@ -99,9 +98,9 @@ public class PipelineDAOIntegrationTest implements DAOIntegrationTest {
 
         List<PipelineInstance> pipelineInstances = pipelineDAO.instancesForPipeline(sqlSession, "pip1", TEST_TS.plusDays(5), TEST_TS.plusDays(15));
 
-        assertThat(pipelineInstances.size(), is(1));
-        assertThat(pipelineInstances.get(0).getName(), is("pip1"));
-        assertThat(pipelineInstances.get(0).getCounter(), is(2));
+        assertEquals(1, pipelineInstances.size());
+        assertEquals("pip1", pipelineInstances.get(0).getName());
+        assertEquals(2, pipelineInstances.get(0).getCounter());
     }
 
     @Test
@@ -118,16 +117,16 @@ public class PipelineDAOIntegrationTest implements DAOIntegrationTest {
 
         List<Pipeline> pipelines = pipelineDAO.longestWaiting(sqlSession, TEST_TS.minusDays(1), TEST_TS.plusDays(1), 10);
 
-        assertThat(pipelines.size(), is(3));
-        assertThat(pipelines.get(0).getName(), is("pip3"));
-        assertThat(pipelines.get(0).getAvgWaitTimeSecs(), is(99));
-        assertThat(pipelines.get(0).getAvgBuildTimeSecs(), is(1));
-        assertThat(pipelines.get(1).getName(), is("pip1"));
-        assertThat(pipelines.get(1).getAvgWaitTimeSecs(), is(3));
-        assertThat(pipelines.get(1).getAvgBuildTimeSecs(), is(1));
-        assertThat(pipelines.get(2).getName(), is("pip2"));
-        assertThat(pipelines.get(2).getAvgWaitTimeSecs(), is(1));
-        assertThat(pipelines.get(2).getAvgBuildTimeSecs(), is(1));
+        assertEquals(3, pipelines.size());
+        assertEquals("pip3", pipelines.get(0).getName());
+        assertEquals(99, pipelines.get(0).getAvgWaitTimeSecs());
+        assertEquals(1, pipelines.get(0).getAvgBuildTimeSecs());
+        assertEquals("pip1", pipelines.get(1).getName());
+        assertEquals(3, pipelines.get(1).getAvgWaitTimeSecs());
+        assertEquals(1, pipelines.get(1).getAvgBuildTimeSecs());
+        assertEquals("pip2", pipelines.get(2).getName());
+        assertEquals(1, pipelines.get(2).getAvgWaitTimeSecs());
+        assertEquals(1, pipelines.get(2).getAvgBuildTimeSecs());
     }
 
     @Test
@@ -135,11 +134,11 @@ public class PipelineDAOIntegrationTest implements DAOIntegrationTest {
         PipelineInstance instance = new PipelineInstance(1, "pip", 1, 1, PASSED, TEST_TS, TEST_TS.plusMinutes(10));
 
         List<PipelineInstance> instances = pipelineDAO.instancesForPipeline(sqlSession, "pip", null, ZonedDateTime.now());
-        assertThat(instances.size(), is(0));
+        assertEquals(0, instances.size());
 
         pipelineDAO.updateOrInsert(sqlSession, instance);
         instances = pipelineDAO.instancesForPipeline(sqlSession, "pip", null, ZonedDateTime.now());
-        assertThat(instances.size(), is(1));
+        assertEquals(1, instances.size());
 
         instance.setResult("Failed");
         instance.setTimeWaitingSecs(15);
@@ -147,10 +146,10 @@ public class PipelineDAOIntegrationTest implements DAOIntegrationTest {
         pipelineDAO.updateOrInsert(sqlSession, instance);
 
         instances = pipelineDAO.instancesForPipeline(sqlSession, "pip", null, ZonedDateTime.now());
-        assertThat(instances.size(), is(1));
-        assertThat(instances.get(0).getResult(), is("Failed"));
-        assertThat(instances.get(0).getTimeWaitingSecs(), is(16));
-        assertThat(instances.get(0).getTotalTimeSecs(), is(21));
+        assertEquals(1, instances.size());
+        assertEquals("Failed", instances.get(0).getResult());
+        assertEquals(16, instances.get(0).getTimeWaitingSecs());
+        assertEquals(21, instances.get(0).getTotalTimeSecs());
     }
 
     @Test
@@ -181,11 +180,11 @@ public class PipelineDAOIntegrationTest implements DAOIntegrationTest {
 
         List<PipelineInstance> pipelineInstances = pipelineDAO.allPipelineInstancesWithNameIn(sqlSession, "P1", Arrays.asList("P1", "P2"));
 
-        assertThat(pipelineInstances.size(), is(2));
-        assertThat(pipelineInstances.get(0).getWorkflowId(), is(workflow1.getId()));
-        assertThat(pipelineInstances.get(0).getId(), is(p1_1.getId()));
-        assertThat(pipelineInstances.get(1).getWorkflowId(), is(workflow1.getId()));
-        assertThat(pipelineInstances.get(1).getId(), is(p2_1.getId()));
+        assertEquals(2, pipelineInstances.size());
+        assertEquals(workflow1.getId(), pipelineInstances.get(0).getWorkflowId());
+        assertEquals(p1_1.getId(), pipelineInstances.get(0).getId());
+        assertEquals(workflow1.getId(), pipelineInstances.get(1).getWorkflowId());
+        assertEquals(p2_1.getId(), pipelineInstances.get(1).getId());
     }
 
     @Test
@@ -224,11 +223,11 @@ public class PipelineDAOIntegrationTest implements DAOIntegrationTest {
 
         List<PipelineInstance> pipelineInstances = pipelineDAO.allPipelineInstancesWithNameIn(sqlSession, "P1", Arrays.asList("P1", "P2"));
 
-        assertThat(pipelineInstances.size(), is(2));
-        assertThat(pipelineInstances.get(0).getWorkflowId(), is(workflow1.getId()));
-        assertThat(pipelineInstances.get(0).getId(), is(p1_2.getId()));
-        assertThat(pipelineInstances.get(1).getWorkflowId(), is(workflow1.getId()));
-        assertThat(pipelineInstances.get(1).getId(), is(p2_2.getId()));
+        assertEquals(2, pipelineInstances.size());
+        assertEquals(workflow1.getId(), pipelineInstances.get(0).getWorkflowId());
+        assertEquals(p1_2.getId(), pipelineInstances.get(0).getId());
+        assertEquals(workflow1.getId(), pipelineInstances.get(1).getWorkflowId());
+        assertEquals(p2_2.getId(), pipelineInstances.get(1).getId());
     }
 
     private void insertWorkflow(Workflow workflow) {

@@ -23,7 +23,7 @@ import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
 import com.thoughtworks.gocd.analytics.models.Job;
 import com.thoughtworks.gocd.analytics.utils.DateUtils;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -35,9 +35,7 @@ import java.util.Map;
 import static com.thoughtworks.gocd.analytics.AnalyticTypes.*;
 import static com.thoughtworks.gocd.analytics.AvailableAnalytics.JOBS_WITH_THE_HIGHEST_WAIT_TIME;
 import static com.thoughtworks.gocd.analytics.utils.Util.GSON;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -78,7 +76,7 @@ public class JobsHighestWaitTimeExecutorTest {
         JobsHighestWaitTimeExecutor executor = new JobsHighestWaitTimeExecutor(request, jobDAO, sessionFactory);
         GoPluginApiResponse response = executor.execute();
 
-        assertThat(response.responseCode(), is(200));
+        assertEquals(200, response.responseCode());
 
         Map<String, Object> resp = new HashMap<>();
         resp.put(PARAM_PIPELINE_NAME, "pip");

@@ -22,7 +22,7 @@ import com.thoughtworks.gocd.analytics.dao.PipelineDAO;
 import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
 import com.thoughtworks.gocd.analytics.models.Pipeline;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -34,9 +34,7 @@ import static com.thoughtworks.gocd.analytics.AnalyticTypes.PARAM_END_DATE;
 import static com.thoughtworks.gocd.analytics.AnalyticTypes.PARAM_START_DATE;
 import static com.thoughtworks.gocd.analytics.AvailableAnalytics.PIPELINES_WITH_THE_HIGHEST_WAIT_TIME;
 import static com.thoughtworks.gocd.analytics.utils.Util.GSON;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -63,7 +61,7 @@ public class PipelinesHighestWaitTimeExecutorTest {
         PipelinesHighestWaitTimeExecutor executor = new PipelinesHighestWaitTimeExecutor(request, pipelineDAO, sessionFactory);
         GoPluginApiResponse response = executor.execute();
 
-        assertThat(response.responseCode(), is(200));
+        assertEquals(200, response.responseCode());
         String expectedResponse = "{\"data\":" + GSON.toJson(GSON.toJson(pipelines)) + ",\"view_path\":\"longest-waiting-pipelines-chart.html\"}";
         assertEquals(expectedResponse, response.responseBody());
     }

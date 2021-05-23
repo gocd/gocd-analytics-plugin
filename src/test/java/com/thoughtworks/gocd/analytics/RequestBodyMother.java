@@ -19,7 +19,7 @@ package com.thoughtworks.gocd.analytics;
 import com.google.gson.Gson;
 
 public class RequestBodyMother {
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
 
 //    public static String forSearch(String searchTerm, String searchBase) {
 //        Map<String, Object> requestMap = new HashMap<>();

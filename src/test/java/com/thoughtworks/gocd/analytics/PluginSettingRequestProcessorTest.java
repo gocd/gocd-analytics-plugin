@@ -21,11 +21,10 @@ import com.thoughtworks.go.plugin.api.request.DefaultGoApiRequest;
 import com.thoughtworks.go.plugin.api.response.DefaultGoApiResponse;
 import com.thoughtworks.gocd.analytics.exceptions.ServerRequestFailedException;
 import com.thoughtworks.gocd.analytics.models.PluginSettings;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -47,11 +46,11 @@ public class PluginSettingRequestProcessorTest {
         PluginSettings pluginSettings = processor.getPluginSettings();
 
         DefaultGoApiRequest request = requestArgumentCaptor.getValue();
-        assertThat(request.api(), is("go.processor.plugin-settings.get"));
-        assertThat(request.apiVersion(), is("1.0"));
+        assertEquals("go.processor.plugin-settings.get", request.api());
+        assertEquals("1.0", request.apiVersion());
 
-        assertThat(pluginSettings.getDbHost(), is("localhost"));
-        assertThat(pluginSettings.getDbUsername(), is("postgres"));
-        assertThat(pluginSettings.getDbName(), is("test"));
+        assertEquals("localhost", pluginSettings.getDbHost());
+        assertEquals("postgres", pluginSettings.getDbUsername());
+        assertEquals("test", pluginSettings.getDbName());
     }
 }

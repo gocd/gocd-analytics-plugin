@@ -17,18 +17,17 @@
 package com.thoughtworks.gocd.analytics.executors;
 
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GetPluginConfigurationExecutorTest {
     @Test
     public void assertJSONStructure() throws Exception {
         GoPluginApiResponse response = new GetPluginConfigurationExecutor().execute();
 
-        assertThat(response.responseCode(), is(200));
+        assertEquals(200, response.responseCode());
         JSONAssert.assertEquals(expectedJson(), response.responseBody(), true);
     }
 

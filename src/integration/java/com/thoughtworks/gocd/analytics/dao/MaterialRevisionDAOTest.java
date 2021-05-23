@@ -19,31 +19,30 @@ package com.thoughtworks.gocd.analytics.dao;
 import com.thoughtworks.gocd.analytics.TestDBConnectionManager;
 import com.thoughtworks.gocd.analytics.models.MaterialRevision;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MaterialRevisionDAOTest implements DAOIntegrationTest {
     private SqlSession sqlSession;
     private TestDBConnectionManager manager;
     private MaterialRevisionDAO materialRevisionDAO;
 
-    @Before
+    @BeforeEach
     public void before() throws SQLException, InterruptedException {
         materialRevisionDAO = new MaterialRevisionDAO();
         manager = new TestDBConnectionManager();
         sqlSession = manager.getSqlSession();
     }
 
-    @After
+    @AfterEach
     public void after() throws InterruptedException, SQLException {
         manager.shutdown();
     }
@@ -57,7 +56,7 @@ public class MaterialRevisionDAOTest implements DAOIntegrationTest {
 
         MaterialRevision revision = materialRevisionDAO.find(sqlSession, materialRevision.getFingerprint(), materialRevision.getRevision());
 
-        assertThat(revision, is(materialRevision));
+        assertEquals(materialRevision, revision);
     }
 
     @Test
@@ -70,6 +69,6 @@ public class MaterialRevisionDAOTest implements DAOIntegrationTest {
 
         List<MaterialRevision> materialRevisions = materialRevisionDAO.all(sqlSession);
 
-        assertThat(materialRevisions.size(), is(1));
+        assertEquals(1, materialRevisions.size());
     }
 }

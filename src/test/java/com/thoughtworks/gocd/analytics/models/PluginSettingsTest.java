@@ -16,14 +16,13 @@
 
 package com.thoughtworks.gocd.analytics.models;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PluginSettingsTest {
     @Test
@@ -36,11 +35,11 @@ public class PluginSettingsTest {
                 "\"name\": \"eek\" " +
                 "}");
 
-        assertThat(pluginSettings.getDbHost(), is("https://build.go.cd/go"));
-        assertThat(pluginSettings.getDbUsername(), is("bob"));
-        assertThat(pluginSettings.getDbPassword(), is("p@ssw0rd"));
-        assertThat(pluginSettings.getDbName(), is("eek"));
-        assertThat(pluginSettings.getDbPort(), is(5432));
+        assertEquals("https://build.go.cd/go", pluginSettings.getDbHost());
+        assertEquals("bob", pluginSettings.getDbUsername());
+        assertEquals("p@ssw0rd", pluginSettings.getDbPassword());
+        assertEquals("eek", pluginSettings.getDbName());
+        assertEquals(5432, pluginSettings.getDbPort());
     }
 
     @Test
@@ -59,17 +58,17 @@ public class PluginSettingsTest {
                 "\"client_pkcs8_key\": \"client_pkcs8_key\"" +
                 "}");
 
-        assertThat(pluginSettings.getDbHost(), is("https://build.go.cd/go"));
-        assertThat(pluginSettings.getDbUsername(), is("bob"));
-        assertThat(pluginSettings.getDbPassword(), is("p@ssw0rd"));
-        assertThat(pluginSettings.getDbName(), is("eek"));
-        assertThat(pluginSettings.getDbPort(), is(5432));
+        assertEquals("https://build.go.cd/go", pluginSettings.getDbHost());
+        assertEquals("bob", pluginSettings.getDbUsername());
+        assertEquals("p@ssw0rd", pluginSettings.getDbPassword());
+        assertEquals("eek", pluginSettings.getDbName());
+        assertEquals(5432, pluginSettings.getDbPort());
         assertTrue(pluginSettings.useSsl());
-        assertThat(pluginSettings.getSslMode(), is("verify_full"));
-        assertThat(pluginSettings.getRootCert(), is("root_cert"));
-        assertThat(pluginSettings.getClientCert(), is("client_cert"));
-        assertThat(pluginSettings.getClientKey(), is("client_key"));
-        assertThat(pluginSettings.getClientPKCS8Key(), is("client_pkcs8_key"));
+        assertEquals("verify_full", pluginSettings.getSslMode());
+        assertEquals("root_cert", pluginSettings.getRootCert());
+        assertEquals("client_cert", pluginSettings.getClientCert());
+        assertEquals("client_key", pluginSettings.getClientKey());
+        assertEquals("client_pkcs8_key", pluginSettings.getClientPKCS8Key());
     }
 
     @Test
@@ -80,7 +79,7 @@ public class PluginSettingsTest {
                 "\"password\": \"p@ssw0rd\", " +
                 "\"name\": \"eek\" " +
                 "}");
-        assertThat(pluginSettings.getDbPort(), is(5432));
+        assertEquals(5432, pluginSettings.getDbPort());
     }
 
     @Test
@@ -106,11 +105,11 @@ public class PluginSettingsTest {
 
         PluginSettings pluginSettings = PluginSettings.fromValidateSettingsJSON(json);
 
-        assertThat(pluginSettings.getDbHost(), is("localhost"));
-        assertThat(pluginSettings.getDbUsername(), is("morty"));
-        assertThat(pluginSettings.getDbPassword(), is("badger"));
-        assertThat(pluginSettings.getDbName(), is("cruise"));
-        assertThat(pluginSettings.getDbPort(), is(5432));
+        assertEquals("localhost", pluginSettings.getDbHost());
+        assertEquals("morty", pluginSettings.getDbUsername());
+        assertEquals("badger", pluginSettings.getDbPassword());
+        assertEquals("cruise", pluginSettings.getDbName());
+        assertEquals(5432, pluginSettings.getDbPort());
     }
 
     @Test
@@ -127,19 +126,19 @@ public class PluginSettingsTest {
     @Test
     public void shouldGetDefaultValuesForAdvancedConnectionSettingsIfNotProvided() {
         PluginSettings pluginSettings = PluginSettings.fromJSON(jsonForAdvancedConnectionSettings("", "", "", ""));
-        assertThat(pluginSettings.getMaxConnectionsActive(), is(10));
-        assertThat(pluginSettings.getMaxConnectionsIdle(), is(8));
-        assertThat(pluginSettings.getMaxConnectionWaitTime(), is(-1));
-        assertThat(pluginSettings.getPeriodicCleanupTime(), is(LocalTime.parse("00:00", DateTimeFormatter.ofPattern("HH:mm"))));
+        assertEquals(10, pluginSettings.getMaxConnectionsActive());
+        assertEquals(8, pluginSettings.getMaxConnectionsIdle());
+        assertEquals(-1, pluginSettings.getMaxConnectionWaitTime());
+        assertEquals(LocalTime.parse("00:00", DateTimeFormatter.ofPattern("HH:mm")), pluginSettings.getPeriodicCleanupTime());
     }
 
     @Test
     public void shouldDeserializeAdvancedConnectionSettingsFromJSON() {
         PluginSettings pluginSettings = PluginSettings.fromJSON(jsonForAdvancedConnectionSettings("invalid", "42", "-20", "20:00"));
-        assertThat(pluginSettings.getMaxConnectionsActive(), is(10));
-        assertThat(pluginSettings.getMaxConnectionsIdle(), is(42));
-        assertThat(pluginSettings.getMaxConnectionWaitTime(), is(-20));
-        assertThat(pluginSettings.getPeriodicCleanupTime(), is(LocalTime.parse("20:00", DateTimeFormatter.ofPattern("HH:mm"))));
+        assertEquals(10, pluginSettings.getMaxConnectionsActive());
+        assertEquals(42, pluginSettings.getMaxConnectionsIdle());
+        assertEquals(-20, pluginSettings.getMaxConnectionWaitTime());
+        assertEquals(LocalTime.parse("20:00", DateTimeFormatter.ofPattern("HH:mm")), pluginSettings.getPeriodicCleanupTime());
     }
 
     private String jsonForAdvancedConnectionSettings(final String active, final String idle, final String waitTime, final String periodicCleanUpTime) {

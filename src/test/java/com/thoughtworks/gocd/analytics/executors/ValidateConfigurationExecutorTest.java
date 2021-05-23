@@ -21,7 +21,7 @@ import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.thoughtworks.gocd.analytics.TestConnectionResult;
 import com.thoughtworks.gocd.analytics.db.Database;
 import com.thoughtworks.gocd.analytics.models.PluginSettings;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.util.Collections;
@@ -29,8 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.thoughtworks.gocd.analytics.utils.Util.GSON;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -44,7 +43,7 @@ public class ValidateConfigurationExecutorTest {
 
         GoPluginApiResponse response = new ValidateConfigurationExecutor(goApiRequest).execute();
 
-        assertThat(response.responseCode(), is(200));
+        assertEquals(200, response.responseCode());
         JSONAssert.assertEquals("[\n" +
                 "  {\n" +
                 "    \"message\": \"DB Host must not be blank.\",\n" +
@@ -72,7 +71,7 @@ public class ValidateConfigurationExecutorTest {
 
         GoPluginApiResponse response = new ValidateConfigurationExecutor(goApiRequest, database).execute();
 
-        assertThat(response.responseCode(), is(200));
+        assertEquals(200, response.responseCode());
         JSONAssert.assertEquals("[]", response.responseBody(), true);
     }
 
@@ -87,7 +86,7 @@ public class ValidateConfigurationExecutorTest {
 
         GoPluginApiResponse response = new ValidateConfigurationExecutor(goApiRequest, database).execute();
 
-        assertThat(response.responseCode(), is(200));
+        assertEquals(200, response.responseCode());
         JSONAssert.assertEquals("[{\"key\": \"connection\",\"message\": \"Error connecting to db.\"}]", response.responseBody(), true);
     }
 

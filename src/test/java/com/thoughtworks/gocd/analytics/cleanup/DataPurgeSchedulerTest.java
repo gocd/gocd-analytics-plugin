@@ -20,8 +20,8 @@ package com.thoughtworks.gocd.analytics.cleanup;
 import com.thoughtworks.gocd.analytics.db.DBAccess;
 import com.thoughtworks.gocd.analytics.models.PluginSettings;
 import com.thoughtworks.gocd.analytics.utils.LocalTimeProvider;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -38,7 +38,7 @@ public class DataPurgeSchedulerTest {
     private DBAccess dbAccess;
     private DataPurgeScheduler dataPurgeScheduler;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         executorServiceFactory = mock(ScheduledExecutorServiceProvider.class);
         scheduledExecutorService = mock(ScheduledExecutorService.class);

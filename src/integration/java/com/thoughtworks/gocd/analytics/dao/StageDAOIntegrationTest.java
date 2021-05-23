@@ -21,21 +21,20 @@ import com.thoughtworks.gocd.analytics.models.PipelineInstance;
 import com.thoughtworks.gocd.analytics.models.Stage;
 import com.thoughtworks.gocd.analytics.models.Workflow;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.thoughtworks.gocd.analytics.StageMother.stageWith;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StageDAOIntegrationTest implements DAOIntegrationTest {
     private SqlSession sqlSession;
@@ -45,7 +44,7 @@ public class StageDAOIntegrationTest implements DAOIntegrationTest {
     private PipelineDAO pipelineDAO;
     private PipelineWorkflowDAO pipelineWorkflowDAO;
 
-    @Before
+    @BeforeEach
     public void before() throws SQLException, InterruptedException {
         stageDAO = new StageDAO();
         workflowDAO = new WorkflowDAO();
@@ -55,7 +54,7 @@ public class StageDAOIntegrationTest implements DAOIntegrationTest {
         sqlSession = manager.getSqlSession();
     }
 
-    @After
+    @AfterEach
     public void after() throws InterruptedException, SQLException {
         manager.shutdown();
     }
@@ -69,7 +68,7 @@ public class StageDAOIntegrationTest implements DAOIntegrationTest {
 
         Stage result = stageDAO.One(sqlSession, pipelineInstance, "stage", 1);
         expected.setId(result.getId());
-        assertThat(result, is(expected));
+        assertEquals(expected, result);
     }
 
     @Test
@@ -83,13 +82,13 @@ public class StageDAOIntegrationTest implements DAOIntegrationTest {
         stageDAO.insert(sqlSession, stageWith("pipeline_name", 1, "stage_name", 1,
                 "passed", "passed", 1, dateTime.plusHours(1)));
 
-        assertThat(stageDAO.all(sqlSession, "pipeline_name").size(), is(3));
+        assertEquals(3, stageDAO.all(sqlSession, "pipeline_name").size());
 
         stageDAO.deleteStageRunsPriorTo(sqlSession, dateTime);
 
-        assertThat(stageDAO.all(sqlSession, "pipeline_name").size(), is(2));
-        assertThat(stageDAO.all(sqlSession, "pipeline_name").get(0).getScheduledAt().toEpochSecond(), is(dateTime.plusHours(1).toEpochSecond()));
-        assertThat(stageDAO.all(sqlSession, "pipeline_name").get(1).getScheduledAt().toEpochSecond(), is(dateTime.toEpochSecond()));
+        assertEquals(2, stageDAO.all(sqlSession, "pipeline_name").size());
+        assertEquals(dateTime.plusHours(1).toEpochSecond(), stageDAO.all(sqlSession, "pipeline_name").get(0).getScheduledAt().toEpochSecond());
+        assertEquals(dateTime.toEpochSecond(), stageDAO.all(sqlSession, "pipeline_name").get(1).getScheduledAt().toEpochSecond());
     }
 
     @Test
@@ -117,11 +116,11 @@ public class StageDAOIntegrationTest implements DAOIntegrationTest {
         insertPipelineWorkflow(p2_1.getId(), p2_1_s1_1.getId(), workflow2.getId());
         insertPipelineWorkflow(p2_1.getId(), p2_1_s2_1.getId(), workflow2.getId());
 
-        List<Stage> stages = stageDAO.allStagesWithWorkflowIdInPipelines(sqlSession, workflow1.getId(), Arrays.asList("P1"));
+        List<Stage> stages = stageDAO.allStagesWithWorkflowIdInPipelines(sqlSession, workflow1.getId(), Collections.singletonList("P1"));
 
-        assertThat(stages.size(), is(2));
-        assertThat(stages.get(0).getId(), is(p1_1_s1_1.getId()));
-        assertThat(stages.get(1).getId(), is(p1_1_s2_1.getId()));
+        assertEquals(2, stages.size());
+        assertEquals(p1_1_s1_1.getId(), stages.get(0).getId());
+        assertEquals(p1_1_s2_1.getId(), stages.get(1).getId());
     }
 
     private void insertWorkflow(Workflow workflow) {

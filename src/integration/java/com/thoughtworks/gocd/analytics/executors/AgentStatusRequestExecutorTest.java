@@ -29,9 +29,9 @@ import com.thoughtworks.gocd.analytics.models.AgentUtilization;
 import com.thoughtworks.gocd.analytics.pluginhealth.PluginHealthMessageService;
 import com.thoughtworks.gocd.analytics.utils.DateUtils;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.time.ZoneId;
@@ -43,9 +43,8 @@ import java.util.TimeZone;
 import static com.thoughtworks.gocd.analytics.utils.DateUtils.UTC;
 import static java.lang.String.format;
 import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 
 public class AgentStatusRequestExecutorTest {
@@ -56,7 +55,7 @@ public class AgentStatusRequestExecutorTest {
     private AgentTransitionDAO agentTransitionsDAO;
     private GoPluginApiRequest apiRequest;
 
-    @Before
+    @BeforeEach
     public void before() throws SQLException, InterruptedException {
         TimeZone.setDefault(TimeZone.getTimeZone(UTC));
         dao = new AgentUtilizationDAO();
@@ -67,7 +66,7 @@ public class AgentStatusRequestExecutorTest {
         apiRequest = mock(GoPluginApiRequest.class);
     }
 
-    @After
+    @AfterEach
     public void after() throws InterruptedException, SQLException {
         manager.shutdown();
     }
@@ -82,35 +81,35 @@ public class AgentStatusRequestExecutorTest {
         ZonedDateTime utilizationDate = ZonedDateTime.parse(transitionTime, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).withZoneSameInstant(ZoneId.of("UTC"));
 
         assertNull(agentDAO.findByUuid(sqlSession, agentUUID));
-        assertThat(agentTransitionsDAO.findByUuid(sqlSession, utilizationDate.minusDays(1), utilizationDate.plusDays(1), agentUUID).size(), is(0));
-        assertThat(dao.all(sqlSession, agentUUID).size(), is(0));
+        assertEquals(0, agentTransitionsDAO.findByUuid(sqlSession, utilizationDate.minusDays(1), utilizationDate.plusDays(1), agentUUID).size());
+        assertEquals(0, dao.all(sqlSession, agentUUID).size());
 
         new AgentStatusRequestExecutor(apiRequest, manager.getSessionFactory(), mock(PluginHealthMessageService.class)).execute();
 
         try (SqlSession sqlSession = manager.getSessionFactory().openSession()) {
             Agent agent = agentDAO.findByUuid(sqlSession, agentUUID);
-            assertThat(agent.getFreeSpace(), is("100"));
-            assertThat(agent.getConfigState(), is("enabled"));
-            assertThat(agent.getOperatingSystem(), is("rh"));
-            assertThat(agent.getIpAddress(), is("127.0.0.1"));
+            assertEquals("100", agent.getFreeSpace());
+            assertEquals("enabled", agent.getConfigState());
+            assertEquals("rh", agent.getOperatingSystem());
+            assertEquals("127.0.0.1", agent.getIpAddress());
             assertTrue(agent.isElastic());
-            assertThat(agent.getHostName(), is("agent_hostname"));
+            assertEquals("agent_hostname", agent.getHostName());
 
             AgentUtilization latestUtilization = dao.findLatestUtilization(sqlSession, agentUUID);
-            assertThat(latestUtilization.getUnknownDurationSecs(), is(0));
-            assertThat(latestUtilization.getLastTransitionTime(), is(utilizationDate));
-            assertThat(latestUtilization.getLastKnownState(), is("Unknown"));
-            assertThat(latestUtilization.getUtilizationDate(), is(utilizationDate));
+            assertEquals(0, latestUtilization.getUnknownDurationSecs());
+            assertEquals(utilizationDate, latestUtilization.getLastTransitionTime());
+            assertEquals("Unknown", latestUtilization.getLastKnownState());
+            assertEquals(utilizationDate, latestUtilization.getUtilizationDate());
 
             List<AgentTransition> agentTransitions = agentTransitionsDAO.findByUuid(sqlSession, utilizationDate.minusDays(1), utilizationDate.plusDays(1), agentUUID);
-            assertThat(agentTransitions.size(), is(1));
+            assertEquals(1, agentTransitions.size());
 
-            assertThat(agentTransitions.get(0).getUuid(), is("agent_uuid"));
-            assertThat(agentTransitions.get(0).getAgentConfigState(), is("enabled"));
-            assertThat(agentTransitions.get(0).getAgentState(), is("Unknown"));
-            assertThat(agentTransitions.get(0).getBuildState(), is("building"));
+            assertEquals("agent_uuid", agentTransitions.get(0).getUuid());
+            assertEquals("enabled", agentTransitions.get(0).getAgentConfigState());
+            assertEquals("Unknown", agentTransitions.get(0).getAgentState());
+            assertEquals("building", agentTransitions.get(0).getBuildState());
             ZonedDateTime expectedTransitionTime = ZonedDateTime.parse(transitionTime, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).withZoneSameInstant(UTC);
-            assertThat(agentTransitions.get(0).getTransitionTime(), is(expectedTransitionTime));
+            assertEquals(expectedTransitionTime, agentTransitions.get(0).getTransitionTime());
         }
     }
 
@@ -135,24 +134,24 @@ public class AgentStatusRequestExecutorTest {
 
         List<AgentUtilization> utilizations = dao.all(sqlSession, "agent_uuid");
 
-        assertThat(utilizations.size(), is(3));
+        assertEquals(3, utilizations.size());
 
         AgentUtilization utilizationForCurrentTime = dao.findUtilization(sqlSession, "agent_uuid", currentTransitionDateTime);
-        assertThat(utilizationForCurrentTime.getUtilizationDate().toEpochSecond(), is(currentTransitionDateTime.toEpochSecond()));
-        assertThat(utilizationForCurrentTime.getLastKnownState(), is("Unknown"));
-        assertThat(utilizationForCurrentTime.getLastTransitionTime().toEpochSecond(), is((currentTransitionDateTime.toEpochSecond())));
-        assertThat(utilizationForCurrentTime.getUnknownDurationSecs(), is(DateUtils.durationFromStartOfDayInSeconds(currentTransitionDateTime)));
+        assertEquals(currentTransitionDateTime.toEpochSecond(), utilizationForCurrentTime.getUtilizationDate().toEpochSecond());
+        assertEquals("Unknown", utilizationForCurrentTime.getLastKnownState());
+        assertEquals((currentTransitionDateTime.toEpochSecond()), utilizationForCurrentTime.getLastTransitionTime().toEpochSecond());
+        assertEquals(DateUtils.durationFromStartOfDayInSeconds(currentTransitionDateTime), utilizationForCurrentTime.getUnknownDurationSecs());
 
         AgentUtilization utilizationForYesterday = dao.findUtilization(sqlSession, "agent_uuid", yesterday);
-        assertThat(utilizationForYesterday.getUtilizationDate().toEpochSecond(), is(yesterday.toEpochSecond()));
-        assertThat(utilizationForYesterday.getLastKnownState(), is("Unknown"));
-        assertThat(utilizationForYesterday.getLastTransitionTime().toEpochSecond(), is((yesterday.toEpochSecond())));
-        assertThat(utilizationForYesterday.getUnknownDurationSecs(), is(86400));
+        assertEquals(yesterday.toEpochSecond(), utilizationForYesterday.getUtilizationDate().toEpochSecond());
+        assertEquals("Unknown", utilizationForYesterday.getLastKnownState());
+        assertEquals((yesterday.toEpochSecond()), utilizationForYesterday.getLastTransitionTime().toEpochSecond());
+        assertEquals(86400, utilizationForYesterday.getUnknownDurationSecs());
 
         AgentUtilization utilizationForTwoDaysAgo = dao.findUtilization(sqlSession, "agent_uuid", previousTransitionDateTime);
-        assertThat(utilizationForTwoDaysAgo.getUtilizationDate().toEpochSecond(), is(previousTransitionDateTime.toEpochSecond()));
-        assertThat(utilizationForTwoDaysAgo.getLastKnownState(), is("Unknown"));
-        assertThat(utilizationForTwoDaysAgo.getLastTransitionTime().toEpochSecond(), is((previousTransitionDateTime.toEpochSecond())));
+        assertEquals(previousTransitionDateTime.toEpochSecond(), utilizationForTwoDaysAgo.getUtilizationDate().toEpochSecond());
+        assertEquals("Unknown", utilizationForTwoDaysAgo.getLastKnownState());
+        assertEquals((previousTransitionDateTime.toEpochSecond()), utilizationForTwoDaysAgo.getLastTransitionTime().toEpochSecond());
     }
 
     private String agentJSON(String agentState, String transitionTime) {

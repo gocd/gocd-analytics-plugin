@@ -19,28 +19,28 @@ package com.thoughtworks.gocd.analytics.mapper;
 import com.thoughtworks.gocd.analytics.TestDBConnectionManager;
 import com.thoughtworks.gocd.analytics.models.Job;
 import com.thoughtworks.gocd.analytics.utils.DateUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JobMapperIntegrationTest {
     private TestDBConnectionManager manager;
     private JobMapper mapper;
 
-    @Before
+    @BeforeEach
     public void before() throws SQLException, InterruptedException {
         manager = new TestDBConnectionManager();
         mapper = manager.getSqlSession().getMapper(JobMapper.class);
     }
 
-    @After
+    @AfterEach
     public void after() throws InterruptedException, SQLException {
         manager.shutdown();
     }

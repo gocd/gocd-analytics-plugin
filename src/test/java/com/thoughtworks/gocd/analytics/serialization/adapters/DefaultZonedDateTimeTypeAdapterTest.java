@@ -22,7 +22,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.time.ZonedDateTime;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class DefaultZonedDateTimeTypeAdapterTest {
 

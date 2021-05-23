@@ -19,29 +19,28 @@ package com.thoughtworks.gocd.analytics.dao;
 import com.thoughtworks.gocd.analytics.TestDBConnectionManager;
 import com.thoughtworks.gocd.analytics.models.Workflow;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WorkflowDAOIntegrationTest {
     private SqlSession sqlSession;
     private TestDBConnectionManager manager;
     private WorkflowDAO dao;
 
-    @Before
+    @BeforeEach
     public void before() throws SQLException, InterruptedException {
         dao = new WorkflowDAO();
         manager = new TestDBConnectionManager();
         sqlSession = manager.getSqlSession();
     }
 
-    @After
+    @AfterEach
     public void after() throws InterruptedException, SQLException {
         manager.shutdown();
     }
@@ -52,6 +51,6 @@ public class WorkflowDAOIntegrationTest {
 
         dao.insert(sqlSession, workflow);
 
-        assertThat(workflow.getId(), is(1L));
+        assertEquals(1L, workflow.getId());
     }
 }

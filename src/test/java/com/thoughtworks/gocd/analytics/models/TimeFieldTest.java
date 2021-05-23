@@ -16,20 +16,19 @@
 
 package com.thoughtworks.gocd.analytics.models;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class TimeFieldTest {
     @Test
     public void shouldValidateTimeFieldIsInValidTimeFormat() throws Exception {
         TimeField field = new TimeField("key1", "display1", "default1", false, false, "1");
 
-        assertThat(field.doValidate("20:00"), is(nullValue()));
-        assertThat(field.doValidate("20:00:00"), is("display1 must be a valid hour and minute of a day, use format 'HH:mm'."));
-        assertThat(field.doValidate("30:00"), is("display1 must be a valid hour and minute of a day, use format 'HH:mm'."));
-        assertThat(field.doValidate("10:60"), is("display1 must be a valid hour and minute of a day, use format 'HH:mm'."));
+        assertNull(field.doValidate("20:00"));
+        assertEquals("display1 must be a valid hour and minute of a day, use format 'HH:mm'.", field.doValidate("20:00:00"));
+        assertEquals("display1 must be a valid hour and minute of a day, use format 'HH:mm'.", field.doValidate("30:00"));
+        assertEquals("display1 must be a valid hour and minute of a day, use format 'HH:mm'.", field.doValidate("10:60"));
     }
 }

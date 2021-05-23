@@ -20,9 +20,9 @@ import com.thoughtworks.gocd.analytics.TestDBConnectionManager;
 import com.thoughtworks.gocd.analytics.models.Job;
 import com.thoughtworks.gocd.analytics.utils.DateUtils;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -37,10 +37,8 @@ import java.util.function.Function;
 import static com.thoughtworks.gocd.analytics.utils.DateUtils.UTC;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JobDAOIntegrationTest implements DAOIntegrationTest {
     private SqlSession sqlSession;
@@ -48,7 +46,7 @@ public class JobDAOIntegrationTest implements DAOIntegrationTest {
     private JobDAO dao;
     private int id;
 
-    @Before
+    @BeforeEach
     public void before() throws SQLException, InterruptedException {
         dao = new JobDAO();
         manager = new TestDBConnectionManager();
@@ -56,7 +54,7 @@ public class JobDAOIntegrationTest implements DAOIntegrationTest {
         id = 0;
     }
 
-    @After
+    @AfterEach
     public void after() throws InterruptedException, SQLException {
         manager.shutdown();
         id = 0;
@@ -102,8 +100,8 @@ public class JobDAOIntegrationTest implements DAOIntegrationTest {
         dao.insertJobs(sqlSession, jobs);
 
         List<Job> result = dao.longestWaitingFor(sqlSession, "p1", TEST_TS.minusDays(1), TEST_TS.plusDays(1), 10);
-        assertThat(result.size(), is(10));
-        assertThat(result.get(0).getTimeWaitingSecs(), is(50));
+        assertEquals(10, result.size());
+        assertEquals(50, result.get(0).getTimeWaitingSecs());
         for (int i = 1; i < result.size(); i++) {
             assertFalse(result.get(i).getTimeWaitingSecs() == cancelledValue);
             assertTrue(result.get(i).getTimeWaitingSecs() <= result.get(i - 1).getTimeWaitingSecs());
@@ -142,8 +140,8 @@ public class JobDAOIntegrationTest implements DAOIntegrationTest {
         expected.add(jobFrom("p4", "s1", "j1", 6, 2));
         expected.add(jobFrom("p1", "s1", "j1", 2, 2));
 
-        assertThat(result.size(), is(4));
-        assertThat(result, is(expected));
+        assertEquals(4, result.size());
+        assertEquals(expected, result);
     }
 
     @Test
@@ -233,9 +231,9 @@ public class JobDAOIntegrationTest implements DAOIntegrationTest {
 
         final List<Job> fetchedJobs = dao.jobHistory(sqlSession, "pip", "stg", "job1");
 
-        assertThat(fetchedJobs.size(), is(2));
-        assertThat(fetchedJobs.get(0), is(job2));
-        assertThat(fetchedJobs.get(1), is(job1));
+        assertEquals(2, fetchedJobs.size());
+        assertEquals(job2, fetchedJobs.get(0));
+        assertEquals(job1, fetchedJobs.get(1));
     }
 
     @Test
@@ -249,13 +247,13 @@ public class JobDAOIntegrationTest implements DAOIntegrationTest {
                 jobFrom("pipeline_name", 1, "stage_name", 1,
                         "job_name", "passed", 1, 1, 1, dateTime.plusHours(1))));
 
-        assertThat(dao.all(sqlSession, "pipeline_name").size(), is(3));
+        assertEquals(3, dao.all(sqlSession, "pipeline_name").size());
 
         dao.deleteJobRunsPriorTo(sqlSession, dateTime);
 
-        assertThat(dao.all(sqlSession, "pipeline_name").size(), is(2));
-        assertThat(dao.all(sqlSession, "pipeline_name").get(0).getScheduledAt().toEpochSecond(), is(dateTime.plusHours(1).toEpochSecond()));
-        assertThat(dao.all(sqlSession, "pipeline_name").get(1).getScheduledAt().toEpochSecond(), is(dateTime.toEpochSecond()));
+        assertEquals(2, dao.all(sqlSession, "pipeline_name").size());
+        assertEquals(dateTime.plusHours(1).toEpochSecond(), dao.all(sqlSession, "pipeline_name").get(0).getScheduledAt().toEpochSecond());
+        assertEquals(dateTime.toEpochSecond(), dao.all(sqlSession, "pipeline_name").get(1).getScheduledAt().toEpochSecond());
     }
 
     private Object[] pluckSorted(List<Job> jobs, Function<Job, Object> getterRef) {

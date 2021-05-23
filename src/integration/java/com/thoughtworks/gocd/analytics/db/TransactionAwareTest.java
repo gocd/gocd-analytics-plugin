@@ -21,16 +21,15 @@ import com.thoughtworks.gocd.analytics.TestDBConnectionManager;
 import com.thoughtworks.gocd.analytics.dao.PipelineDAO;
 import com.thoughtworks.gocd.analytics.models.PipelineInstance;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TransactionAwareTest {
     private SqlSession sqlSession;
@@ -38,7 +37,7 @@ public class TransactionAwareTest {
     private TransactionAware transaction;
     private TestDBConnectionManager manager;
 
-    @Before
+    @BeforeEach
     public void before() throws SQLException, InterruptedException {
         manager = new TestDBConnectionManager();
         sessionFactory = manager.getSessionFactory();
@@ -47,7 +46,7 @@ public class TransactionAwareTest {
         sqlSession = manager.getSqlSession();
     }
 
-    @After
+    @AfterEach
     public void after() throws InterruptedException, SQLException {
         manager.shutdown();
     }
@@ -56,7 +55,7 @@ public class TransactionAwareTest {
     public void shouldSuccessfullyCommitChangesIfThereAreNoErrors() throws InterruptedException {
         PipelineDAO dao = new PipelineDAO();
         List<PipelineInstance> instances = dao.instancesForPipeline(sqlSession, "test", null, ZonedDateTime.now());
-        assertThat(instances.size(), is(0));
+        assertEquals(0, instances.size());
 
         transaction.doInTransaction(new TransactionAware.Operation<Boolean>() {
             @Override
@@ -68,14 +67,14 @@ public class TransactionAwareTest {
         });
         sqlSession.clearCache();
         List<PipelineInstance> result = dao.instancesForPipeline(sqlSession, "test", null, ZonedDateTime.now());
-        assertThat(result.size(), is(1));
+        assertEquals(1, result.size());
     }
 
     @Test
     public void shouldRollbackIfError() {
         PipelineDAO dao = new PipelineDAO();
         List<PipelineInstance> instances = dao.instancesForPipeline(sqlSession, "test", null, ZonedDateTime.now());
-        assertThat(instances.size(), is(0));
+        assertEquals(0, instances.size());
 
         try {
             transaction.doInTransaction(new TransactionAware.Operation<Boolean>() {
@@ -90,6 +89,6 @@ public class TransactionAwareTest {
         }
         sqlSession.clearCache();
         List<PipelineInstance> result = dao.instancesForPipeline(sqlSession, "test", null, ZonedDateTime.now());
-        assertThat(result.size(), is(0));
+        assertEquals(0, result.size());
     }
 }

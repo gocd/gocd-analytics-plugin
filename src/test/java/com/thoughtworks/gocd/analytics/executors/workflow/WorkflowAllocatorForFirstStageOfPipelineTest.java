@@ -19,8 +19,8 @@ package com.thoughtworks.gocd.analytics.executors.workflow;
 import com.thoughtworks.gocd.analytics.dao.*;
 import com.thoughtworks.gocd.analytics.models.*;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -45,7 +45,7 @@ public class WorkflowAllocatorForFirstStageOfPipelineTest {
     private PipelineWorkflowDAO pipelineWorkflowDAO;
     private WorkflowAllocator workflowAllocator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         sqlSession = mock(SqlSession.class);
         pipelineDAO = mock(PipelineDAO.class);
@@ -66,7 +66,7 @@ public class WorkflowAllocatorForFirstStageOfPipelineTest {
 
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
-            ((Workflow)args[1]).setId(40);
+            ((Workflow) args[1]).setId(40);
             return (null);
         }).when(workflowDAO).insert(sqlSession, new Workflow(pipeline.getCreatedAt()));
 
@@ -88,6 +88,7 @@ public class WorkflowAllocatorForFirstStageOfPipelineTest {
 
         doAnswer(new Answer() {
             private int id = 50;
+
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments();
@@ -219,8 +220,8 @@ public class WorkflowAllocatorForFirstStageOfPipelineTest {
 
         workflowAllocator.allocate(sqlSession, pipeline, stage, Arrays.asList(material));
 
-        verifyZeroInteractions(pipelineWorkflowDAO);
-        verifyZeroInteractions(workflowDAO);
+        verifyNoMoreInteractions(pipelineWorkflowDAO);
+        verifyNoMoreInteractions(workflowDAO);
     }
 
     @Test
@@ -239,7 +240,7 @@ public class WorkflowAllocatorForFirstStageOfPipelineTest {
 
         workflowAllocator.allocate(sqlSession, pipeline, stage, Arrays.asList(material));
 
-        verifyZeroInteractions(pipelineWorkflowDAO);
-        verifyZeroInteractions(workflowDAO);
+        verifyNoMoreInteractions(pipelineWorkflowDAO);
+        verifyNoMoreInteractions(workflowDAO);
     }
 }

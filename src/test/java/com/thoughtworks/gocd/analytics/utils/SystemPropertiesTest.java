@@ -16,18 +16,17 @@
 
 package com.thoughtworks.gocd.analytics.utils;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SystemPropertiesTest {
     private final int defaultAnalyticsDbDataPurgeIntervalInDays = 30;
 
-    @Before
-    @After
+    @BeforeEach
+    @AfterEach
     public void clearSystemProperties() {
         System.getProperties().setProperty("analytics.db.data.purge.interval.days", "");
     }
@@ -37,12 +36,12 @@ public class SystemPropertiesTest {
         String dataPurgeIntervalInDays = "1";
         System.getProperties().setProperty("analytics.db.data.purge.interval.days", dataPurgeIntervalInDays);
 
-        assertThat(SystemProperties.getAnalyticsDbDataPurgeInterval(), is(Integer.parseInt(dataPurgeIntervalInDays)));
+        assertEquals(Integer.parseInt(dataPurgeIntervalInDays), SystemProperties.getAnalyticsDbDataPurgeInterval());
     }
 
     @Test
     public void shouldReturnDefaultAnalyticsDbDataPurgeIntervalValueWhenNoSystemPropertyIsSpecified() {
-        assertThat(SystemProperties.getAnalyticsDbDataPurgeInterval(), is(defaultAnalyticsDbDataPurgeIntervalInDays));
+        assertEquals(defaultAnalyticsDbDataPurgeIntervalInDays, SystemProperties.getAnalyticsDbDataPurgeInterval());
     }
 
     @Test
@@ -50,6 +49,6 @@ public class SystemPropertiesTest {
         String dataPurgeIntervalInDays = "five days";
         System.getProperties().setProperty("analytics.db.data.purge.interval.days", dataPurgeIntervalInDays);
 
-        assertThat(SystemProperties.getAnalyticsDbDataPurgeInterval(), is(defaultAnalyticsDbDataPurgeIntervalInDays));
+        assertEquals(defaultAnalyticsDbDataPurgeIntervalInDays, SystemProperties.getAnalyticsDbDataPurgeInterval());
     }
 }

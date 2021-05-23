@@ -21,9 +21,9 @@ import com.thoughtworks.gocd.analytics.models.Agent;
 import com.thoughtworks.gocd.analytics.models.AgentTransition;
 import com.thoughtworks.gocd.analytics.utils.DateUtils;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
@@ -33,8 +33,7 @@ import java.util.TimeZone;
 
 import static com.thoughtworks.gocd.analytics.AgentMother.agentWith;
 import static com.thoughtworks.gocd.analytics.utils.DateUtils.UTC;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AgentTransitionDAOTest implements DAOIntegrationTest {
     private SqlSession sqlSession;
@@ -42,7 +41,7 @@ public class AgentTransitionDAOTest implements DAOIntegrationTest {
     private AgentTransitionDAO agentTransitionDAO;
     private AgentDAO agentDAO;
 
-    @Before
+    @BeforeEach
     public void before() throws SQLException, InterruptedException {
         TimeZone.setDefault(TimeZone.getTimeZone(DateUtils.UTC));
         agentDAO = new AgentDAO();
@@ -51,7 +50,7 @@ public class AgentTransitionDAOTest implements DAOIntegrationTest {
         sqlSession = manager.getSqlSession();
     }
 
-    @After
+    @AfterEach
     public void after() throws InterruptedException, SQLException {
         manager.shutdown();
     }
@@ -70,13 +69,13 @@ public class AgentTransitionDAOTest implements DAOIntegrationTest {
 
         List<AgentTransition> allTransitions = agentTransitionDAO.findByUuid(sqlSession, now.minusDays(7), now.plusDays(1), "uuid");
 
-        assertThat(allTransitions.size(), is(1));
+        assertEquals(1, allTransitions.size());
 
-        assertThat(allTransitions.get(0).getUuid(), is("uuid"));
-        assertThat(allTransitions.get(0).getAgentConfigState(), is(ENABLED));
-        assertThat(allTransitions.get(0).getAgentState(), is(CANCELLED));
-        assertThat(allTransitions.get(0).getBuildState(), is(CANCELLED));
-        assertThat(allTransitions.get(0).getTransitionTime(), is(TEST_TS));
+        assertEquals("uuid", allTransitions.get(0).getUuid());
+        assertEquals(ENABLED, allTransitions.get(0).getAgentConfigState());
+        assertEquals(CANCELLED, allTransitions.get(0).getAgentState());
+        assertEquals(CANCELLED, allTransitions.get(0).getBuildState());
+        assertEquals(TEST_TS, allTransitions.get(0).getTransitionTime());
     }
 
     @Test
@@ -100,10 +99,10 @@ public class AgentTransitionDAOTest implements DAOIntegrationTest {
 
         List<AgentTransition> allTransitions = agentTransitionDAO.findByUuid(sqlSession, startOn23, endOn24, "uuid");
 
-        assertThat(allTransitions.size(), is(2));
+        assertEquals(2, allTransitions.size());
 
-        assertThat(allTransitions.get(0), is(on23));
-        assertThat(allTransitions.get(1), is(on24));
+        assertEquals(on23, allTransitions.get(0));
+        assertEquals(on24, allTransitions.get(1));
     }
 
     @Test
@@ -124,11 +123,11 @@ public class AgentTransitionDAOTest implements DAOIntegrationTest {
         ZonedDateTime dateOn22 = ZonedDateTime.parse("2018-03-22T12:34:55Z", DateTimeFormatter.ISO_DATE_TIME).withZoneSameInstant(UTC);
         ZonedDateTime dateOn24 = ZonedDateTime.parse("2018-03-24T12:34:57Z", DateTimeFormatter.ISO_DATE_TIME).withZoneSameInstant(UTC);
 
-        assertThat(agentTransitionDAO.findByUuid(sqlSession, dateOn22, dateOn24,"uuid").size(), is(3));
+        assertEquals(3, agentTransitionDAO.findByUuid(sqlSession, dateOn22, dateOn24, "uuid").size());
 
         agentTransitionDAO.deleteTransitionsPriorTo(sqlSession, ZonedDateTime.parse("2018-03-22T12:34:57Z", DateTimeFormatter.ISO_DATE_TIME));
 
-        assertThat(agentTransitionDAO.findByUuid(sqlSession, dateOn22, dateOn24,"uuid").size(), is(2));
+        assertEquals(2, agentTransitionDAO.findByUuid(sqlSession, dateOn22, dateOn24, "uuid").size());
     }
 
     private AgentTransition agentTranstionWith(String uuid, String agentConfigState, String agentState, String buildState, ZonedDateTime transitionTime) {

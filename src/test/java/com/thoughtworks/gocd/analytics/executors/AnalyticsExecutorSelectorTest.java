@@ -21,19 +21,20 @@ import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.gocd.analytics.CallTrackingExecutor;
 import com.thoughtworks.gocd.analytics.exceptions.UnSupportedAnalyticException;
 import com.thoughtworks.gocd.analytics.executors.job.JobsHighestWaitTimeExecutor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static java.lang.String.format;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AnalyticsExecutorSelectorTest {
-    @Test(expected = UnSupportedAnalyticException.class)
+    @Test
     public void shouldFailIfExecutorIsNotFound() throws Exception {
         AnalyticsExecutorSelector selector = new AnalyticsExecutorSelector();
 
         selector.registerExecutor("metric-1", CallTrackingExecutor.class);
 
-        selector.executorFor(requestFor("IS-WRONG-METRIC"), null);
+        assertThrows(UnSupportedAnalyticException.class, () -> selector.executorFor(requestFor("IS-WRONG-METRIC"), null));
     }
 
     @Test

@@ -26,9 +26,9 @@ import com.thoughtworks.gocd.analytics.db.DBAccess;
 import com.thoughtworks.gocd.analytics.models.*;
 import com.thoughtworks.gocd.analytics.utils.LocalTimeProvider;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -42,8 +42,7 @@ import static com.thoughtworks.gocd.analytics.AgentMother.agentWith;
 import static com.thoughtworks.gocd.analytics.AgentUtilizationMother.agentUtilizationWith;
 import static com.thoughtworks.gocd.analytics.JobMother.jobWith;
 import static com.thoughtworks.gocd.analytics.StageMother.stageWith;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -57,7 +56,7 @@ public class DataPurgeSchedulerTest {
     private DataPurgeScheduler dataPurgeScheduler;
     private LocalTimeProvider localTimeProvider;
 
-    @Before
+    @BeforeEach
     public void before() throws SQLException, InterruptedException {
         agentDAO = new AgentDAO();
         agentUtilizationDAO = new AgentUtilizationDAO();
@@ -69,7 +68,7 @@ public class DataPurgeSchedulerTest {
         dataPurgeScheduler = new DataPurgeScheduler(new ScheduledExecutorServiceProvider(), localTimeProvider, DBAccess.instance());
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         manager.shutdown();
         dataPurgeScheduler.shutdown();
@@ -108,14 +107,14 @@ public class DataPurgeSchedulerTest {
         List<Job> jobs = jobDAO.all(sqlSession, "p1");
         List<Stage> stages = stageDAO.all(sqlSession, "p1");
 
-        assertThat(agentUtilizations.size(), is(1));
-        assertThat(agentUtilizations.get(0).getUtilizationDate(), is(twentyNineDaysAgo));
+        assertEquals(1, agentUtilizations.size());
+        assertEquals(twentyNineDaysAgo, agentUtilizations.get(0).getUtilizationDate());
 
-        assertThat(jobs.size(), is(1));
-        assertThat(jobs.get(0).getScheduledAt(), is(twentyNineDaysAgo));
+        assertEquals(1, jobs.size());
+        assertEquals(twentyNineDaysAgo, jobs.get(0).getScheduledAt());
 
-        assertThat(stages.size(), is(1));
-        assertThat(stages.get(0).getScheduledAt(), is(twentyNineDaysAgo));
+        assertEquals(1, stages.size());
+        assertEquals(twentyNineDaysAgo, stages.get(0).getScheduledAt());
     }
 
     private void insertAgent(String uuid, String hostName, boolean isElastic, String ipAddress, String os) {

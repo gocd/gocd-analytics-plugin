@@ -23,24 +23,23 @@ import com.thoughtworks.gocd.analytics.dao.StageDAO;
 import com.thoughtworks.gocd.analytics.models.PluginSettings;
 import com.thoughtworks.gocd.analytics.models.Stage;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PostgresqlDatabaseTest {
     private PostgresqlDatabase psql;
 
-    @Before
+    @BeforeEach
     public void before() {
         psql = new PostgresqlDatabase(TestDBConnectionManager.connectionSettings());
     }
 
-    @After
+    @AfterEach
     public void after() throws SQLException, InterruptedException {
         psql.clean();
         psql.close();
@@ -49,14 +48,14 @@ public class PostgresqlDatabaseTest {
     @Test
     public void testConnectionShouldBeSuccessFulWithValidConfig() {
         TestConnectionResult result = psql.testConnection(TestDBConnectionManager.connectionSettings());
-        assertThat(result.isSuccessful(), is(true));
+        assertEquals(true, result.isSuccessful());
     }
 
     @Test
     public void testConnectionShouldNotBeSuccessfulWithBadConfig() {
         final PluginSettings badConfig = PluginSettings.fromJSON("{\"host\": \"localhost\", \"port\": \"5432\", \"username\": \"?\", \"password\": \".\"}");
         TestConnectionResult result = psql.testConnection(badConfig);
-        assertThat(result.isSuccessful(), is(false));
+        assertEquals(false, result.isSuccessful());
     }
 
     @Test
@@ -69,7 +68,7 @@ public class PostgresqlDatabaseTest {
         Stage stage = new Stage("test", 1);
         stage.setPipelineName("test");
         dao.insert(sqlSession, stage);
-        assertThat(dao.all(sqlSession, "test").size(), is(1));
+        assertEquals(1, dao.all(sqlSession, "test").size());
         sqlSession.close();
     }
 }

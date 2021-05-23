@@ -34,9 +34,9 @@ public class TestDBConnectionManager {
             DB_USER,
             DB_PASSWORD,
             DB_NAME);
-    private SqlSession sqlSession;
-    private DBAccess db;
-    private SessionFactory sessionFactory;
+    private final SqlSession sqlSession;
+    private final DBAccess db;
+    private final SessionFactory sessionFactory;
 
     public TestDBConnectionManager() throws SQLException, InterruptedException {
         db = DBAccess.instance().initialize(pluginSettings);

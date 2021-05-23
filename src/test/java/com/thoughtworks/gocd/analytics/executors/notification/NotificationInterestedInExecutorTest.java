@@ -17,18 +17,17 @@
 package com.thoughtworks.gocd.analytics.executors.notification;
 
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class NotificationInterestedInExecutorTest {
 
     @Test
     public void shouldRenderAListOfNotifications() throws Exception {
         GoPluginApiResponse response = new NotificationInterestedInExecutor().execute();
-        assertThat(response.responseCode(), is(200));
+        assertEquals(200, response.responseCode());
         JSONAssert.assertEquals("{\"notifications\":[\"stage-status\", \"agent-status\"]}", response.responseBody(), true);
     }
 }

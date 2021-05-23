@@ -17,7 +17,7 @@
 package com.thoughtworks.gocd.analytics.executors;
 
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 public class GetCapabilitiesExecutorTest {

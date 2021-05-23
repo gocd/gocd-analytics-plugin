@@ -18,30 +18,28 @@ package com.thoughtworks.gocd.analytics.mapper;
 
 import com.thoughtworks.gocd.analytics.TestDBConnectionManager;
 import com.thoughtworks.gocd.analytics.models.PipelineInstance;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PipelineMapperIntegrationTest {
     private TestDBConnectionManager manager;
     private PipelineMapper mapper;
 
-    @Before
+    @BeforeEach
     public void before() throws SQLException, InterruptedException {
         manager = new TestDBConnectionManager();
         mapper = manager.getSqlSession().getMapper(PipelineMapper.class);
     }
 
-    @After
+    @AfterEach
     public void after() throws InterruptedException, SQLException {
         manager.shutdown();
     }
@@ -50,11 +48,11 @@ public class PipelineMapperIntegrationTest {
     public void shouldConsiderPipelineNameToBeCaseInsensitive() {
         PipelineInstance pipelineNamedWithUpperCase = new PipelineInstance(1, "PIPELINE", 1, 1, "Passed", ZonedDateTime.now(), ZonedDateTime.now().plusMinutes(10));
         mapper.insert(pipelineNamedWithUpperCase);
-        assertThat(mapper.allPipelineInstancesFor(pipelineNamedWithUpperCase.getName(), null, ZonedDateTime.now()).size(), is(1));
+        assertEquals(1, mapper.allPipelineInstancesFor(pipelineNamedWithUpperCase.getName(), null, ZonedDateTime.now()).size());
         Long pipelineId = mapper.allPipelineInstancesFor("PIPELINE", null, ZonedDateTime.now()).get(0).getId();
 
-        assertThat(mapper.findInstance("pipeline", pipelineNamedWithUpperCase.getCounter()).getId(), is(pipelineId));
-        assertThat(mapper.findInstance("PIPELINE", pipelineNamedWithUpperCase.getCounter()).getId(), is(pipelineId));
+        assertEquals(pipelineId, mapper.findInstance("pipeline", pipelineNamedWithUpperCase.getCounter()).getId());
+        assertEquals(pipelineId, mapper.findInstance("PIPELINE", pipelineNamedWithUpperCase.getCounter()).getId());
     }
 
     @Test
@@ -64,14 +62,14 @@ public class PipelineMapperIntegrationTest {
         pipelineInstance.setCreatedAt(createdAt);
         mapper.insert(pipelineInstance);
         PipelineInstance beforeUpdate = mapper.allPipelineInstancesFor(pipelineInstance.getName(), null, ZonedDateTime.now()).get(0);
-        assertThat(beforeUpdate.getCreatedAt().toInstant().truncatedTo(SECONDS), is(createdAt.toInstant().truncatedTo(SECONDS)));
+        assertEquals(createdAt.toInstant().truncatedTo(SECONDS), beforeUpdate.getCreatedAt().toInstant().truncatedTo(SECONDS));
 
         pipelineInstance.setId(beforeUpdate.getId());
         pipelineInstance.setCreatedAt(ZonedDateTime.now());
         mapper.update(pipelineInstance);
 
         PipelineInstance afterUpdate = mapper.allPipelineInstancesFor(pipelineInstance.getName(), null, ZonedDateTime.now()).get(0);
-        assertThat(afterUpdate.getCreatedAt().toInstant().truncatedTo(SECONDS), is(createdAt.toInstant().truncatedTo(SECONDS)));
+        assertEquals(createdAt.toInstant().truncatedTo(SECONDS), afterUpdate.getCreatedAt().toInstant().truncatedTo(SECONDS));
     }
 
     @Test
@@ -79,18 +77,18 @@ public class PipelineMapperIntegrationTest {
         PipelineInstance pipelineInstance = new PipelineInstance(1, "wubba_lubba_dub_dub", 1, 2, "Passed", ZonedDateTime.now(), ZonedDateTime.now().plusMinutes(10));
         mapper.insert(pipelineInstance);
         List<PipelineInstance> beforeUpdate = mapper.allPipelineInstancesFor(pipelineInstance.getName(), null, ZonedDateTime.now());
-        assertThat(beforeUpdate.size(), is(1));
-        assertThat(beforeUpdate.get(0).getTotalTimeSecs(), is(1));
-        assertThat(beforeUpdate.get(0).getTimeWaitingSecs(), is(2));
+        assertEquals(1, beforeUpdate.size());
+        assertEquals(1, beforeUpdate.get(0).getTotalTimeSecs());
+        assertEquals(2, beforeUpdate.get(0).getTimeWaitingSecs());
 
         pipelineInstance.setId(beforeUpdate.get(0).getId());
 
         mapper.update(pipelineInstance);
 
         List<PipelineInstance> afterUpdate = mapper.allPipelineInstancesFor(pipelineInstance.getName(), null, ZonedDateTime.now());
-        assertThat(afterUpdate.size(), is(1));
-        assertThat(afterUpdate.get(0).getTotalTimeSecs(), is(2));
-        assertThat(afterUpdate.get(0).getTimeWaitingSecs(), is(4));
+        assertEquals(1, afterUpdate.size());
+        assertEquals(2, afterUpdate.get(0).getTotalTimeSecs());
+        assertEquals(4, afterUpdate.get(0).getTimeWaitingSecs());
 
     }
 }

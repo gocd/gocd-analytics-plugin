@@ -20,8 +20,8 @@ import com.thoughtworks.gocd.analytics.dao.*;
 import com.thoughtworks.gocd.analytics.models.PipelineInstance;
 import com.thoughtworks.gocd.analytics.models.Stage;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -42,7 +42,7 @@ public class WorkflowAllocatorForStageReRunsTest {
     private PipelineWorkflowDAO pipelineWorkflowDAO;
     private WorkflowAllocator workflowAllocator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         sqlSession = mock(SqlSession.class);
         pipelineDAO = mock(PipelineDAO.class);

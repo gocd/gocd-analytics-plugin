@@ -17,12 +17,12 @@
 package com.thoughtworks.gocd.analytics.executors.workflow;
 
 import com.thoughtworks.gocd.analytics.models.Stage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 
 import static com.thoughtworks.gocd.analytics.StageMother.stageFrom;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WorkflowAllocatorFactoryTest {
 

@@ -22,8 +22,8 @@ import com.thoughtworks.gocd.analytics.models.PipelineInstance;
 import com.thoughtworks.gocd.analytics.models.Stage;
 import com.thoughtworks.gocd.analytics.models.Workflow;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 import java.util.Collections;
@@ -43,7 +43,7 @@ public class WorkflowAllocatorForManualTriggerOfPipelineTest {
     private WorkflowAllocator workflowAllocator;
     private WorkflowAllocatorForFirstStageOfPipeline workflowAllocatorForFirstStageOfPipeline;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         sqlSession = mock(SqlSession.class);
         pipelineDAO = mock(PipelineDAO.class);
@@ -65,7 +65,7 @@ public class WorkflowAllocatorForManualTriggerOfPipelineTest {
 
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
-            ((Workflow)args[1]).setId(30);
+            ((Workflow) args[1]).setId(30);
             return (null);
         }).when(workflowDAO).insert(sqlSession, new Workflow(pipeline.getCreatedAt()));
 

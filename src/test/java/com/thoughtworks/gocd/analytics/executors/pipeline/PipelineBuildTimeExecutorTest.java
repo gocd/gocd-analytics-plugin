@@ -23,8 +23,8 @@ import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
 import com.thoughtworks.gocd.analytics.models.PipelineInstance;
 import com.thoughtworks.gocd.analytics.serialization.adapters.DefaultZonedDateTimeTypeAdapter;
 import org.apache.ibatis.session.SqlSession;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.time.ZoneId;
@@ -35,8 +35,7 @@ import java.util.List;
 
 import static com.thoughtworks.gocd.analytics.AnalyticTypes.PARAM_PIPELINE_NAME;
 import static com.thoughtworks.gocd.analytics.AnalyticTypes.TYPE_PIPELINE;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -49,7 +48,7 @@ public class PipelineBuildTimeExecutorTest {
     private SqlSession sqlSession;
     private PipelineDAO pipelineDAO;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         sessionFactory = mock(SessionFactory.class);
         sqlSession = mock(SqlSession.class);
@@ -74,7 +73,7 @@ public class PipelineBuildTimeExecutorTest {
         GoPluginApiResponse response = executor.execute();
 
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern(DefaultZonedDateTimeTypeAdapter.DATE_PATTERN);
-        assertThat(response.responseCode(), is(200));
+        assertEquals(200, response.responseCode());
 
         String expectedResponse = "{" +
                 "\"data\": \"{\\\"name\\\":\\\"test\\\"," +
@@ -102,7 +101,7 @@ public class PipelineBuildTimeExecutorTest {
         PipelineBuildTimeExecutor executor = new PipelineBuildTimeExecutor(analyticsRequest, pipelineDAO, sessionFactory);
         GoPluginApiResponse response = executor.execute();
 
-        assertThat(response.responseCode(), is(200));
+        assertEquals(200, response.responseCode());
 
         String expectedResponse = "{" +
                 "\"data\": \"{\\\"name\\\":\\\"test\\\"," +

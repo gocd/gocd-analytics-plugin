@@ -18,15 +18,14 @@ package com.thoughtworks.gocd.analytics.utils;
 
 import com.thoughtworks.gocd.analytics.models.*;
 import com.thoughtworks.gocd.analytics.serialization.adapters.DefaultZonedDateTimeTypeAdapter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static com.thoughtworks.gocd.analytics.MaterialRevisionMother.materialRevisionFrom;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BuilderTest {
     final DateTimeFormatter format = DateTimeFormatter.ofPattern(DefaultZonedDateTimeTypeAdapter.DATE_PATTERN);
@@ -36,20 +35,20 @@ public class BuilderTest {
         StageStatusRequest stageStatusRequest = StageStatusRequest.fromJSON(stageJson());
 
         List<Job> jobs = new Builder().buildJobs(stageStatusRequest.pipeline);
-        assertThat(jobs.size(), is(2));
+        assertEquals(2, jobs.size());
         Job job1 = jobFrom("pipeline-name", 1, "stage-name",
                 1, "job1", "Passed", zonedDateTime("2011-07-13T19:43:37.100+0000"),
                 zonedDateTime("2011-07-13T19:43:39.100+0000"), zonedDateTime("2011-07-13T19:43:38.100+0000"),
                 1, 1, 2, "agent-uuid");
 
-        assertThat(jobs.get(0), is(job1));
+        assertEquals(job1, jobs.get(0));
 
         Job job2 = jobFrom("pipeline-name", 1, "stage-name",
                 1, "job2", "Passed", zonedDateTime("2011-07-13T19:43:37.100+0000"),
                 zonedDateTime("2011-07-13T19:43:57.100+0000"), zonedDateTime("2011-07-13T19:43:47.100+0000"),
                 10, 10, 20, "agent-uuid");
 
-        assertThat(jobs.get(1), is(job2));
+        assertEquals(job2, jobs.get(1));
     }
 
     @Test
@@ -63,7 +62,7 @@ public class BuilderTest {
 
                 zonedDateTime("2011-07-13T19:44:37.100+0000"), 20, 10);
 
-        assertThat(expectedStage, is(stage));
+        assertEquals(stage, expectedStage);
     }
 
     @Test
@@ -106,7 +105,7 @@ public class BuilderTest {
                 zonedDateTime("2011-07-13T19:43:57.100+0000"), null,
                 20, 0, 20, "agent-uuid");
 
-        assertThat(jobs.get(0), is(job));
+        assertEquals(job, jobs.get(0));
     }
 
     @Test
@@ -116,7 +115,7 @@ public class BuilderTest {
 
         PipelineInstance expectedInstance = pipelineInstanceFrom("pipeline-name", 1, "Passed", 20, 10, zonedDateTime("2011-07-13T19:44:37.100+0000"), zonedDateTime("2011-07-13T19:43:37.100+0000"));
 
-        assertThat(expectedInstance, is(pipelineInstance));
+        assertEquals(pipelineInstance, expectedInstance);
     }
 
     @Test
@@ -202,11 +201,12 @@ public class BuilderTest {
         StageStatusRequest stageStatusRequest = StageStatusRequest.fromJSON(json);
         List<MaterialRevision> materialRevisions = new Builder().materialRevisionsResponsibleForTheBuild(stageStatusRequest.pipeline);
 
-        assertThat(materialRevisions.size(), is(2));
-        assertThat(materialRevisions.get(0), is(materialRevisionFrom(-1, "material_fingerprint",
-                "1", "git", stageStatusRequest.pipeline.stage.getCreateTime())));
-        assertThat(materialRevisions.get(1), is(materialRevisionFrom(-1, "material_fingerprint",
-                "pipeline-name/1/stage-name/1", "pipeline", stageStatusRequest.pipeline.stage.getCreateTime())));
+        assertEquals(2, materialRevisions.size());
+
+        final MaterialRevision gitRev = materialRevisionFrom(-1, "material_fingerprint", "1", "git", stageStatusRequest.pipeline.stage.getCreateTime());
+        final MaterialRevision pipeRev = materialRevisionFrom(-1, "material_fingerprint", "pipeline-name/1/stage-name/1", "pipeline", stageStatusRequest.pipeline.stage.getCreateTime());
+        assertEquals(gitRev, materialRevisions.get(0));
+        assertEquals(pipeRev, materialRevisions.get(1));
     }
 
     private ZonedDateTime zonedDateTime(String dateTime) {

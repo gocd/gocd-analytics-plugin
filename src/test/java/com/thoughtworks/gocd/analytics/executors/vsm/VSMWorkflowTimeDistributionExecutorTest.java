@@ -23,8 +23,8 @@ import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
 import com.thoughtworks.gocd.analytics.models.Stage;
 import org.apache.ibatis.session.SqlSession;
 import org.json.JSONException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.skyscreamer.jsonassert.JSONAssert;
 
@@ -38,11 +38,10 @@ import java.util.Map;
 
 import static com.thoughtworks.gocd.analytics.AnalyticTypes.TYPE_VSM;
 import static com.thoughtworks.gocd.analytics.StageMother.stageFrom;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class VSMWorkflowTimeDistributionExecutorTest {
     @Mock
@@ -53,9 +52,9 @@ public class VSMWorkflowTimeDistributionExecutorTest {
     private StageDAO stageDAO;
     public static final String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
     }
 
     @Test
@@ -76,7 +75,7 @@ public class VSMWorkflowTimeDistributionExecutorTest {
         GoPluginApiResponse response = new VSMWorkflowTimeDistributionExecutor(analyticsRequest, sessionFactory, stageDAO).doExecute();
 
         verify(stageDAO).allStagesWithWorkflowIdInPipelines(sqlSession, 1234L, Arrays.asList("P1", "P2"));
-        assertThat(response.responseCode(), is(200));
+        assertEquals(200, response.responseCode());
 
         String expectedResponse = "{\"data\":" +
                 "\"{\\\"stages\\\":[" +
