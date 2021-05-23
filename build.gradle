@@ -53,29 +53,27 @@ targetCompatibility = 11
 
 // In this section you declare where to find the dependencies of your project
 repositories {
-  jcenter()
+  mavenCentral()
   mavenLocal()
 }
 
 sourceSets {
   test {
     java {
-      compileClasspath += configurations.compileOnly
-      runtimeClasspath += configurations.compileOnly
+      runtimeClasspath += configurations.compileClasspath
     }
   }
 
   integrationTest {
     java.srcDirs = ['src/integration/java']
     resources.srcDirs += ['src/testdata']
-    compileClasspath += main.output + configurations.compileOnly
-    runtimeClasspath += main.output + configurations.compileOnly
+    compileClasspath += main.output
+    runtimeClasspath += configurations.compileClasspath
   }
 }
 
 configurations {
   integrationTestImplementation.extendsFrom testImplementation
-  integrationTestRuntime.extendsFrom testRuntime
 }
 
 dependencies {
