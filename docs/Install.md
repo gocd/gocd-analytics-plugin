@@ -24,7 +24,7 @@ https://code.highcharts.com/6.1.3/modules/xrange.src.js
 
 https://code.highcharts.com/6.1.3/highcharts.src.js
 
-This plugin is known to work with the three files mentioned above (version 6.1.3 of Highcharts JS). Once you get those files, they need to be placed in a directory called `analytics-assets` in GoCD's server directory. It is usually `/var/lib/go-server` on Linux and `C:\Program Files (x86)\Go Server` on Windows. See the [GoCD installation documentation](https://docs.gocd.org/current/installation/installing_go_server.html) for your operating system to find the right directory.
+This plugin is known to work with the three files mentioned above (version 6.1.3 of Highcharts JS). Once you get those files, they need to be placed in a directory called `analytics-assets` in GoCD's server directory. It is usually `/var/lib/go-server` on Linux and `C:\Program Files (x86)\Go Server` on Windows. If you are running GoCD on Kubernetes using the [GoCD Helm Chart](https://github.com/gocd/helm-chart), you should mount the files to the `/go-working-dir/analytics-assets/` directory. See the [GoCD installation documentation](https://docs.gocd.org/current/installation/installing_go_server.html) for your operating system to find the right directory.
 
 Once the files mentioned above are placed in the directory `analytics-assets`, the tree structure will look like this:
 
