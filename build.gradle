@@ -93,7 +93,7 @@ dependencies {
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
 
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.2'
-  testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.10.0'
+  testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.12.1'
   testImplementation group: 'org.skyscreamer', name: 'jsonassert', version: '1.5.0'
   testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
   testImplementation group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.19.0'
