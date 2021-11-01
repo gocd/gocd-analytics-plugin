@@ -16,7 +16,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "crel": "^4",
     "d3": "^6",
-    "highcharts": "^6.2.0",
+    "highcharts": "^9.0.0",
     "jquery": "^3",
     "jquery-ui": "^1.13.0",
     "lodash": "^4.17.21",
