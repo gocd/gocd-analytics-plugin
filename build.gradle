@@ -58,22 +58,18 @@ repositories {
 }
 
 sourceSets {
-  test {
-    java {
-      runtimeClasspath += configurations.compileClasspath
-    }
-  }
-
   integrationTest {
     java.srcDirs = ['src/integration/java']
     resources.srcDirs += ['src/testdata']
-    compileClasspath += main.output
-    runtimeClasspath += configurations.compileClasspath
+    compileClasspath += sourceSets.main.output
+    runtimeClasspath += sourceSets.main.output
   }
 }
 
 configurations {
   integrationTestImplementation.extendsFrom testImplementation
+  integrationTestRuntimeOnly.extendsFrom runtimeOnly
+  integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
 dependencies {
@@ -84,7 +80,7 @@ dependencies {
   implementation 'commons-codec:commons-codec:1.15'
   implementation 'org.postgresql:postgresql:42.3.1'
   implementation 'org.apache.commons:commons-dbcp2:2.9.0'
-  implementation 'org.mybatis:mybatis:3.5.7'
+  implementation 'org.mybatis:mybatis:3.4.5'
   implementation 'ch.qos.logback:logback-classic:1.2.7'
   implementation 'com.google.code.gson:gson:2.8.9'
   implementation 'com.google.guava:guava:23.0'
@@ -160,8 +156,9 @@ task prepareDb() {
 
 task integrationTest(type: Test, description: 'Runs the DB integration tests.') {
   systemProperties(props)
+  useJUnitPlatform()
   dependsOn prepareDb
-  testClassesDirs = sourceSets.integrationTest.output
+  testClassesDirs = sourceSets.integrationTest.output.classesDirs
   classpath = sourceSets.integrationTest.runtimeClasspath
 
   shouldRunAfter test
