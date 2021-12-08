@@ -58,22 +58,18 @@ repositories {
 }
 
 sourceSets {
-  test {
-    java {
-      runtimeClasspath += configurations.compileClasspath
-    }
-  }
-
   integrationTest {
     java.srcDirs = ['src/integration/java']
     resources.srcDirs += ['src/testdata']
-    compileClasspath += main.output
-    runtimeClasspath += configurations.compileClasspath
+    compileClasspath += sourceSets.main.output
+    runtimeClasspath += sourceSets.main.output
   }
 }
 
 configurations {
   integrationTestImplementation.extendsFrom testImplementation
+  integrationTestRuntimeOnly.extendsFrom runtimeOnly
+  integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
 dependencies {
@@ -160,8 +156,9 @@ task prepareDb() {
 
 task integrationTest(type: Test, description: 'Runs the DB integration tests.') {
   systemProperties(props)
+  useJUnitPlatform()
   dependsOn prepareDb
-  testClassesDirs = sourceSets.integrationTest.output
+  testClassesDirs = sourceSets.integrationTest.output.classesDirs
   classpath = sourceSets.integrationTest.runtimeClasspath
 
   shouldRunAfter test
