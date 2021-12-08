@@ -42,9 +42,7 @@ import java.util.TimeZone;
 
 import static com.thoughtworks.gocd.analytics.utils.DateUtils.UTC;
 import static java.lang.String.format;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 public class AgentStatusRequestExecutorTest {

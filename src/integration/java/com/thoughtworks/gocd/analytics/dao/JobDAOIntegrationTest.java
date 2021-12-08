@@ -35,10 +35,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.thoughtworks.gocd.analytics.utils.DateUtils.UTC;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JobDAOIntegrationTest implements DAOIntegrationTest {
     private SqlSession sqlSession;

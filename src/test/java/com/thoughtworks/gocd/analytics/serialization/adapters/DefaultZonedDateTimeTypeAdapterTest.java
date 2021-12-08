@@ -19,6 +19,7 @@ package com.thoughtworks.gocd.analytics.serialization.adapters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 
@@ -26,19 +27,19 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class DefaultZonedDateTimeTypeAdapterTest {
 
-    @org.junit.Test
+    @Test
     public void deserializeShouldHandleNull() throws Exception {
         String json = "{\"time\": \"\"}";
         Gson GSON = new GsonBuilder()
                 .registerTypeAdapter(ZonedDateTime.class, new DefaultZonedDateTimeTypeAdapter())
                 .create();
 
-        Test test = GSON.fromJson(json, Test.class);
+        TestData test = GSON.fromJson(json, TestData.class);
         assertNull(test.time);
     }
 
 
-    class Test {
+    class TestData {
         @SerializedName("time")
         public ZonedDateTime time;
     }
