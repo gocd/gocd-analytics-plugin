@@ -81,7 +81,7 @@ dependencies {
   implementation 'org.postgresql:postgresql:42.3.1'
   implementation 'org.apache.commons:commons-dbcp2:2.9.0'
   implementation 'org.mybatis:mybatis:3.4.6'
-  implementation 'ch.qos.logback:logback-classic:1.2.7'
+  implementation 'ch.qos.logback:logback-classic:1.2.8'
   implementation 'com.google.code.gson:gson:2.8.9'
   implementation 'com.google.guava:guava:23.0'
   implementation 'org.apache.commons:commons-lang3:3.12.0'
