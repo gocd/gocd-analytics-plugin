@@ -78,7 +78,7 @@ dependencies {
   implementation 'org.apache.commons:commons-lang3:3.12.0'
   implementation 'commons-io:commons-io:2.11.0'
   implementation 'commons-codec:commons-codec:1.15'
-  implementation 'org.postgresql:postgresql:42.3.6'
+  implementation 'org.postgresql:postgresql:42.4.0'
   implementation 'org.apache.commons:commons-dbcp2:2.9.0'
   implementation 'org.mybatis:mybatis:3.4.6'
   implementation 'ch.qos.logback:logback-classic:1.2.11'
