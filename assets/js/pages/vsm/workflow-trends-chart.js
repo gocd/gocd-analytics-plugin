@@ -82,12 +82,12 @@ function addTooltip(transport) {
   Tooltip.addTooltip(".throughput",
     {of: ".throughput", my: "left center", at: "right-24 center"},
     "Deployment Frequency is a measure of the frequency of reaching the destination pipeline. It is not affected by whether the destination pipeline failed.",
-    transport, "https://extensions-docs.gocd.org/analytics/current/");
+    transport, "https://github.com/gocd/gocd-analytics-plugin/blob/main/docs/VSM_Analytics.md#deployment-frequency");
 
   Tooltip.addTooltip(".avgCycleTime",
     {of: ".avgCycleTime", my: "left center", at: "right-32 center"},
     "Cycle time is a measure of how long it takes from source to the next successful destination pipeline run.",
-    transport, "https://extensions-docs.gocd.org/analytics/current/");
+    transport, "https://github.com/gocd/gocd-analytics-plugin/blob/main/docs/VSM_Analytics.md#average-cycle-time");
 }
 
 function init() {
