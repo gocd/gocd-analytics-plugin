@@ -28,8 +28,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: 15
-          distribution: adopt
+          java-version: 17
+          distribution: temurin
       - name: Test with Gradle
         run: ./gradlew assemble check
         env:
@@ -60,7 +60,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: 15
-          distribution: adopt
+          java-version: 17
+          distribution: temurin
       - name: Build and release with Gradle
         run: ./gradlew githubRelease
