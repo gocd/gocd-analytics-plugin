@@ -8,7 +8,8 @@ updates:
 - package-ecosystem: gradle
   directory: "/"
   schedule:
-    interval: daily
+    interval: weekly
+    day: friday
   open-pull-requests-limit: 99
 - package-ecosystem: npm
   directory: "/"
