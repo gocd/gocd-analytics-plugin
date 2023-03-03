@@ -6,8 +6,8 @@
   "license": "Apache-2.0",
   "scripts": {
     "lint": "eslint assets/js/** spec/javascripts/**",
-    "webpack-dev": "webpack --config config/webpack.config.js --mode development",
-    "webpack-prod": "webpack --config config/webpack.prod.js --mode production",
+    "webpack-dev": "NODE_OPTIONS=--openssl-legacy-provider webpack --config config/webpack.config.js --mode development",
+    "webpack-prod": "NODE_OPTIONS=--openssl-legacy-provider webpack --config config/webpack.prod.js --mode production",
     "specs": "karma start config/karma.config.js",
     "specs-ci": "karma start config/karma.config.js --single-run --no-auto-watch --color"
   },
