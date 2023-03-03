@@ -95,7 +95,7 @@ dependencies {
   testImplementation 'org.skyscreamer:jsonassert:1.5.1'
   testImplementation 'cd.go.plugin:go-plugin-api:22.3.0'
 
-  integrationTestImplementation 'org.slf4j:slf4j-simple:2.0.5'
+  integrationTestImplementation 'org.slf4j:slf4j-simple:2.0.6'
 }
 
 clean.doFirst {
