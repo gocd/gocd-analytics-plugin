@@ -30,6 +30,11 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
+      - name: Set up NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
       - name: Test with Gradle
         run: ./gradlew assemble check
         env:
@@ -62,5 +67,10 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
+      - name: Set up NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
       - name: Build and release with Gradle
         run: ./gradlew githubRelease
