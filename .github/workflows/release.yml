@@ -43,5 +43,10 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
+      - name: Set up NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
       - name: Release
         run: ./gradlew verifyExpRelease githubRelease
