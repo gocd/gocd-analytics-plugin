@@ -40,7 +40,7 @@
     "karma-webpack": "^4.0.2",
     "lodash-webpack-plugin": "^0.11.5",
     "mini-css-extract-plugin": "^1.6.2",
-    "puppeteer": "^19",
+    "puppeteer": "^20",
     "sass": "^1.62.1",
     "sass-loader": "^8.0.2",
     "script-ext-html-webpack-plugin": "^2",
