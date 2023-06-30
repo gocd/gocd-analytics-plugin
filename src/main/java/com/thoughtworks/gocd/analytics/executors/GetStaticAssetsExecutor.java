@@ -18,15 +18,14 @@ package com.thoughtworks.gocd.analytics.executors;
 
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import org.apache.commons.io.IOUtils;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
 
 import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE;
 import static com.thoughtworks.gocd.analytics.utils.Util.GSON;
+import static com.thoughtworks.gocd.analytics.utils.Util.readResourceBytes;
 
 public class GetStaticAssetsExecutor implements RequestExecutor {
     private static final String KEY = "assets";
@@ -42,16 +41,10 @@ public class GetStaticAssetsExecutor implements RequestExecutor {
         DefaultGoPluginApiResponse response = new DefaultGoPluginApiResponse(SUCCESS_RESPONSE_CODE);
         response.setResponseBody(
                 GSON.toJson(Collections.singletonMap(KEY, new String(
-                        Base64.getEncoder().encode(
-                                readResource()
-                        ),
+                        Base64.getEncoder().encode(readResourceBytes(resourcePath)),
                         StandardCharsets.ISO_8859_1
                 )))
         );
         return response;
-    }
-
-    private byte[] readResource() throws IOException {
-        return IOUtils.toByteArray(getClass().getResourceAsStream(resourcePath));
     }
 }

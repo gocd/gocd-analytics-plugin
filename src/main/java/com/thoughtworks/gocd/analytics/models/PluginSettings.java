@@ -21,7 +21,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
-import org.apache.commons.lang3.StringUtils;
+import com.thoughtworks.gocd.analytics.utils.Util;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -171,13 +171,13 @@ public class PluginSettings {
     }
 
     public LocalTime getPeriodicCleanupTime() {
-        String time = StringUtils.isNotEmpty(periodicCleanupTime) ? periodicCleanupTime : "00:00";
+        String time = Util.isNotEmpty(periodicCleanupTime) ? periodicCleanupTime : "00:00";
 
         return LocalTime.parse(time, DateTimeFormatter.ofPattern("HH:mm"));
     }
 
     public boolean isConfigured() {
-        return StringUtils.isNotEmpty(dbUsername) && StringUtils.isNotEmpty(dbName) && StringUtils.isNotEmpty(dbHost);
+        return Util.isNotEmpty(dbUsername) && Util.isNotEmpty(dbName) && Util.isNotEmpty(dbHost);
     }
 
     @Override
@@ -208,7 +208,7 @@ public class PluginSettings {
     }
 
     private int toInteger(String valueAsString, int defaultValue) {
-        if (StringUtils.isBlank(valueAsString)) {
+        if (Util.isBlank(valueAsString)) {
             return defaultValue;
         }
 

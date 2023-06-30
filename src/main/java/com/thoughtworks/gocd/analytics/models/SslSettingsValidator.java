@@ -17,7 +17,7 @@
 package com.thoughtworks.gocd.analytics.models;
 
 
-import org.apache.commons.lang3.StringUtils;
+import com.thoughtworks.gocd.analytics.utils.Util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +42,7 @@ public class SslSettingsValidator {
     }
 
     private void validate(String key, String value, String displayName, List<Map<String, String>> errorResult) {
-        if (StringUtils.isBlank(value)) {
+        if (Util.isBlank(value)) {
             Map<String, String> result = new HashMap<>();
             result.put("key", key);
             result.put("message", displayName + " must be provided if SSL is enabled.");

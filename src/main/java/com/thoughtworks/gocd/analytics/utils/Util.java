@@ -18,37 +18,26 @@ package com.thoughtworks.gocd.analytics.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import static java.text.MessageFormat.format;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class Util {
     public static final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
     public static String readResource(String resourceFile) {
-        try (InputStreamReader reader = new InputStreamReader(Util.class.getResourceAsStream(resourceFile), StandardCharsets.UTF_8)) {
-            return IOUtils.toString(reader);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not find resource " + resourceFile, e);
-        }
+        return new String(readResourceBytes(resourceFile), StandardCharsets.UTF_8);
     }
 
     public static byte[] readResourceBytes(String resourceFile) {
-        try (InputStream in = Util.class.getResourceAsStream(resourceFile)) {
-            return IOUtils.toByteArray(in);
-        } catch (IOException e) {
+        try (InputStream in = Objects.requireNonNull(Util.class.getResourceAsStream(resourceFile))) {
+            return in.readAllBytes();
+        } catch (Exception e) {
             throw new RuntimeException("Could not find resource " + resourceFile, e);
         }
     }
@@ -76,14 +65,14 @@ public class Util {
     }
 
     public static List<String> listFromCommaSeparatedString(String str) {
-        if (StringUtils.isBlank(str)) {
+        if (Util.isBlank(str)) {
             return Collections.emptyList();
         }
         return Arrays.asList(str.split("\\s*,\\s*"));
     }
 
     public static List<String> splitIntoLinesAndTrimSpaces(String lines) {
-        if (StringUtils.isBlank(lines)) {
+        if (Util.isBlank(lines)) {
             return Collections.emptyList();
         }
 
@@ -97,5 +86,21 @@ public class Util {
         }
 
         return filter;
+    }
+
+    public static boolean isBlank(String value) {
+        return value == null || value.isBlank();
+    }
+
+    public static boolean isNotBlank(String value) {
+        return !isBlank(value);
+    }
+
+    public static boolean isEmpty(String value) {
+        return value == null || value.isEmpty();
+    }
+
+    public static boolean isNotEmpty(String value) {
+        return !isEmpty(value);
     }
 }

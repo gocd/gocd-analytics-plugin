@@ -25,7 +25,7 @@ import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
 import com.thoughtworks.gocd.analytics.models.AnalyticsResponseBody;
 import com.thoughtworks.gocd.analytics.models.Stage;
 import com.thoughtworks.gocd.analytics.utils.ResponseMessages;
-import org.apache.commons.lang3.StringUtils;
+import com.thoughtworks.gocd.analytics.utils.Util;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +49,7 @@ public class StageBuildTimeExecutor extends AbstractSessionFactoryAwareExecutor 
         final String pipeline = param(PARAM_PIPELINE_NAME);
         final String stage = param(PARAM_STAGE_NAME);
 
-        if (StringUtils.isEmpty(pipeline) || StringUtils.isEmpty(stage)) {
+        if (Util.isEmpty(pipeline) || Util.isEmpty(stage)) {
             return ResponseMessages.infoMessage("You must select a pipeline and stage to view this metric.");
         }
 

@@ -18,7 +18,7 @@ package com.thoughtworks.gocd.analytics.executors.workflow;
 
 import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.gocd.analytics.models.Stage;
-import org.apache.commons.lang3.StringUtils;
+import com.thoughtworks.gocd.analytics.utils.Util;
 
 import static java.lang.String.format;
 
@@ -60,7 +60,7 @@ public class WorkflowAllocatorFactory {
     }
 
     private boolean hasPreviousStage(Stage stage) {
-        return StringUtils.isNotBlank(stage.getPreviousStageName());
+        return Util.isNotBlank(stage.getPreviousStageName());
     }
 
     private boolean isManualStage(Stage stage) {

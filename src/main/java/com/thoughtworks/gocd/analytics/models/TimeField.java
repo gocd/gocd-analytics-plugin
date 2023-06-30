@@ -16,7 +16,7 @@
 
 package com.thoughtworks.gocd.analytics.models;
 
-import org.apache.commons.lang3.StringUtils;
+import com.thoughtworks.gocd.analytics.utils.Util;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -28,7 +28,7 @@ public class TimeField extends Field {
 
     @Override
     public String doValidate(String input) {
-        if (StringUtils.isBlank(input)) {
+        if (Util.isBlank(input)) {
             return null;
         }
         try {

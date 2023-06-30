@@ -16,7 +16,7 @@
 
 package com.thoughtworks.gocd.analytics.models;
 
-import org.apache.commons.lang3.StringUtils;
+import com.thoughtworks.gocd.analytics.utils.Util;
 
 public class NonBlankField extends Field {
     public NonBlankField(String key, String displayName, String defaultValue, Boolean required, Boolean secure, String displayOrder) {
@@ -25,7 +25,7 @@ public class NonBlankField extends Field {
 
     @Override
     public String doValidate(String input) {
-        if (StringUtils.isBlank(input)) {
+        if (Util.isBlank(input)) {
             return this.displayName + " must not be blank.";
         }
         return null;

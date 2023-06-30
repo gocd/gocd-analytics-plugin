@@ -16,7 +16,7 @@
 
 package com.thoughtworks.gocd.analytics.models;
 
-import org.apache.commons.lang3.StringUtils;
+import com.thoughtworks.gocd.analytics.utils.Util;
 
 public class IntegerField extends Field {
     public IntegerField(String key, String displayName, String defaultValue, Boolean required, Boolean secure, String displayOrder) {
@@ -25,7 +25,7 @@ public class IntegerField extends Field {
 
     @Override
     public String doValidate(String input) {
-        if (StringUtils.isBlank(input)) {
+        if (Util.isBlank(input)) {
             return null;
         }
         try {
