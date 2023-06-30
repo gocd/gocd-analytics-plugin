@@ -47,8 +47,6 @@ import com.thoughtworks.gocd.analytics.utils.Util;
 import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse.INTERNAL_ERROR;
 import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE;
 import static com.thoughtworks.gocd.analytics.AvailableAnalytics.*;
-import static com.thoughtworks.gocd.analytics.AvailableAnalytics.AGENT_STATE_TRANSITION;
-import static com.thoughtworks.gocd.analytics.AvailableAnalytics.STAGE_BUILD_TIME;
 
 @Extension
 public class AnalyticsPlugin implements GoPlugin, Initializable {

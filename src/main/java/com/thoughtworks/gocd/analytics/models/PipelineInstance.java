@@ -20,9 +20,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.thoughtworks.gocd.analytics.db.PersistentObject;
 
-import java.sql.Array;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Objects;
 
 import static com.thoughtworks.gocd.analytics.utils.DateUtils.UTC;

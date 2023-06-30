@@ -20,7 +20,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import com.thoughtworks.gocd.analytics.models.*;
+import com.thoughtworks.gocd.analytics.models.Field;
+import com.thoughtworks.gocd.analytics.models.IntegerField;
+import com.thoughtworks.gocd.analytics.models.NonBlankField;
+import com.thoughtworks.gocd.analytics.models.TimeField;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

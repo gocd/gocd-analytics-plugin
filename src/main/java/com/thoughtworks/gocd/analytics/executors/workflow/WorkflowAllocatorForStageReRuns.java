@@ -17,7 +17,10 @@
 package com.thoughtworks.gocd.analytics.executors.workflow;
 
 import com.thoughtworks.gocd.analytics.dao.*;
-import com.thoughtworks.gocd.analytics.models.*;
+import com.thoughtworks.gocd.analytics.models.MaterialRevision;
+import com.thoughtworks.gocd.analytics.models.PipelineInstance;
+import com.thoughtworks.gocd.analytics.models.PipelineWorkflow;
+import com.thoughtworks.gocd.analytics.models.Stage;
 import org.apache.ibatis.session.SqlSession;
 
 import java.util.List;

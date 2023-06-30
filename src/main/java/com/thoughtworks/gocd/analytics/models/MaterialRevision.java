@@ -16,11 +16,10 @@
 
 package com.thoughtworks.gocd.analytics.models;
 
-import com.google.common.base.Objects;
 import com.thoughtworks.gocd.analytics.db.PersistentObject;
-import org.apache.commons.lang3.StringUtils;
 
 import java.time.ZonedDateTime;
+import java.util.Objects;
 
 public class MaterialRevision extends PersistentObject {
     private String fingerprint;
@@ -80,14 +79,14 @@ public class MaterialRevision extends PersistentObject {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MaterialRevision that = (MaterialRevision) o;
-        return Objects.equal(fingerprint, that.fingerprint) &&
-                Objects.equal(revision, that.revision) &&
-                Objects.equal(type, that.type) &&
-                Objects.equal(buildScheduleTime, that.buildScheduleTime);
+        return Objects.equals(fingerprint, that.fingerprint) &&
+                Objects.equals(revision, that.revision) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(buildScheduleTime, that.buildScheduleTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(fingerprint, revision, type, buildScheduleTime);
+        return Objects.hash(fingerprint, revision, type, buildScheduleTime);
     }
 }

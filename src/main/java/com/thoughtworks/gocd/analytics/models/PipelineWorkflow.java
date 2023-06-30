@@ -16,8 +16,9 @@
 
 package com.thoughtworks.gocd.analytics.models;
 
-import com.google.common.base.Objects;
 import com.thoughtworks.gocd.analytics.db.PersistentObject;
+
+import java.util.Objects;
 
 public class PipelineWorkflow extends PersistentObject {
     long pipelineId;
@@ -70,6 +71,6 @@ public class PipelineWorkflow extends PersistentObject {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(pipelineId, stageId, materialRevisionId, workflowId);
+        return Objects.hash(pipelineId, stageId, materialRevisionId, workflowId);
     }
 }

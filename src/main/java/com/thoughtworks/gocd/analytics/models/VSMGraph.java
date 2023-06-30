@@ -16,7 +16,6 @@
 
 package com.thoughtworks.gocd.analytics.models;
 
-import com.google.common.base.Objects;
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 
@@ -158,16 +157,16 @@ public class VSMGraph {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Node node = (Node) o;
-            return Objects.equal(id, node.id) &&
-                    Objects.equal(name, node.name) &&
-                    Objects.equal(type, node.type) &&
-                    Objects.equal(parents, node.parents) &&
-                    Objects.equal(dependents, node.dependents);
+            return Objects.equals(id, node.id) &&
+                    Objects.equals(name, node.name) &&
+                    Objects.equals(type, node.type) &&
+                    Objects.equals(parents, node.parents) &&
+                    Objects.equals(dependents, node.dependents);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(id, name, type, parents, dependents);
+            return Objects.hash(id, name, type, parents, dependents);
         }
     }
 
@@ -181,12 +180,12 @@ public class VSMGraph {
             if (o == null || getClass() != o.getClass()) return false;
             if (!super.equals(o)) return false;
             MaterialNode that = (MaterialNode) o;
-            return Objects.equal(materialRevisions, that.materialRevisions);
+            return Objects.equals(materialRevisions, that.materialRevisions);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(super.hashCode(), materialRevisions);
+            return Objects.hash(super.hashCode(), materialRevisions);
         }
     }
 
@@ -200,12 +199,12 @@ public class VSMGraph {
             if (o == null || getClass() != o.getClass()) return false;
             if (!super.equals(o)) return false;
             PipelineNode that = (PipelineNode) o;
-            return Objects.equal(instances, that.instances);
+            return Objects.equals(instances, that.instances);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(super.hashCode(), instances);
+            return Objects.hash(super.hashCode(), instances);
         }
     }
 
@@ -217,12 +216,12 @@ public class VSMGraph {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             MaterialRevision that = (MaterialRevision) o;
-            return Objects.equal(modifications, that.modifications);
+            return Objects.equals(modifications, that.modifications);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(modifications);
+            return Objects.hash(modifications);
         }
     }
 
@@ -235,12 +234,12 @@ public class VSMGraph {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Modification that = (Modification) o;
-            return Objects.equal(revision, that.revision);
+            return Objects.equals(revision, that.revision);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(revision);
+            return Objects.hash(revision);
         }
     }
 
@@ -258,13 +257,13 @@ public class VSMGraph {
             if (o == null || getClass() != o.getClass()) return false;
             Instance instance = (Instance) o;
             return counter == instance.counter &&
-                    Objects.equal(label, instance.label) &&
-                    Objects.equal(stages, instance.stages);
+                    Objects.equals(label, instance.label) &&
+                    Objects.equals(stages, instance.stages);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(counter, label, stages);
+            return Objects.hash(counter, label, stages);
         }
     }
 
@@ -285,13 +284,13 @@ public class VSMGraph {
             Stage stage = (Stage) o;
             return duration == stage.duration &&
                     counter == stage.counter &&
-                    Objects.equal(name, stage.name) &&
-                    Objects.equal(status, stage.status);
+                    Objects.equals(name, stage.name) &&
+                    Objects.equals(status, stage.status);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(name, status, duration, counter);
+            return Objects.hash(name, status, duration, counter);
         }
     }
 

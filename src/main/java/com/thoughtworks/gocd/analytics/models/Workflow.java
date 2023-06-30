@@ -16,10 +16,10 @@
 
 package com.thoughtworks.gocd.analytics.models;
 
-import com.google.common.base.Objects;
 import com.thoughtworks.gocd.analytics.db.PersistentObject;
 
 import java.time.ZonedDateTime;
+import java.util.Objects;
 
 public class Workflow extends PersistentObject {
     private ZonedDateTime startTime;
@@ -44,11 +44,11 @@ public class Workflow extends PersistentObject {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Workflow workflow = (Workflow) o;
-        return Objects.equal(startTime, workflow.startTime);
+        return Objects.equals(startTime, workflow.startTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(startTime);
+        return Objects.hash(startTime);
     }
 }

@@ -22,7 +22,8 @@ import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.gocd.analytics.exceptions.ServerRequestFailedException;
 import com.thoughtworks.gocd.analytics.models.PluginSettings;
 
-import static com.thoughtworks.gocd.analytics.PluginConstants.*;
+import static com.thoughtworks.gocd.analytics.PluginConstants.ANALYTICS_PLUGIN_IDENTIFIER;
+import static com.thoughtworks.gocd.analytics.PluginConstants.PLUGIN_SETTINGS_API_VERSION;
 
 public class PluginSettingRequestProcessor {
     private final GoApplicationAccessor accessor;

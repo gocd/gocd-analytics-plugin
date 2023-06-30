@@ -41,10 +41,6 @@ gocdPlugin {
 
   prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
   assetsToRelease = [project.tasks.findByName('jar')]
-
-  licenseReport {
-    excludes = ['com.google.guava:guava-parent']
-  }
 }
 
 version = gocdPlugin.fullVersion(project)
@@ -84,14 +80,6 @@ dependencies {
   implementation 'org.apache.commons:commons-dbcp2:2.9.0'
   implementation 'org.mybatis:mybatis:3.4.6'
   implementation 'ch.qos.logback:logback-classic:1.4.8'
-  implementation 'com.google.code.gson:gson:2.10.1'
-  implementation('com.google.guava:guava:32.1.0-jre') {
-    // see https://github.com/google/guava/pull/6606
-    exclude(module: 'error_prone_annotations')
-    exclude(module: 'checker-qual')
-    exclude(module: 'jsr305')
-  }
-  implementation 'org.apache.commons:commons-lang3:3.12.0'
   implementation 'org.flywaydb:flyway-core:4.2.0'
   implementation 'org.slf4j:slf4j-simple:2.0.7'
 
