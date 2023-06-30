@@ -22,7 +22,6 @@ import com.google.gson.JsonObject;
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.thoughtworks.gocd.analytics.utils.Util;
-import org.apache.commons.codec.binary.Base64;
 
 public class GetPluginIconExecutor implements RequestExecutor {
     private static final Gson GSON = new Gson();
@@ -31,7 +30,7 @@ public class GetPluginIconExecutor implements RequestExecutor {
     public GoPluginApiResponse execute() throws Exception {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("content_type", "image/png");
-        jsonObject.addProperty("data", Base64.encodeBase64String(Util.readResourceBytes("/gocd_72_72_icon.png")));
+        jsonObject.addProperty("data", java.util.Base64.getEncoder().encodeToString(Util.readResourceBytes("/gocd_72_72_icon.png")));
         DefaultGoPluginApiResponse defaultGoPluginApiResponse = new DefaultGoPluginApiResponse(200, GSON.toJson(jsonObject));
 
         return defaultGoPluginApiResponse;
