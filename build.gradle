@@ -15,11 +15,11 @@
  */
 
 plugins {
+  id "java"
   id "com.github.node-gradle.node" version "5.0.0"
 }
 
 apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-helpers/master/helper.gradle?_=${(int) (new Date().toInstant().epochSecond / 60)}"
-apply plugin: 'java'
 
 group = 'com.thoughtworks.gocd'
 
@@ -45,8 +45,11 @@ gocdPlugin {
 }
 
 version = gocdPlugin.fullVersion(project)
-sourceCompatibility = 11
-targetCompatibility = 11
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_11
+  targetCompatibility = JavaVersion.VERSION_11
+}
 
 // In this section you declare where to find the dependencies of your project
 repositories {
