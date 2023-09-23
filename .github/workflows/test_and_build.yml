@@ -33,7 +33,7 @@ jobs:
       - name: Set up NodeJS
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
           cache: npm
       - name: Test with Gradle
         run: ./gradlew assemble check
@@ -70,7 +70,7 @@ jobs:
       - name: Set up NodeJS
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
           cache: npm
       - name: Build and release with Gradle
         run: ./gradlew githubRelease
