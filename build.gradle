@@ -16,7 +16,7 @@
 
 plugins {
   id "java"
-  id "com.github.node-gradle.node" version "7.0.1"
+  id "com.github.node-gradle.node" version "7.0.2"
 }
 
 apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-helpers/master/helper.gradle?_=${(int) (new Date().toInstant().epochSecond / 60)}"
