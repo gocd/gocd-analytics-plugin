@@ -16,7 +16,7 @@ class LongestWaitingJobsOnAgent {
         const info = this.prepareData(this.data.jobs);
 
         const option = GET_STACKED_BAR_TEMPLATE(info.categories, info.series);
-        option.title.text = 'Pipelines with the Highest Wait Time';
+        option.title.text = 'Jobs with the Highest Wait Time on an Agent';
 
         // option.tooltip.formatter = this.tooltipFormatter();
 
