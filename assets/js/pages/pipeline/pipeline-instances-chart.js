@@ -19,14 +19,64 @@ import "css/global";
 import AnalyticsEndpoint from "gocd-server-comms";
 import PipelineChartFactories from "js/factories/pipeline-chart-factories.js";
 import H from "js/lib/load-highcharts.js";
+import GraphManager from "../../santosh/GraphManager";
+import moment from "../../lib/moment-humanize-for-gocd";
+import drawChartStats from "./header";
+import {auxiliaryMetrics} from "../../charts/pipelines";
+
+console.log("#1 Santosh pipeline-instances-chart.js");
+
+console.log("#1 initialData");
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
-  const data         = JSON.parse(initialData),
-        factory      = PipelineChartFactories.get("PipelineBuildTime"),
-        config       = factory.config(data, transport),
-        container    = document.getElementById("chart-container");
+    console.log('initialData = ', initialData);
+    const data = JSON.parse(initialData), factory = PipelineChartFactories.get("PipelineBuildTime"),
+        config = factory.config(data, transport), container = document.getElementById("chart-container");
 
-  H.chart(container, config);
+    console.log("#1 Santosh AnalyticsEndpoint.onInit");
+    console.log("data = ", data);
+    console.log("factory = ", factory);
+    console.log("config = ", config);
+    console.log("container = ", container);
+
+    console.log("#1 Santosh blocking H.chart for now");
+    // H.chart(container, config);
+
+    const instances = data.instances;
+    const graph_data = [];
+    instances.forEach((i) => {
+        graph_data.push({
+            total_time_secs: i.total_time_secs, total_waiting_time: i.total_waiting_time, scheduled_at: i.scheduled_at,
+        });
+    });
+
+    console.log("#1 Santosh const instances =", instances);
+
+    console.log("#1 Santosh instances map", instances.map((i) => i.total_waiting_time));
+
+    const scheduled_at = [...instances.map((i) => i.scheduled_at)];
+    const data1 = [...instances.map((i) => i.time_waiting_secs)];
+    const data2 = [...instances.map((i) => i.total_time_secs)];
+
+    // StackedArea.generate({
+    //     text: "Text", subtext: 'Subtext'
+    // }, ['Waiting time', 'Building time'], scheduled_at, [getAreaSeries('Waiting time', data1), getAreaSeries('Building time', data2)])
+
+
+    const DATE_FMT = "YYYY-MM-DD";
+    const TODAY = moment().format(DATE_FMT);
+
+    const range = [
+        {id: "30", text: "Last 30 Days", start: moment(TODAY).subtract(30, "days").format(DATE_FMT), selected: true},
+        {id: "7", text: "Last 7 Days", start: moment(TODAY).subtract(7, "days").format(DATE_FMT), selected: false},
+        {id: "1", text: "Last 24 Hours", start: moment(TODAY).subtract(1, "days").format(DATE_FMT), selected: false}
+    ];
+
+    const am = auxiliaryMetrics(instances);
+    drawChartStats(range, null, am);
+    const graphManager = new GraphManager('standalone', null);
+    graphManager.initStandalone('pipeline-instances', data);
+
 });
 
 AnalyticsEndpoint.ensure("v1");
