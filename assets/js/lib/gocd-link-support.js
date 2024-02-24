@@ -28,7 +28,7 @@ const PIPELINE_NAME_KEY    = "pipeline_name";
 const STAGE_COUNTER_KEY    = "stage_counter";
 const PIPELINE_COUNTER_KEY = "pipeline_counter";
 
-function sendLinkRequest(transport, params) {
+export function sendLinkRequest(transport, params) {
   // at this moment, success => no-op; only handle failure
   transport.request("link-to", params).fail((err) => {
     // as of now, we print all the errors on console
