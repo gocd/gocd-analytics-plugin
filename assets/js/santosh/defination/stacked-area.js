@@ -31,7 +31,7 @@ function GET_STACKED_AREA_TEMPLATE(legends, xData, series) {
                 },
                 saveAsImage: {},
                 dataView: {
-                    readOnly: false,
+                    readOnly: true,
                 },
                 // restore: {},
             }
