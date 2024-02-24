@@ -50,8 +50,24 @@ function getAreaSeries(name, data, colorData = undefined) {
         s.itemStyle = {
             normal: {
                 color: function (params) {
-                    return colorData[params.dataIndex] === "Passed" ? "green" : "red"
-                }
+                    const result = colorData[params.dataIndex];
+
+                    switch (result) {
+                        case "Passed":
+                            return "lime";
+                        case "Failed":
+                            return "red";
+                        case "Cancelled":
+                            return "#FFC000";
+                        default:
+                            return "";
+
+                    }
+                    // return colorData[params.dataIndex] === "Passed" ? "green" : "red"
+                },
+                borderColor: '#000',
+                borderType: 'solid',
+                borderWidth: 1
             }
         };
     }
