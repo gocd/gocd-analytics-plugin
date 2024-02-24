@@ -132,16 +132,20 @@ class GraphManager {
         // this.dataStack[this.child.getSeriesIndex()] = option;
         // this.dataStack.push({name: this.name, data: data});
 
-        this.setDataStack(data);
+        if (this.type === 'series') {
 
-        console.log('dataStack = ', this.dataStack);
-        console.log('dataStack length = ', this.dataStack.length);
+            this.setDataStack(data);
 
-        // if (this.child.getSeriesIndex() === 0) {
-        //     this.base = option;
-        // }
+            console.log('dataStack = ', this.dataStack);
+            console.log('dataStack length = ', this.dataStack.length);
 
-        this.insertBreadcrumb();
+            // if (this.child.getSeriesIndex() === 0) {
+            //     this.base = option;
+            // }
+
+            this.insertBreadcrumb();
+
+        }
     }
 
     setDataStack(data) {
@@ -188,8 +192,9 @@ class GraphManager {
     insertBreadcrumb() {
         // if (this.child.insertBreadcrumb()) {
         // breadcrumb.add(["LongestWaitingPipelines", "LongestWaitingJobs", "JobBuildTime"], this.restoreGraph.bind(this));
-        this.breadcrumb.add(this.name, this.child.breadcrumbCaption());
         // }
+
+        this.breadcrumb.add(this.name, this.child.breadcrumbCaption());
     }
 
     restoreGraph(index) {
