@@ -19,11 +19,11 @@ function GET_STACKED_BAR_TEMPLATE(categories = null, series = null) {
         toolbox: {
             feature: {
                 saveAsImage: {},
-                dataZoom: {
+                // dataZoom: {
                     // yAxisIndex: 'none',
-                },
+                // },
                 dataView: {
-                    readOnly: false,
+                    readOnly: true,
                 }
             }
         },
