@@ -50,7 +50,7 @@ function drawChartStats(range, callback) {
 
 function handleButtonClick(id, range) {
     range.forEach(r => {
-        if (id == r.id) {
+        if (id === r.id) {
             r.selected = true;
         } else {
             r.selected = false;
