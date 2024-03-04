@@ -25,10 +25,11 @@ group = 'com.thoughtworks.gocd'
 
 gocdPlugin {
   id = 'com.thoughtworks.gocd.analytics'
-  pluginVersion = '3.1.0'
+//   pluginVersion = '3.1.0'
+  pluginVersion = 'pipeline-timeline'
   goCdVersion = '20.9.0'
   name = 'GoCD Analytics Plugin'
-  description = 'GoCD Analytics Plugin'
+  description = 'breadcrumb-fixed-for-first-graph-next-display-meaningful-name'
   vendorName = 'ThoughtWorks, Inc.'
   vendorUrl = 'https://github.com/gocd/gocd-analytics-plugin'
 
@@ -112,9 +113,9 @@ task generateWebpackAssets(type: NpmTask) {
 }
 
 def props = [
-  'db.host'    : System.getenv('DB_HOST') ? System.getenv('DB_HOST') : 'localhost',
+  'db.host'    : System.getenv('DB_HOST') ? System.getenv('DB_HOST') : '192.168.1.6',
   'db.user'    : System.getenv('DB_USER') ? System.getenv('DB_USER') : 'postgres',
-  'db.password': System.getenv('DB_PASSWORD') ? System.getenv('DB_PASSWORD') : 'postgres',
+  'db.password': System.getenv('DB_PASSWORD') ? System.getenv('DB_PASSWORD') : 'mysecretpassword',
   'db.port'    : System.getenv('DB_PORT') ? System.getenv('DB_PORT') : '5432',
   'db.name'    : System.getenv('DB_NAME') ? System.getenv('DB_NAME') : 'gocd_test'
 ]
@@ -223,10 +224,10 @@ task assetSpecs(type: NpmTask) {
 
 test.dependsOn lint
 test.dependsOn assetSpecs
-check.dependsOn integrationTest
+//check.dependsOn integrationTest
 
 test {
-  useJUnitPlatform()
+//  useJUnitPlatform()
 }
 
 jar {

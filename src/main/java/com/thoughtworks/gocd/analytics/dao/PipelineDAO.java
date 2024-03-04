@@ -20,6 +20,8 @@ import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.gocd.analytics.mapper.PipelineMapper;
 import com.thoughtworks.gocd.analytics.models.Pipeline;
 import com.thoughtworks.gocd.analytics.models.PipelineInstance;
+import com.thoughtworks.gocd.analytics.models.PipelineStateSummary;
+import com.thoughtworks.gocd.analytics.models.PipelineTimeSummary;
 import org.apache.ibatis.session.SqlSession;
 
 import java.time.ZonedDateTime;
@@ -34,6 +36,14 @@ public class PipelineDAO {
 
     public List<Pipeline> allPipelines(SqlSession sqlSession) {
         return mapper(sqlSession).allPipelines();
+    }
+
+    public PipelineTimeSummary pipelineSummary(SqlSession sqlSession) {
+        return mapper(sqlSession).pipelineSummary();
+    }
+
+    public List<PipelineStateSummary> pipelineStateSummary(SqlSession sqlSession) {
+        return mapper(sqlSession).pipelineStateSummary();
     }
 
     public void updateOrInsert(SqlSession sqlSession, PipelineInstance pipeline) {
@@ -63,6 +73,11 @@ public class PipelineDAO {
 
     public List<PipelineInstance> allPipelineInstancesWithNameIn(SqlSession sqlSession, String workflowSource, List<String> pipelines) {
         return mapper(sqlSession).allPipelineInstancesWithNameIn(workflowSource, pipelines);
+    }
+
+    public List<PipelineInstance> allPipelineWithNameAndCounter(SqlSession sqlSession,
+        String pipelineName) {
+        return mapper(sqlSession).allPipelineWithNameAndCounter(pipelineName);
     }
 
     private PipelineMapper mapper(SqlSession sqlSession) {

@@ -52,6 +52,7 @@ function RangeSelector(transport, chart, options) {
   }
 
   function changeRange(e) {
+    console.log('# Santosh - changeRange(e) ', e);
     e.stopPropagation();
     e.preventDefault();
     const current = $(e.currentTarget);
@@ -64,6 +65,7 @@ function RangeSelector(transport, chart, options) {
 
     transport.request("fetch-analytics", $.extend({}, params, current.data("range-params"))).
       done((data) => {
+      console.log('#Santosh transport data came back ', data);
         chart.hideLoading(); // NOTE: need to do call this before updateData() or else "no data" message won't show;
         updateData(chart, JSON.parse(data));
       }).

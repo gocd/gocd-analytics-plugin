@@ -8,6 +8,8 @@ $color-agent-unknown: rgb(25, 65, 95);
 #agent-state-transition-chart {
   #chart-container {
     padding: 20px;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   .title-container > * {

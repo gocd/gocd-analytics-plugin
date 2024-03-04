@@ -1,12 +1,16 @@
 <html>
 <head>
-  <title><%= htmlWebpackPlugin.options.title %></title>
-  <script defer src="gocd-server-comms.js"></script>
-  <script defer src="highcharts.src.js"></script>
-  <script defer src="no-data-to-display.src.js"></script>
-  <script defer src="xrange.src.js"></script>
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <script defer src="gocd-server-comms.js"></script>
+    <script defer src="highcharts.src.js"></script>
+    <script defer src="no-data-to-display.src.js"></script>
+    <script defer src="xrange.src.js"></script>
 </head>
 <body id="<%= htmlWebpackPlugin.options.title %>">
-  <div id="chart-container"></div>
+<!--  <div id="chart-container" style="width: 600px;height:400px;"></div>-->
+<div id="chart-container-meta"></div>
+<!--<div id="chart-container" style="width: 900px; height: 500px;"></div>-->
+<div id="chart-container"></div>
+<div id="chart-container-footer"></div>
 </body>
 </html>

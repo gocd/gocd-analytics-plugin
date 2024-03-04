@@ -1,0 +1,147 @@
+import * as echarts from "echarts";
+
+function getTimeStampsAndTotalTimeSecs(data) {
+
+    console.log('passed data is ', data);
+
+    // const result = Object.values(data).flatMap(items => items.map(i => ({timeStamps: i.last_transition_time, totalTimeSecs: i.total_time_secs})));
+
+    // return {timeStamps: data.map(d => d.last_transition_time), totalTimeSecs: data.map(d => d.total_time_secs)};
+    let i = 1;
+    return {timeStamps: i++, totalTimeSecs: data.map(d => d.total_time_secs)};
+}
+
+function updateChartSize(chart, parentTR, w, h) {
+
+    const tableDOM = document.getElementsByClassName("vsm-trend-table");
+
+    console.log('parentTR.offsetWidth, parentTR.offsetHeight', parentTR.offsetWidth, parentTR.offsetHeight);
+
+    var dynamicWidth = parentTR.offsetWidth * 0.9; // Adjust the multiplier as needed
+    var dynamicHeight = parentTR.offsetHeight * 0.9; // Adjust the multiplier as needed
+
+    console.log('updating chart size with w, h = ', dynamicWidth, dynamicHeight);
+
+    chart.resize({
+        width: dynamicWidth,
+        height: dynamicHeight
+    });
+}
+
+function renderChart(data, workflowId) {
+
+    console.log('data provided: ', data);
+
+    const info = getTimeStampsAndTotalTimeSecs(data);
+
+    const workFlowElement = 'workflow-id-' + workflowId;
+    console.log('workflow = ', workFlowElement);
+
+    console.log('info.timeStamps = ', info.timeStamps);
+    console.log('info.totalTimeSecs = ', info.totalTimeSecs);
+
+    var chartDom = document.getElementById(workFlowElement);
+    // chartDom.style.width = '461px';
+    // chartDom.style.height = '60px';
+
+    var myChart = echarts.init(chartDom);
+    var option;
+
+    option = {
+        // color: ['#FFFFE0', '#4cabce'],
+        // title: {
+        //     text: title.text,
+        //     subtext: title.subtext,
+        // },
+        tooltip: {
+            trigger: 'axis',
+            // axisPointer: {
+            //     type: 'shadow',
+            //     label: {
+            //         backgroundColor: '#6a7985'
+            //     }
+            // },
+            formatter: function (params) {
+                console.log('params = ', params);
+                return 'Tooltip: ';
+            },
+        },
+        grid: {
+            splitLine: {
+                show: false
+            },
+            // show: true,
+            // left: '1%',
+            top: '1%',
+            // right: '1%',
+            bottom: '1%',
+        },
+        xAxis: {
+            type: 'category',
+            data: info.timeStamps,
+            boundaryGap: true,
+            axisLabel: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    width:2,
+                    color: 'grey'
+                }
+            }
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            axisLine: {
+                show: false
+            },
+            splitLine: {
+                show: false
+            }
+        },
+        series: [{
+            data: info.totalTimeSecs,
+            type: 'line',
+            lineStyle: {
+                color: 'black',
+                width: 1
+            },
+            areaStyle: {
+                // color: '#8085e9'
+                color: '#CBC3E3'
+            },
+            itemStyle: {
+                borderColor: 'black',
+                color: 'green',
+                borderType: 'solid',
+                borderWidth: 1,
+                borderCap: 'butt',
+                normal: {
+                    color: function (params) {
+                        // return colorData[params.dataIndex] === "Passed" ? "green" : "red"
+                        console.log('data = ', data);
+                        console.log('color params ', params);
+                    }
+                }
+            }
+        }]
+    };
+
+
+    option && myChart.setOption(option);
+    myChart.hideLoading();
+
+    updateChartSize(myChart, chartDom.parentElement);
+}
+
+export default renderChart;

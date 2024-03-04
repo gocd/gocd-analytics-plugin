@@ -158,4 +158,18 @@ public interface JobMapper {
 
     @Delete("DELETE FROM jobs where scheduled_at AT TIME ZONE 'UTC' < #{scheduled_date} AT TIME ZONE 'UTC';")
     void deleteJobRunsPriorTo(@Param("scheduled_date") ZonedDateTime scheduledDate);
+
+    @ResultMap("Job")
+    @Select("WITH MergedData AS (\n"
+        + "  SELECT\n"
+        + "    DATE(scheduled_at) AS date_only,\n"
+        + "    SUM(time_waiting_secs) AS total_time\n"
+        + "  FROM jobs\n"
+        + "  GROUP BY DATE(scheduled_at)\n"
+        + ")\n"
+        + "SELECT\n"
+        + "  date_only AS scheduled_at,\n"
+        + "  total_time AS time_waiting_secs\n"
+        + "FROM MergedData;")
+    List<Job> allWaitingFor();
 }

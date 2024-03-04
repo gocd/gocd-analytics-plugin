@@ -18,6 +18,7 @@ package com.thoughtworks.gocd.analytics;
 
 import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.gocd.analytics.mapper.*;
+import com.thoughtworks.gocd.analytics.models.PipelineTimeSummary;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;

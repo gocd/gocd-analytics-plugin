@@ -19,6 +19,8 @@ package com.thoughtworks.gocd.analytics.mapper;
 
 import com.thoughtworks.gocd.analytics.models.Pipeline;
 import com.thoughtworks.gocd.analytics.models.PipelineInstance;
+import com.thoughtworks.gocd.analytics.models.PipelineStateSummary;
+import com.thoughtworks.gocd.analytics.models.PipelineTimeSummary;
 import org.apache.ibatis.annotations.*;
 
 import java.time.ZonedDateTime;
@@ -105,37 +107,74 @@ public interface PipelineMapper {
     PipelineInstance find(@Param("name") String name, @Param("counter") int counter);
 
     @Results(id = "PipelineInstanceWithWorkflow", value = {
-            @Result(property = "name", column = "name"),
-            @Result(property = "counter", column = "counter"),
-            @Result(property = "totalTimeSecs", column = "total_time_secs"),
-            @Result(property = "timeWaitingSecs", column = "time_waiting_secs"),
-            @Result(property = "createdAt", column = "created_at"),
-            @Result(property = "lastTransitionTime", column = "last_transition_time"),
-            @Result(property = "result", column = "result"),
-            @Result(property = "workflowId", column = "workflow_id")
+        @Result(property = "name", column = "name"),
+        @Result(property = "counter", column = "counter"),
+        @Result(property = "totalTimeSecs", column = "total_time_secs"),
+        @Result(property = "timeWaitingSecs", column = "time_waiting_secs"),
+        @Result(property = "createdAt", column = "created_at"),
+        @Result(property = "lastTransitionTime", column = "last_transition_time"),
+        @Result(property = "result", column = "result"),
+        @Result(property = "workflowId", column = "workflow_id")
     })
     @Select("<script>" +
-            "SELECT p.*, pw.workflow_id" +
-            "  FROM pipelines p" +
-            "  JOIN " +
-            "   (SELECT MAX(p.id) id, pw.workflow_id " +
-            "    FROM pipelines p " +
-            "      JOIN " +
-            "    pipeline_workflows pw " +
-            "      ON p.id=pw.pipeline_id " +
-            "      AND pw.workflow_id IN " +
-            "        (SELECT pw.workflow_id " +
-            "          FROM pipeline_workflows pw " +
-            "        JOIN " +
-            "          (SELECT id FROM pipelines WHERE name=#{source}) p ON p.id=pw.pipeline_id) " +
-            "      AND p.name IN " +
-            "      <foreach item='item' index='index' collection='pipelines'" +
-            "        open='(' separator=',' close=')'>" +
-            "        #{item}" +
-            "      </foreach>" +
-            "       GROUP BY p.name, pw.workflow_id" +
-            "     ) pw" +
-            "     ON p.id = pw.id" +
-            "</script>")
-    List<PipelineInstance> allPipelineInstancesWithNameIn(@Param("source") String source, @Param("pipelines") List<String> pipelines);
+        "SELECT p.*, pw.workflow_id" +
+        "  FROM pipelines p" +
+        "  JOIN " +
+        "   (SELECT MAX(p.id) id, pw.workflow_id " +
+        "    FROM pipelines p " +
+        "      JOIN " +
+        "    pipeline_workflows pw " +
+        "      ON p.id=pw.pipeline_id " +
+        "      AND pw.workflow_id IN " +
+        "        (SELECT pw.workflow_id " +
+        "          FROM pipeline_workflows pw " +
+        "        JOIN " +
+        "          (SELECT id FROM pipelines WHERE name=#{source}) p ON p.id=pw.pipeline_id) " +
+        "      AND p.name IN " +
+        "      <foreach item='item' index='index' collection='pipelines'" +
+        "        open='(' separator=',' close=')'>" +
+        "        #{item}" +
+        "      </foreach>" +
+        "       GROUP BY p.name, pw.workflow_id" +
+        "     ) pw" +
+        "     ON p.id = pw.id" +
+        "</script>")
+    List<PipelineInstance> allPipelineInstancesWithNameIn(@Param("source") String source,
+        @Param("pipelines") List<String> pipelines);
+
+    @ResultMap("PipelineInstance")
+    @Select("select * from pipelines where name = #{pipelineName} order by counter limit 10")
+    List<PipelineInstance> allPipelineWithNameAndCounter(@Param("pipelineName") String pipelineName);
+
+//    @ResultMap("PipelineTimeSummary")
+//    @Select("SELECT\n"
+//        + "    SUM(CASE WHEN result = 'Passed' THEN 1 ELSE 0 END) AS PassCount,\n"
+//        + "    SUM(CASE WHEN result = 'Failed' THEN 1 ELSE 0 END) AS FailCount,\n"
+//        + "    SUM(CASE WHEN result = 'Cancelled' THEN 1 ELSE 0 END) AS CancelCount\n"
+//        + "FROM pipelines p ;")
+//    PipelineTimeSummary pipelineSummary();
+
+//    @ResultMap("PipelineTimeSummary")
+
+
+    @Results(id="someid", value = {
+        @Result(property = "passCount", column = "passcount"),
+        @Result(property = "failCount", column = "failcount"),
+        @Result(property = "cancelCount", column = "cancelcount")
+    })
+    @Select("SELECT \n" +
+        "SUM(CASE WHEN result = 'Passed' THEN 1 ELSE 0 END) AS PassCount,\n" +
+        "SUM(CASE WHEN result = 'Failed' THEN 1 ELSE 0 END) AS FailCount,\n" +
+        "SUM(CASE WHEN result = 'Cancelled' THEN 1 ELSE 0 END) AS CancelCount\n" +
+        "FROM pipelines p ;")
+    PipelineTimeSummary pipelineSummary();
+
+    @Results(id = "pipeline_state_summary", value = {
+        @Result(property = "id", column = "id"),
+        @Result(property = "result", column = "result"),
+        @Result(property = "totalTimeSecs", column = "total_time_secs"),
+        @Result(property = "timeWaitingSecs", column = "time_waiting_secs"),
+    })
+    @Select("select id ,result, total_time_secs, time_waiting_secs from pipelines p;")
+    List<PipelineStateSummary> pipelineStateSummary();
 }

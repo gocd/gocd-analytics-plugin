@@ -42,6 +42,22 @@ public enum AvailableAnalytics {
             "agents_with_the_highest_utilization",
             "Agents with the Highest Utilization"),
 
+    // rename this later to a request type
+    PIPELINES_RUNTIME_ACROSS_TIMELINE(AnalyticTypes.TYPE_JOB,
+        "pipeline_list", "Helper to list pipelines"),
+
+    PIPELINE_TIMELINE(AnalyticTypes.TYPE_DASHBOARD, "pipeline_timeline", "Pipeline timeline"),
+
+    STAGE_TIMELINE(AnalyticTypes.TYPE_DASHBOARD, "stage_timeline", "Stage Timeline"),
+
+    PRIORITY(AnalyticTypes.TYPE_DASHBOARD, "priority", "Priority"),
+
+    PIPELINE_STATE_SUMMARY(AnalyticTypes.TYPE_DASHBOARD, "pipeline_state_summary", "Pipeline "
+        + "State Summary"),
+
+    JOBS_WAIT_VS_AGENTS_AVAILABLE(AnalyticTypes.TYPE_DASHBOARD, "worrysome", "Worrysome"),
+    HELPER_AGENT_UTILIZATION(AnalyticTypes.TYPE_JOB, "helper_agent_utilization", "?"),
+
     JOBS_WITH_THE_HIGHEST_WAIT_TIME_ON_AGENT(AnalyticTypes.TYPE_DRILLDOWN,
             "jobs_with_the_highest_wait_time_on_an_agent",
             "Jobs with the Highest Wait Time on an Agent"),

@@ -17,6 +17,7 @@
 package com.thoughtworks.gocd.analytics.mapper;
 
 import com.thoughtworks.gocd.analytics.models.AgentTransition;
+import com.thoughtworks.gocd.analytics.models.AgentUtilizationSummary;
 import org.apache.ibatis.annotations.*;
 
 import java.time.ZonedDateTime;
@@ -56,4 +57,21 @@ public interface AgentTransitionsMapper {
             "  FROM agent_transitions\n" +
             " WHERE transition_time AT TIME ZONE 'UTC' < #{transition_time} AT TIME ZONE 'UTC';")
     void deleteTransitionsPriorTo(@Param("transition_time") ZonedDateTime transitionTime);
+
+    @Results(id = "AllWaitingFor", value = {
+        @Result(property = "utilizationDate", column = "utilization_date"),
+        @Result(property = "idleDurationSecs", column = "idle_duration_secs")
+    })
+    @Select("WITH MergedData AS (\n"
+        + "  SELECT\n"
+        + "    DATE(utilization_date) AS date_only,\n"
+        + "    SUM(idle_duration_secs) AS total_time\n"
+        + "  FROM agent_utilization\n"
+        + "  GROUP BY DATE(utilization_date)\n"
+        + ")\n"
+        + "SELECT\n"
+        + "  date_only AS utilization_date,\n"
+        + "  total_time AS idle_duration_secs\n"
+        + "FROM MergedData;")
+    List<AgentUtilizationSummary> allWaitingFor();
 }

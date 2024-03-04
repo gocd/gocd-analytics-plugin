@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+console.log("#1 Santosh from load-highcharts.js");
+
 import Highcharts from "highcharts-shim";
 import Extensions from "./extensions.js";
 

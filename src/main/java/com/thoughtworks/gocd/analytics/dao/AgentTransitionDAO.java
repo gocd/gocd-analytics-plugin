@@ -18,6 +18,7 @@ package com.thoughtworks.gocd.analytics.dao;
 
 import com.thoughtworks.gocd.analytics.mapper.AgentTransitionsMapper;
 import com.thoughtworks.gocd.analytics.models.AgentTransition;
+import com.thoughtworks.gocd.analytics.models.AgentUtilizationSummary;
 import org.apache.ibatis.session.SqlSession;
 
 import java.time.ZonedDateTime;
@@ -38,5 +39,9 @@ public class AgentTransitionDAO {
 
     public void deleteTransitionsPriorTo(SqlSession sqlSession, ZonedDateTime priorToDate) {
         mapper(sqlSession).deleteTransitionsPriorTo(priorToDate);
+    }
+
+    public List<AgentUtilizationSummary> allWaitingFor(SqlSession sqlSession) {
+        return mapper(sqlSession).allWaitingFor();
     }
 }

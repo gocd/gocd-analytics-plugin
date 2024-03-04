@@ -15,7 +15,11 @@
  */
 
 /* A stub for the plugin endpoint which will be available at runtime. */
+
+console.log("#1 Santosh from gocd-server-comms.js");
+
 const AnalyticsEndpoint = function () {
+  console.log("#1 Santosh someone calling AnalyticsEndpoint stub");
   return {
     ensure: () => {},
     on: () => {},

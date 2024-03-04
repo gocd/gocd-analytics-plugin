@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!--    <link rel="stylesheet" href="../assets/css">-->
+
+  <!-- GoCD JS files -->
+  <!--  <script defer type="module" src="gocd-link-support.js"></script>-->
+  <!--  <script defer type="module" src="plugin-endpoint.js"></script>-->
+  <!--  <script defer type="module" src="plugin-endpoint-request-handler.js"></script>-->
+
+  <!--  <script defer type="module" src="./gocd-server-comms.js"></script>-->
+
+  <!--    <script defer type="module" src="dev.js"></script>-->
+  <script type="module" src="gocd-server-comms.js"></script>
+  <script type="module" src="assets.js"></script>
+  <script type="module" src="plugin-endpoint.js"></script>
+
+
+  <title>ECharts Dev</title>
+  <style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    #container {
+        display: flex;
+        height: 100vh;
+    }
+
+    #left-menu {
+        width: 20%;
+        background-color: #333;
+        color: #fff;
+        padding: 20px;
+    }
+
+    #main-content {
+        flex: 1;
+        padding: 20px;
+    }
+
+    a {
+        color: #fff;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<div id="container">
+  <div id="left-menu">
+    <h2>Menu</h2>
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="/line">Line</a></li>
+      <li><a href="/area">Area</a></li>
+    </ul>
+  </div>
+  <div id="main-content">
+    <h1>Chart</h1>
+    <div id="chart-container" style="width: 900px;height:500px;"></div>
+  </div>
+</div>
+</body>
+</html>

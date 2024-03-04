@@ -63,4 +63,8 @@ public class JobDAO {
     public void deleteJobRunsPriorTo(SqlSession sqlSession, ZonedDateTime scheduledDate) {
         mapper(sqlSession).deleteJobRunsPriorTo(scheduledDate);
     }
+
+    public List<Job> allWaitingFor(SqlSession sqlSession) {
+        return mapper(sqlSession).allWaitingFor();
+    }
 }

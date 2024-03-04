@@ -106,9 +106,12 @@ function renderChart(pipelines, data, workflowId, transport) {
 
     const series = getAreaSeries('', info.totalTimeSecs, colorData);
     series.lineStyle = {
-        color: 'black',
-        width: 1
-    }
+        color: 'black', width: 1
+    };
+    series.areaStyle = {
+        color: 'rgb(197, 119, 75)',
+    };
+    series.symbol = 'circle';
     series.symbolSize = 6;
 
     option.tooltip = {
@@ -132,27 +135,19 @@ function renderChart(pipelines, data, workflowId, transport) {
     option.grid = {
         splitLine: {
             show: false
-        },
-        show: false,
-        // left: '1%',
-        top: '1%',
-        // right: '1%',
+        }, show: false, // left: '1%',
+        top: '1%', // right: '1%',
         bottom: '1%',
     };
 
     option.xAxis = {
-        type: 'category',
-        data: pipelines,
-        boundaryGap: true,
-        axisLabel: {
+        type: 'category', data: pipelines, boundaryGap: true, axisLabel: {
             show: false
         }, axisTick: {
             show: false
         }, axisLine: {
-            show: true,
-            lineStyle: {
-                width: 2,
-                color: 'lightgrey'
+            show: true, lineStyle: {
+                width: 2, color: 'lightgrey'
             }
         }
     };

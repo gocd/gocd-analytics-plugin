@@ -30,16 +30,25 @@ import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.thoughtworks.gocd.analytics.executors.*;
 import com.thoughtworks.gocd.analytics.executors.agent.AgentStateTransitionExecutor;
+import com.thoughtworks.gocd.analytics.executors.agent.AgentUtilizationExecutor;
 import com.thoughtworks.gocd.analytics.executors.agent.AgentsWithHighestUtilizationExecutor;
 import com.thoughtworks.gocd.analytics.executors.job.JobBuildTimeExecutor;
 import com.thoughtworks.gocd.analytics.executors.job.JobBuildTimeOnAgentExecutor;
 import com.thoughtworks.gocd.analytics.executors.job.JobsHighestWaitTimeExecutor;
 import com.thoughtworks.gocd.analytics.executors.job.JobsHighestWaitTimeOnAgentExecutor;
+import com.thoughtworks.gocd.analytics.executors.job.JobsWaitVsAgentsAvailableExecutor;
+import com.thoughtworks.gocd.analytics.executors.pipeline.ActualPipelineRuntimeExecutor;
 import com.thoughtworks.gocd.analytics.executors.pipeline.PipelineBuildTimeExecutor;
+import com.thoughtworks.gocd.analytics.executors.pipeline.PipelineRuntimeExecutor;
+import com.thoughtworks.gocd.analytics.executors.pipeline.PipelineStateSummaryExecutor;
 import com.thoughtworks.gocd.analytics.executors.pipeline.PipelinesHighestWaitTimeExecutor;
+import com.thoughtworks.gocd.analytics.executors.pipeline.PriorityExecutor;
 import com.thoughtworks.gocd.analytics.executors.stage.StageBuildTimeExecutor;
+import com.thoughtworks.gocd.analytics.executors.stage.StageTimelineExecutor;
 import com.thoughtworks.gocd.analytics.executors.vsm.VSMTrendAcrossMultipleRunsExecutor;
 import com.thoughtworks.gocd.analytics.executors.vsm.VSMWorkflowTimeDistributionExecutor;
+import com.thoughtworks.gocd.analytics.models.AgentUtilizationSummary;
+import com.thoughtworks.gocd.analytics.models.PipelineTimeSummary;
 import com.thoughtworks.gocd.analytics.models.PluginSettings;
 import com.thoughtworks.gocd.analytics.pluginhealth.PluginHealthMessageService;
 import com.thoughtworks.gocd.analytics.utils.Util;
@@ -50,13 +59,15 @@ import static com.thoughtworks.gocd.analytics.AvailableAnalytics.*;
 
 @Extension
 public class AnalyticsPlugin implements GoPlugin, Initializable {
+
     public static final Logger LOG = Logger.getLoggerFor(AnalyticsPlugin.class);
     private static final String ASSETS_RESOURCE = "/assets.zip";
 
     private GoApplicationAccessor accessor;
 
     @Override
-    public GoPluginApiResponse handle(GoPluginApiRequest request) throws UnhandledRequestTypeException {
+    public GoPluginApiResponse handle(GoPluginApiRequest request)
+        throws UnhandledRequestTypeException {
         LOG.debug("Received plugin request from server for message - {}", request.requestName());
         try {
             switch (RequestFromServer.fromString(request.requestName())) {
@@ -66,7 +77,8 @@ public class AnalyticsPlugin implements GoPlugin, Initializable {
                     return new GetCapabilitiesExecutor().execute();
                 case REQUEST_GET_ANALYTICS:
                     Bootstrap bootstrap = Bootstrap.instance();
-                    return AnalyticsExecutorSelector.instance().executorFor(request, bootstrap.sessionFactory(this)).execute();
+                    return AnalyticsExecutorSelector.instance()
+                        .executorFor(request, bootstrap.sessionFactory(this)).execute();
                 case REQUEST_GET_STATIC_ASSETS:
                     return new GetStaticAssetsExecutor(ASSETS_RESOURCE).execute();
                 case PLUGIN_SETTINGS_GET_VIEW:
@@ -94,17 +106,32 @@ public class AnalyticsPlugin implements GoPlugin, Initializable {
 
         LOG.debug("Registering analytics executors.");
         AnalyticsExecutorSelector.instance()
-                .registerExecutor(PIPELINE_BUILD_TIME.getId(), PipelineBuildTimeExecutor.class)
-                .registerExecutor(JOBS_WITH_THE_HIGHEST_WAIT_TIME.getId(), JobsHighestWaitTimeExecutor.class)
-                .registerExecutor(JOBS_WITH_THE_HIGHEST_WAIT_TIME_ON_AGENT.getId(), JobsHighestWaitTimeOnAgentExecutor.class)
-                .registerExecutor(PIPELINES_WITH_THE_HIGHEST_WAIT_TIME.getId(), PipelinesHighestWaitTimeExecutor.class)
-                .registerExecutor(JOB_BUILD_TIME.getId(), JobBuildTimeExecutor.class)
-                .registerExecutor(AGENTS_WITH_THE_HIGHEST_UTILIZATION.getId(), AgentsWithHighestUtilizationExecutor.class)
-                .registerExecutor(JOB_BUILD_TIME_ON_AGENT.getId(), JobBuildTimeOnAgentExecutor.class)
-                .registerExecutor(STAGE_BUILD_TIME.getId(), StageBuildTimeExecutor.class)
-                .registerExecutor(AGENT_STATE_TRANSITION.getId(), AgentStateTransitionExecutor.class)
-                .registerExecutor(VSM_TREND_ACROSS_MULTIPLE_RUNS.getId(), VSMTrendAcrossMultipleRunsExecutor.class)
-                .registerExecutor(VSM_WORKFLOW_TIME_DISTRIBUTION.getId(), VSMWorkflowTimeDistributionExecutor.class);
+            .registerExecutor(PIPELINE_BUILD_TIME.getId(), PipelineBuildTimeExecutor.class)
+            .registerExecutor(JOBS_WITH_THE_HIGHEST_WAIT_TIME.getId(),
+                JobsHighestWaitTimeExecutor.class)
+            .registerExecutor(JOBS_WITH_THE_HIGHEST_WAIT_TIME_ON_AGENT.getId(),
+                JobsHighestWaitTimeOnAgentExecutor.class)
+            .registerExecutor(PIPELINES_WITH_THE_HIGHEST_WAIT_TIME.getId(),
+                PipelinesHighestWaitTimeExecutor.class)
+            .registerExecutor(JOB_BUILD_TIME.getId(), JobBuildTimeExecutor.class)
+            .registerExecutor(AGENTS_WITH_THE_HIGHEST_UTILIZATION.getId(),
+                AgentsWithHighestUtilizationExecutor.class)
+            .registerExecutor(JOB_BUILD_TIME_ON_AGENT.getId(), JobBuildTimeOnAgentExecutor.class)
+            .registerExecutor(STAGE_BUILD_TIME.getId(), StageBuildTimeExecutor.class)
+            .registerExecutor(AGENT_STATE_TRANSITION.getId(), AgentStateTransitionExecutor.class)
+            .registerExecutor(VSM_TREND_ACROSS_MULTIPLE_RUNS.getId(),
+                VSMTrendAcrossMultipleRunsExecutor.class)
+            .registerExecutor(VSM_WORKFLOW_TIME_DISTRIBUTION.getId(),
+                VSMWorkflowTimeDistributionExecutor.class)
+            .registerExecutor(PIPELINES_RUNTIME_ACROSS_TIMELINE.getId(),
+                PipelineRuntimeExecutor.class)
+            .registerExecutor(PIPELINE_TIMELINE.getId(), ActualPipelineRuntimeExecutor.class)
+            .registerExecutor(STAGE_TIMELINE.getId(), StageTimelineExecutor.class)
+            .registerExecutor(PRIORITY.getId(), PriorityExecutor.class)
+            .registerExecutor(PIPELINE_STATE_SUMMARY.getId(), PipelineStateSummaryExecutor.class)
+            .registerExecutor(JOBS_WAIT_VS_AGENTS_AVAILABLE.getId(), JobsWaitVsAgentsAvailableExecutor.class)
+            .registerExecutor(HELPER_AGENT_UTILIZATION.getId(), AgentUtilizationExecutor.class)
+        ;
 
         LOG.info("Initialized.");
     }

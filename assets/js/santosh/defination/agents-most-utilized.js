@@ -18,15 +18,15 @@ class AgentsMostUtilized {
         const option = GET_STACKED_BAR_TEMPLATE(info.categories, info.series);
         option.title.text = 'Agents with the Highest Utilization';
 
-        option.series.label = {
-            show: true,
-            position: 'top',
-            formatter: '{b}'
-        }
-
-        option.yAxis.axisLabel = {
-            show: false,
-        }
+        // option.series.label = {
+        //     show: true,
+        //     position: 'top',
+        //     formatter: '{b}'
+        // }
+        //
+        // option.yAxis.axisLabel = {
+        //     show: false,
+        // }
 
         // option.tooltip.formatter = this.tooltipFormatter();
 

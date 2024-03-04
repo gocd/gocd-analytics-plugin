@@ -216,4 +216,4 @@ function PipelineCharts() {
 }
 
 export default new PipelineCharts();
-export { DataTransforms };
+export { DataTransforms, auxiliaryMetrics };

@@ -59,4 +59,9 @@ public class StageDAO {
     public List<Stage> allStagesWithWorkflowIdInPipelines(SqlSession sqlSession, Long workflowID, List<String> pipelines) {
         return mapper(sqlSession).allStageInstancesWithWorkflowIdOfPipelines(workflowID, pipelines);
     }
+
+    public List<Stage> getAllStagesByPipelineNameAndCounter(SqlSession sqlSession,
+        String pipelineName) {
+        return mapper(sqlSession).stageByPipelineNameAndCounter(pipelineName);
+    }
 }
