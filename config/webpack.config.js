@@ -66,17 +66,17 @@ const pages = [
         based_on_template: 'basic-template.html.ejs'
     },
     {
-            name: 'pipeline-state-summary-chart',
-            entrypoint: 'analytics-tab/global/pipeline-state-summary-chart.js',
-            output_filename: 'pipeline-state-summary-chart.html',
-            based_on_template: 'basic-template.html.ejs'
-        },
-        {
-                    name: 'jobs-wait-vs-agents-available-chart',
-                    entrypoint: 'analytics-tab/global/jobs-wait-vs-agents-available-chart.js',
-                    output_filename: 'jobs-wait-vs-agents-available-chart.html',
-                    based_on_template: 'basic-template.html.ejs'
-                },
+        name: 'pipeline-state-summary-chart',
+        entrypoint: 'analytics-tab/global/pipeline-state-summary-chart.js',
+        output_filename: 'pipeline-state-summary-chart.html',
+        based_on_template: 'basic-template.html.ejs'
+    },
+    {
+        name: 'jobs-wait-vs-agents-available-chart',
+        entrypoint: 'analytics-tab/global/jobs-wait-vs-agents-available-chart.js',
+        output_filename: 'jobs-wait-vs-agents-available-chart.html',
+        based_on_template: 'basic-template.html.ejs'
+    },
     {
         name: 'agent-with-highest-utilization',
         entrypoint: 'analytics-tab/global/agent-with-highest-utilization-chart.js',
