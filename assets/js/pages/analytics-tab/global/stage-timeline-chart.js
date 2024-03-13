@@ -27,90 +27,70 @@ import {updateChartSize} from "../../../santosh/utils";
 import * as echarts from "echarts";
 
 import GraphManager from "../../../santosh/GraphManager";
+import stageTimelineHeader from "./stage-timeline-header";
 
 console.log("stage-timeline-chart.js start");
+
+let graphManager = null;
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
     console.log("onInit called with initial data as ", initialData);
 
-    const data = JSON.parse(initialData);
+    (async () => {
+        const pipelines = await requestMask(transport);
 
-    requestPipelineList(transport);
+        const pipelineSelector = await stageTimelineHeader(pipelines);
 
-    var chartDom = document.getElementById("chart-container");
+        graphManager = new GraphManager("standalone", transport);
 
-    var myChart = echarts.init(chartDom);
-    updateChartSize(myChart, 1, 0.8);
+        handleClick(pipelineSelector, transport);
 
-    var option;
+        console.log("*********** stage-timeline graph loaded");
+    })();
 
-    const chartMeta = document.getElementById("chart-container-meta");
-    chartMeta.innerHTML = `
-    <div style="position:relative;"><span style="font-size:18px"><b>Stage timeline across workflow</b></span>
+});
 
-    <input type="checkbox" id="weird" name="weird" value="weird">
-    <label for="weird"> Weird proof</label>
-
-    <select id="pipeline" style="float:right">
-</select>
-</div>
-<hr>
-    `;
-
-    const pipelineSelector = document.getElementById("pipeline");
-
+function handleClick(pipelineSelector, transport) {
     let selectedPipeline = pipelineSelector.value;
+
     pipelineSelector.addEventListener("change", function () {
         selectedPipeline = pipelineSelector.value;
 
-        transport
-            .request("fetch-analytics", {
-                metric: "stage_timeline",
-                pipeline_name: selectedPipeline,
-            })
-            .done((data) => {
-                console.log("fetch-analytics ", data);
-                // this.initSeries(this.child.getNextGraphName(), JSON.parse(data));
-                option = null;
-                option = stageTimeline(JSON.parse(data), myChart);
-                option && myChart.setOption(option, true);
-            })
-            .fail(console.error.toString());
+        requestStageTimeline(transport, selectedPipeline);
     });
 
-    // option = pipelineTimeline();
-    // option && myChart.setOption(option);
-
-    // const graphManager = new GraphManager("standalone", null);
-    // graphManager.initStandalone("pipeline-timeline", data);
-
-    console.log("*********** stage-timeline graph loaded");
-});
-
-function addPipelineNamesToSelect(data) {
-    const pipelineSelector = document.getElementById("pipeline");
-
-    data.forEach((pipeline) => {
-        const selectOption = document.createElement("option");
-        selectOption.setAttribute("value", pipeline.name);
-        selectOption.text = pipeline.name;
-
-        pipelineSelector.appendChild(selectOption);
-    });
+    requestStageTimeline(transport, selectedPipeline);
 }
 
-function requestPipelineList(transport) {
+async function requestMask(transport) {
+    return await requestPipelineList(transport);
+}
+
+function requestStageTimeline(transport, selectedPipeline) {
     transport
         .request("fetch-analytics", {
-            metric: "pipeline_list",
+            metric: "stage_timeline", pipeline_name: selectedPipeline,
         })
         .done((data) => {
             console.log("fetch-analytics ", data);
-            // this.initSeries(this.child.getNextGraphName(), JSON.parse(data));
-            addPipelineNamesToSelect(JSON.parse(data));
-            return JSON.parse(data);
+
+            graphManager.initSeries("stage-timeline", JSON.parse(data));
         })
         .fail(console.error.toString());
 }
+
+async function requestPipelineList(transport) {
+    return new Promise((resolve) => {
+        transport
+            .request("fetch-analytics", {
+                metric: "pipeline_list",
+            })
+            .done((data) => {
+                resolve(JSON.parse(data));
+            })
+            .fail(console.error.toString());
+    });
+}
+
 
 AnalyticsEndpoint.ensure("v1");
