@@ -30,11 +30,11 @@ function Formatters() {
   };
 
   this.agentHostnameFormatter = function agentHostnameFormatter(value) {
-    return "string" === typeof value ? value.split(AGENT_IDENT_SEP).shift() : value;
+    return _.escape("string" === typeof value ? value.split(AGENT_IDENT_SEP).shift() : value);
   };
 
   this.agentUuidFormatter = function agentUuidFormatter(value) {
-    return "string" === typeof value ? value.split(AGENT_IDENT_SEP).pop() : value;
+    return _.escape("string" === typeof value ? value.split(AGENT_IDENT_SEP).pop() : value);
   };
 
   this.agentBreadcrumbFormatter = function agentBreadcrumbFormatter(value) {
@@ -57,7 +57,7 @@ function Formatters() {
     const result = _.reduce(name.split("/"), (memo, el, i) => {
       if (i >= options.startAt) {
         const key = keys[i];
-        memo.push(Utils.tooltipKeyVal(key, el, key ? key.toLowerCase() : null));
+        memo.push(Utils.tooltipKeyVal(_.escape(key), _.escape(el), key ? key.toLowerCase() : null));
       }
       return memo;
     }, []);

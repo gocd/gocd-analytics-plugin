@@ -161,7 +161,7 @@ function getAgentStateTransitionSubtitle(status, data) {
   if (!timings.total) { return; }
 
   return `<div class="state-metrics">
-      ${status.map((s) => `<dl class="state-metric-item"> <dt class="key">${s}</dt> <dd class="val">${((timings[s] * 100) / timings.total).toFixed(1)}%</dd> </dl>`).join("")}
+      ${status.map((s) => `<dl class="state-metric-item"> <dt class="key">${_.escape(s)}</dt> <dd class="val">${((timings[s] * 100) / timings.total).toFixed(1)}%</dd> </dl>`).join("")}
     </div>`;
 }
 

@@ -115,7 +115,7 @@ const DataTransforms = {
 
 function tooltips(datum) {
   return Utils.withTooltipFooter("Click on data point to navigate to VSM", `${[
-    Utils.tooltipKeyVal("Pipeline", datum.pipeline_name),
+    Utils.tooltipKeyVal("Pipeline", _.escape(datum.pipeline_name)),
     Utils.tooltipKeyVal("Pipeline Instance", datum.pipeline_counter),
     Utils.tooltipKeyVal("Started At", moment(datum.scheduled_at).format("DD MMM YYYY [at] HH:mm:ss [Local Time]")),
     Utils.tooltipKeyVal("Completed At", moment(datum.completed_at).format("DD MMM YYYY [at] HH:mm:ss [Local Time]")),
@@ -125,7 +125,7 @@ function tooltips(datum) {
 
 function tooltipForNoRun(datum) {
 	return `${[
-		Utils.tooltipKeyVal("Pipeline", datum.pipeline_name),
+		Utils.tooltipKeyVal("Pipeline", _.escape(datum.pipeline_name)),
 		"<span>There has been no run of this pipeline in this workflow.</span>",
 	].join("<br/>")}`;
 }
@@ -173,7 +173,7 @@ function VSMCharts() {
 
           return [
             Utils.tooltipKeyVal("Pipeline Instance", stage.pipeline_counter),
-            Utils.tooltipKeyVal("Stage/Counter", `${stage.stage_name}/${stage.stage_counter}`),
+            Utils.tooltipKeyVal("Stage/Counter", `${_.escape(stage.stage_name)}/${stage.stage_counter}`),
             Utils.tooltipKeyVal("Scheduled at", moment(stage.scheduled_at).format("DD MMM YYYY [at] HH:mm:ss [Local Time]")),
             Utils.tooltipKeyVal("Completed at", moment(stage.completed_at).format("DD MMM YYYY [at] HH:mm:ss [Local Time]")),
             Utils.tooltipKeyVal("Build Time", moment.duration(stage.total_time_secs / 60, "m").humanizeForGoCD()),

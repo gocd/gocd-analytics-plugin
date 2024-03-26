@@ -39,14 +39,14 @@ function Utils() {
   this.infoMessage = function infoMessage(msgText) {
     return `<div class="info-message">
               <i class="fas fa-info-circle"></i>
-              <p>${msgText}</p>
+              <p>${_.escape(msgText)}</p>
             </div>`;
   };
 
   this.errorMessage = function errorMessage(msgText) {
     return `<div class="error-message">
               <i class="fas fa-exclamation-circle"></i>
-              <p>${msgText}</p>
+              <p>${_.escape(msgText)}</p>
             </div>`;
   };
 
@@ -55,18 +55,14 @@ function Utils() {
   };
 
   /** tooltip formatter for key -> value data */
-  this.tooltipKeyVal = function tooltipKeyVal(key, value, prefix) {
-    prefix = prefix ? `${prefix}-` : "";
-    const valEl = `<span class="${prefix}val">${value}</span>`;
-    return key ? `<strong class="${prefix}key">${key}</strong>: ${valEl}` : valEl;
+  this.tooltipKeyVal = function tooltipKeyVal(htmlKey, htmlValue, prefix) {
+    const escapedPrefix = prefix ? `${_.escape(prefix)}-` : "";
+    const valEl = `<span class="${escapedPrefix}val">${htmlValue}</span>`;
+    return htmlKey ? `<strong class="${escapedPrefix}key">${htmlKey}</strong>: ${valEl}` : valEl;
   };
 
   this.resultIndicator = function resultIndicator(result) {
-    return `<span class="result-${result.toLowerCase()}">\u25CF</span>`;
-  };
-
-  this.instanceTooltipIndicator = function instanceTooltipIndicator(counter, result) {
-    return this.tooltipKeyVal("Instance", `${counter} ${this.resultIndicator(result)}`);
+    return `<span class="result-${_.escape(result.toLowerCase())}">\u25CF</span>`;
   };
 
   /**
@@ -85,12 +81,12 @@ function Utils() {
   /** Generates tooltip markup to display series duration data with minute-second resolution */
   this.appendDurationData = function appendDurationData(header, points, unit) {
     return _.reduce(points, (memo, pt) => {
-      return `${memo}<br/>${this.tooltipKeyVal(pt.series.name, moment.duration(pt.y, unit).humanizeForGoCD())}`;
+      return `${memo}<br/>${this.tooltipKeyVal(_.escape(pt.series.name), moment.duration(pt.y, unit).humanizeForGoCD())}`;
     }, header);
   };
 
   this.withTooltipFooter = function withTooltipFooter(message, content) {
-    return `${content}<br/><footer class="point-tooltip-footer">${message}</footer>`;
+    return `${content}<br/><footer class="point-tooltip-footer">${_.escape(message)}</footer>`;
   };
 }
 
