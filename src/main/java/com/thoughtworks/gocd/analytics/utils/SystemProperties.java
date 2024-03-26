@@ -20,7 +20,8 @@ import com.thoughtworks.go.plugin.api.logging.Logger;
 
 public class SystemProperties {
     public static final Logger LOG = Logger.getLoggerFor(SystemProperties.class);
-    private static GoSystemProperty<Integer> ANALYTICS_DB_DATA_PURGE_INTERVAL = new GoIntSystemProperty("analytics.db.data.purge.interval.days", 30);
+    private static GoSystemProperty<Integer> ANALYTICS_DB_DATA_PURGE_INTERVAL =
+        new GoIntSystemProperty("analytics.db.data.purge.interval.days", 365);
 
     public static int getAnalyticsDbDataPurgeInterval() {
         return ANALYTICS_DB_DATA_PURGE_INTERVAL.getValue();
