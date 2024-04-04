@@ -2,6 +2,7 @@ import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import {getAreaSeries, getBarSeries} from "../template";
 import GET_STACKED_AREA_TEMPLATE from "./stacked-area";
 import {timestampToWords} from "../utils";
+import {sendLinkRequest} from "../../lib/gocd-link-support";
 
 /**
  * @class
@@ -86,6 +87,24 @@ class JobBuildTime {
 
     getSeriesIndex() {
         return 2;
+    }
+
+    nativeClickHandler(transport, params) {
+        console.log('nativeClickHandler params', params);
+        const instance = this.data[params.dataIndex];
+
+        const linkParam = {
+            link_to: 'job_details_page',
+            pipeline_name: instance.pipeline_name,
+            pipeline_counter: instance.pipeline_counter,
+            stage_name: instance.stage_name,
+            stage_counter: instance.stage_counter,
+            job_name: instance.job_name
+        };
+
+        console.log('linkParam = ', linkParam);
+
+        sendLinkRequest(transport, linkParam);
     }
 }
 

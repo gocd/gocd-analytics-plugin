@@ -3,9 +3,17 @@ class Breadcrumb {
     #dom
     names = [];
     callback
+    const
 
     constructor(callback) {
-        this.#dom = document.getElementById('chart-container-meta');
+        // const header = document.getElementById('chart-container-meta');
+        //
+        // const breadcrumbDiv = document.createElement('div');
+        // breadcrumbDiv.setAttribute('id', 'breadcrumb');
+        //
+        // header.append(breadcrumbDiv);
+
+        this.#dom = document.getElementById('breadcrumb');
         this.callback = callback;
     }
 
@@ -43,7 +51,7 @@ class Breadcrumb {
             link.textContent = name.caption;
             this.#dom.appendChild(link);
 
-            if (i < totalNames-1) {
+            if (i < totalNames - 1) {
                 const divider = document.createElement('span');
                 divider.innerText = '/';
                 divider.style.marginLeft = '12px';
@@ -82,26 +90,26 @@ class Breadcrumb {
         console.log('breadcrumb add with name, caption', name, caption);
 
         let found = false;
-        for(let i = 0; i < this.names.length; i++) {
-            if(this.names[i].name === name) {
+        for (let i = 0; i < this.names.length; i++) {
+            if (this.names[i].name === name) {
                 this.names[i].caption = caption;
                 found = true;
                 break;
             }
         }
-        if(!found) {
+        if (!found) {
             this.names.push({name: name, caption: caption});
         }
 
         console.log('breadcrumb names ', this.names);
 
-        if (this.names.length === 1 || this.names[0].name  === name) {
+        if (this.names.length === 1 || this.names[0].name === name) {
             console.log('breadcrumb only one item, not displaying breadcrumb. returning.');
             this.#dom.innerHTML = "";
             return;
         }
 
-        console.log('now I can show pipeline');
+        console.log('now I can show breadcrumb');
 
         this.draw(name);
 
