@@ -17,49 +17,20 @@
 // import "css/global";
 
 import AnalyticsEndpoint from "gocd-server-comms";
-import H from "js/lib/load-highcharts.js";
-import DrilldownSupport from "js/lib/drilldown-support.js";
-import PipelineChartFactories from "js/factories/pipeline-chart-factories.js";
-import JobChartFactories from "js/factories/job-chart-factories.js";
 import GraphManager from "../../../santosh/GraphManager";
-import StackedBar from "../../../santosh/stacked-bar";
+import Console from "../../../santosh/Console";
 
-// console.log("longest-waiting-pipelines-chart.js start");
+const c = new Console('longest-waiting-pipelines-chart.js', 'dev');
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
-  // console.log("onInit called with initial data as ", initialData);
+    const data = JSON.parse(initialData);
 
-  const data = JSON.parse(initialData),
-    factory = PipelineChartFactories.get("LongestWaitingPipelines"),
-    container = document.getElementById("chart-container"),
-    drilldowns = ["LongestWaitingJobs", "JobBuildTime"];
+    c.log("data = " + data);
 
-  // console.log("#1 Santosh data = ", data);
+    const graphManager = new GraphManager('series', transport, null, null, c);
+    graphManager.initSeries('LongestWaitingPipelines', data);
 
-  const config = DrilldownSupport.withDrilldown(
-    factory.config(data),
-    drilldowns,
-    JobChartFactories,
-    transport
-  );
-
-  // console.log(config);
-
-     // H.chart(container, config);
-
-  // const point = {name: "up42"}
-  // const params = JobChartFactories.get("LongestWaitingJobs").params(point);
-
-  // dataBank.push(data);
-  // billboard_bar(transport);
-
-  // new StackedBar("LongestWaitingPipelines", data, drilldowns, transport);
-
-  const graphManager = new GraphManager('series', transport);
-  graphManager.initSeries('LongestWaitingPipelines', data);
-
-
-  console.log("*********** graph loaded");
+    c.log("*********** graph loaded");
 });
 
 AnalyticsEndpoint.ensure("v1");
