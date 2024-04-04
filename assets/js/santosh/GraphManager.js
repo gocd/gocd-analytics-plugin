@@ -14,6 +14,18 @@ import stageTimeline from "./defination/stage-timeline";
 import Priority from "./defination/priority";
 import PipelineStateSummary from "./defination/pipeline-state-summary";
 import Worrysome from "./defination/worrysome";
+import jobTimeline from "./defination/job-timeline";
+import StageTimeline from "./defination/stage-timeline";
+import JobTimeline from "./defination/job-timeline";
+import stageTimelineHeader from "./defination/stage-timeline/stage-timeline-header";
+import Header from "./defination/stage-timeline/header";
+import RequestMaster from "../RequestMaster";
+import PipelinePriority from "./defination/pipeline-priority";
+import StagePriority from "./defination/stage-priority";
+import JobPriority from "./defination/job-priority";
+import PipelinePriorityDetails from "./defination/pipeline-priority-details";
+import StagePriorityDetails from "./defination/stage-priority-details";
+import JobPriorityDetails from "./defination/job-priority-details";
 
 class GraphManager {
     dataStack = [];
@@ -24,8 +36,9 @@ class GraphManager {
     base = null;
     registerHandleClick = false;
     breadcrumb = null;
+    settings = null;
 
-    constructor(type, transport) {
+    constructor(type, transport, informSeriesMovement = null, footer=null, c = null) {
         let chartDom = null;
 
         switch (type) {
@@ -43,6 +56,10 @@ class GraphManager {
 
         this.transport = transport;
 
+        this.informSeriesMovement = informSeriesMovement;
+        this.footer = footer;
+        this.c = c;
+
         this.chart = echarts.init(chartDom);
 
         this.initChart();
@@ -51,7 +68,7 @@ class GraphManager {
 
         this.breadcrumb = new Breadcrumb(this.restoreGraph.bind(this));
 
-        console.log("#GraphManager constructor");
+        this.c.log("#GraphManager constructor");
     }
 
     initChart() {
@@ -61,6 +78,11 @@ class GraphManager {
             this.updateChartSize();
         });
     }
+
+    clear() {
+        this.chart.clear();
+    }
+
 
     updateChartSize(chart, w, h) {
         var dynamicWidth = window.innerWidth * 0.9; // Adjust the multiplier as needed
@@ -78,8 +100,16 @@ class GraphManager {
         });
     }
 
-    initSeries(name, data) {
-        console.log("initSeries with name, data", name, data);
+    call_initSeriesWithNewSettings(settings) {
+        const params = this.current_initSeriesParams;
+        this.initSeries(params.name, params.data, settings);
+    }
+
+    initSeries(name, data, settings) {
+        console.log("initSeries with name, data, settings", name, data, settings);
+
+        this.current_initSeriesParams = {name: name, data: data, settings: settings};
+        this.settings = settings;
 
         switch (name) {
             case "LongestWaitingPipelines":
@@ -103,7 +133,39 @@ class GraphManager {
                 break;
 
             case "stage-timeline":
-                this.child = new stageTimeline(this.chart.getWidth, this.chart.getHeight);
+                this.child = new StageTimeline(settings, this.chart.getWidth(), this.chart.getHeight(), this.footer);
+                break;
+
+            case "JobsTimeline":
+                this.child = new JobTimeline(settings, this.chart.getWidth(), this.chart.getHeight());
+                break;
+
+            case "priority":
+                this.child = new Priority();
+                break;
+
+            case "PipelinePriority":
+                this.child = new PipelinePriority(settings);
+                break;
+
+            case "PipelinePriorityDetails":
+                this.child = new PipelinePriorityDetails(settings);
+                break;
+
+            case "StagePriorityDetails":
+                this.child = new StagePriorityDetails(settings);
+                break;
+
+            case "JobPriorityDetails":
+                this.child = new JobPriorityDetails(settings);
+                break;
+
+            case "StagePriority":
+                this.child = new StagePriority(settings);
+                break;
+
+            case "JobPriority":
+                this.child = new JobPriority(settings);
                 break;
 
             default:
@@ -130,9 +192,6 @@ class GraphManager {
             case "worrysome":
                 this.child = new Worrysome(data);
                 break;
-            case "priority":
-                this.child = new Priority();
-                break;
             case "pipeline-state-summary":
                 this.child = new PipelineStateSummary(data);
                 break;
@@ -143,6 +202,7 @@ class GraphManager {
         this.name = name;
 
         this.draw(data);
+        this.handleClick();
     }
 
     draw(data) {
@@ -172,6 +232,7 @@ class GraphManager {
         this.dataStack[this.child.getSeriesIndex()] = {
             name: this.name,
             data: data,
+            settings: this.current_initSeriesParams.settings
         };
     }
 
@@ -227,7 +288,7 @@ class GraphManager {
 
         // const newOption = this.dataStack[index];
 
-        this.initSeries(index, this.getStackData(index));
+        this.initSeries(index, this.getStackData(index), this.current_initSeriesParams.settings);
 
         // console.log('newOption = ', newOption);
         // this.chart.setOption(newOption, true);
@@ -239,6 +300,8 @@ class GraphManager {
         //     return;
         // }
 
+        console.log('👆 handleClick() for ', this.child);
+
         console.log("this.registerHandleClick = ", this.registerHandleClick);
         if (this.registerHandleClick) {
             console.warn("handleClick already registered. returning");
@@ -249,12 +312,24 @@ class GraphManager {
             "this.child.getNextGraphName() = ",
             this.child.getNextGraphName()
         );
-        if (this.child.getNextGraphName() === null) {
-            console.warn("There's no more graph in this series");
-            return;
-        }
+        // if (this.child.getNextGraphName() === null) {
+        //     console.warn("There's no more graph in this series");
+        //     return;
+        // }
 
         this.chart.on("click", (params) => {
+
+            if(typeof this.child.nativeClickHandler === 'function') {
+                this.child.nativeClickHandler(this.transport, params);
+            }
+
+            if (this.child.getNextGraphName() === null) {
+                console.warn("There's no more graph in this series");
+                return;
+            }
+
+            console.log('chart is clicked with params', params);
+
             this.clickCount++;
             console.log("clickCount = ", this.clickCount);
 
@@ -263,7 +338,7 @@ class GraphManager {
             console.log("current status name ", this.name);
 
             const requestParamPoint = this.child.get_requestParamsPoint(
-                params.dataIndex
+                params.dataIndex, params
             );
             console.log("request param point is ", requestParamPoint);
 
@@ -283,17 +358,28 @@ class GraphManager {
     }
 
     request(requestParams) {
+        console.log('requestParams = ', requestParams);
+
         this.requestCount++;
         console.log("requestCount = ", this.requestCount);
 
         console.log("current graph is name ", this.name);
-        console.log("next graph is name ", this.child.getNextGraphName());
+
+        const nextGraphName = this.child.getNextGraphName();
+
+        console.log("next graph is name ", nextGraphName);
 
         this.transport
             .request("fetch-analytics", requestParams)
-            .done((data) => {
+            .done(async (data) => {
                 console.log("fetch-analytics ", data);
-                this.initSeries(this.child.getNextGraphName(), JSON.parse(data));
+                let settings;
+                if (this.informSeriesMovement !== null) {
+                    settings = await this.informSeriesMovement(nextGraphName, requestParams);
+                    console.log('settings = ', settings);
+                }
+                this.initSeries(nextGraphName, JSON.parse(data), settings);
+
             })
             .fail(console.error.toString());
     }
