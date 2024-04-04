@@ -19,6 +19,7 @@ package com.thoughtworks.gocd.analytics.dao;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.gocd.analytics.mapper.JobMapper;
 import com.thoughtworks.gocd.analytics.models.Job;
+import com.thoughtworks.gocd.analytics.models.JobTimeSummary;
 import org.apache.ibatis.session.SqlSession;
 
 import java.time.ZonedDateTime;
@@ -66,5 +67,18 @@ public class JobDAO {
 
     public List<Job> allWaitingFor(SqlSession sqlSession) {
         return mapper(sqlSession).allWaitingFor();
+    }
+
+    public List<Job> getAllJobsByStageName(SqlSession sqlSession, String stageName,
+            int pipelineCounterStart, int pipelineCounterEnd) {
+        return mapper(sqlSession).allJobsOfStage(stageName, pipelineCounterStart, pipelineCounterEnd);
+    }
+
+    public List<JobTimeSummary> jobSummary(SqlSession sqlSession, String result) {
+        return mapper(sqlSession).jobSummary(result);
+    }
+
+    public List<Job> jobSummaryDetails(SqlSession sqlSession, String jobName, String result) {
+        return mapper(sqlSession).jobSummaryDetails(jobName,result);
     }
 }

@@ -17,6 +17,8 @@
 package com.thoughtworks.gocd.analytics.mapper;
 
 import com.thoughtworks.gocd.analytics.models.Job;
+import com.thoughtworks.gocd.analytics.models.JobTimeSummary;
+import com.thoughtworks.gocd.analytics.models.Stage;
 import org.apache.ibatis.annotations.*;
 
 import java.time.ZonedDateTime;
@@ -172,4 +174,38 @@ public interface JobMapper {
         + "  total_time AS time_waiting_secs\n"
         + "FROM MergedData;")
     List<Job> allWaitingFor();
+
+    @ResultMap("Job")
+    @Select("select distinct * from jobs where stage_name = #{stageName} and pipeline_counter "
+        + "between #{pipelineCounterStart} and #{pipelineCounterEnd} order by pipeline_counter "
+        + "desc")
+    List<Job> allJobsOfStage(@Param("stageName") String stageName,
+        @Param("pipelineCounterStart") int pipelineCounterStart,
+        @Param("pipelineCounterEnd") int pipelineCounterEnd);
+
+
+    @Results(id="job_summary", value = {
+        @Result(property = "jobName", column = "job_name"),
+        @Result(property = "pipelineName", column = "pipeline_name"),
+        @Result(property = "stageName", column = "stage_name"),
+        @Result(property = "times", column = "times"),
+        @Result(property = "sumTotalTimeSecs", column = "sum_total_time_secs"),
+        @Result(property = "sumTimeWaitingSecs", column = "sum_time_waiting_secs"),
+        @Result(property = "sumTimeBuildingSecs", column = "sum_time_building_secs")
+    })
+    @Select("SELECT pipeline_name, stage_name, job_name,\n"
+        + "       SUM(CASE WHEN result = #{result} THEN 1 ELSE 0 END) AS times,\n"
+        + "       SUM(CASE WHEN result = #{result} THEN duration_secs ELSE 0 END) AS sum_total_time_secs,\n"
+        + "       SUM(CASE WHEN result = #{result} THEN time_waiting_secs ELSE 0 END) AS sum_time_waiting_secs,\n"
+        + "       SUM(CASE WHEN result = #{result} THEN time_building_secs ELSE 0 END) AS sum_time_building_secs\n"
+        + "FROM jobs\n"
+        + "GROUP BY pipeline_name, stage_name, job_name\n"
+        + "HAVING SUM(CASE WHEN result = #{result} THEN 1 ELSE 0 END) > 0\n"
+        + "order by times desc;")
+    List<JobTimeSummary> jobSummary(@Param("result") String result);
+
+    @ResultMap("Job")
+    @Select("SELECT * FROM jobs j WHERE j.job_name = #{jobName} AND j.result = #{result} ORDER BY"
+        + " j.scheduled_at")
+    List<Job> jobSummaryDetails(@Param("jobName") String jobName, @Param("result") String result);
 }
