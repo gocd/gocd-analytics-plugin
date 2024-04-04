@@ -26,7 +26,8 @@
     "litepicker": "^2",
     "lodash": "^4.17.21",
     "moment": "^2",
-    "moment-duration-format": "^2.3.2"
+    "moment-duration-format": "^2.3.2",
+    "slim-select": "^2.0"
   },
   "devDependencies": {
     "@babel/core": "^7",
