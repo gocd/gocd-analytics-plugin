@@ -30,6 +30,11 @@ public interface AnalyticTypes {
     String PARAM_PIPELINE_NAME = "pipeline_name";
     String PARAM_STAGE_NAME = "stage_name";
     String PARAM_JOB_NAME = "job_name";
+
+    String PARAM_PIPELINE_COUNTER_START = "pipeline_counter_start";
+    String PARAM_PIPELINE_COUNTER_END = "pipeline_counter_end";
+
+    String PARAM_RESULT = "result";
     String PARAM_START_DATE = "start";
     String PARAM_END_DATE = "end";
 

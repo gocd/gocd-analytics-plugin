@@ -49,8 +49,21 @@ public enum AvailableAnalytics {
     PIPELINE_TIMELINE(AnalyticTypes.TYPE_DASHBOARD, "pipeline_timeline", "Pipeline timeline"),
 
     STAGE_TIMELINE(AnalyticTypes.TYPE_DASHBOARD, "stage_timeline", "Stage Timeline"),
+    JOB_TIMELINE(AnalyticTypes.TYPE_DRILLDOWN, "job_timeline", "Job Timeline"),
 
     PRIORITY(AnalyticTypes.TYPE_DASHBOARD, "priority", "Priority"),
+    PRIORITY_PIPELINE(AnalyticTypes.TYPE_DRILLDOWN, "priority_pipeline", "Priority Pipeline"),
+    PRIORITY_STAGE(AnalyticTypes.TYPE_DRILLDOWN, "priority_stage", "Priority Stage"),
+    PRIORITY_JOB(AnalyticTypes.TYPE_DRILLDOWN, "priority_job", "Priority Job"),
+
+    PRIORITY_PIPELINE_DETAILS(AnalyticTypes.TYPE_DRILLDOWN, "priority_pipeline_details",
+        "Priority Pipeline Details"),
+
+    PRIORITY_STAGE_DETAILS(AnalyticTypes.TYPE_DRILLDOWN, "priority_stage_details",
+        "Priority Stage Details"),
+
+    PRIORITY_JOB_DETAILS(AnalyticTypes.TYPE_DRILLDOWN, "priority_job_details",
+        "Priority Job Details"),
 
     PIPELINE_STATE_SUMMARY(AnalyticTypes.TYPE_DASHBOARD, "pipeline_state_summary", "Pipeline "
         + "State Summary"),

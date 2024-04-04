@@ -34,15 +34,22 @@ import com.thoughtworks.gocd.analytics.executors.agent.AgentUtilizationExecutor;
 import com.thoughtworks.gocd.analytics.executors.agent.AgentsWithHighestUtilizationExecutor;
 import com.thoughtworks.gocd.analytics.executors.job.JobBuildTimeExecutor;
 import com.thoughtworks.gocd.analytics.executors.job.JobBuildTimeOnAgentExecutor;
+import com.thoughtworks.gocd.analytics.executors.job.JobTimelineExecutor;
 import com.thoughtworks.gocd.analytics.executors.job.JobsHighestWaitTimeExecutor;
 import com.thoughtworks.gocd.analytics.executors.job.JobsHighestWaitTimeOnAgentExecutor;
 import com.thoughtworks.gocd.analytics.executors.job.JobsWaitVsAgentsAvailableExecutor;
+import com.thoughtworks.gocd.analytics.executors.job.PriorityJobDetailsExecutor;
+import com.thoughtworks.gocd.analytics.executors.job.PriorityJobExecutor;
 import com.thoughtworks.gocd.analytics.executors.pipeline.ActualPipelineRuntimeExecutor;
 import com.thoughtworks.gocd.analytics.executors.pipeline.PipelineBuildTimeExecutor;
 import com.thoughtworks.gocd.analytics.executors.pipeline.PipelineRuntimeExecutor;
 import com.thoughtworks.gocd.analytics.executors.pipeline.PipelineStateSummaryExecutor;
 import com.thoughtworks.gocd.analytics.executors.pipeline.PipelinesHighestWaitTimeExecutor;
 import com.thoughtworks.gocd.analytics.executors.pipeline.PriorityExecutor;
+import com.thoughtworks.gocd.analytics.executors.pipeline.PriorityPipelineDetailsExecutor;
+import com.thoughtworks.gocd.analytics.executors.pipeline.PriorityPipelineExecutor;
+import com.thoughtworks.gocd.analytics.executors.stage.PriorityStageDetailsExecutor;
+import com.thoughtworks.gocd.analytics.executors.stage.PriorityStageExecutor;
 import com.thoughtworks.gocd.analytics.executors.stage.StageBuildTimeExecutor;
 import com.thoughtworks.gocd.analytics.executors.stage.StageTimelineExecutor;
 import com.thoughtworks.gocd.analytics.executors.vsm.VSMTrendAcrossMultipleRunsExecutor;
@@ -127,7 +134,14 @@ public class AnalyticsPlugin implements GoPlugin, Initializable {
                 PipelineRuntimeExecutor.class)
             .registerExecutor(PIPELINE_TIMELINE.getId(), ActualPipelineRuntimeExecutor.class)
             .registerExecutor(STAGE_TIMELINE.getId(), StageTimelineExecutor.class)
+            .registerExecutor(JOB_TIMELINE.getId(), JobTimelineExecutor.class)
             .registerExecutor(PRIORITY.getId(), PriorityExecutor.class)
+            .registerExecutor(PRIORITY_PIPELINE.getId(), PriorityPipelineExecutor.class)
+            .registerExecutor(PRIORITY_STAGE.getId(), PriorityStageExecutor.class)
+            .registerExecutor(PRIORITY_JOB.getId(), PriorityJobExecutor.class)
+            .registerExecutor(PRIORITY_PIPELINE_DETAILS.getId(), PriorityPipelineDetailsExecutor.class)
+            .registerExecutor(PRIORITY_STAGE_DETAILS.getId(), PriorityStageDetailsExecutor.class)
+            .registerExecutor(PRIORITY_JOB_DETAILS.getId(), PriorityJobDetailsExecutor.class)
             .registerExecutor(PIPELINE_STATE_SUMMARY.getId(), PipelineStateSummaryExecutor.class)
             .registerExecutor(JOBS_WAIT_VS_AGENTS_AVAILABLE.getId(), JobsWaitVsAgentsAvailableExecutor.class)
             .registerExecutor(HELPER_AGENT_UTILIZATION.getId(), AgentUtilizationExecutor.class)
