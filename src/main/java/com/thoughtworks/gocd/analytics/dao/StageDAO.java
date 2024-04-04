@@ -20,6 +20,7 @@ import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.gocd.analytics.mapper.StageMapper;
 import com.thoughtworks.gocd.analytics.models.PipelineInstance;
 import com.thoughtworks.gocd.analytics.models.Stage;
+import com.thoughtworks.gocd.analytics.models.StageTimeSummary;
 import org.apache.ibatis.session.SqlSession;
 
 import java.time.ZonedDateTime;
@@ -63,5 +64,14 @@ public class StageDAO {
     public List<Stage> getAllStagesByPipelineNameAndCounter(SqlSession sqlSession,
         String pipelineName) {
         return mapper(sqlSession).stageByPipelineNameAndCounter(pipelineName);
+    }
+
+    public List<StageTimeSummary> stageSummary(SqlSession sqlSession, String result) {
+        return mapper(sqlSession).stageSummary(result);
+    }
+
+    public List<Stage> stageSummaryDetails(SqlSession sqlSession, String stageName,
+        String result) {
+        return mapper(sqlSession).stageSummaryDetails(stageName, result);
     }
 }

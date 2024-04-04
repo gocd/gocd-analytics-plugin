@@ -17,6 +17,7 @@
 package com.thoughtworks.gocd.analytics.mapper;
 
 import com.thoughtworks.gocd.analytics.models.Stage;
+import com.thoughtworks.gocd.analytics.models.StageTimeSummary;
 import org.apache.ibatis.annotations.*;
 
 import java.time.ZonedDateTime;
@@ -114,4 +115,27 @@ public interface StageMapper {
     @Select("select * from stages where id in (select stage_id from pipeline_workflows pw where "
         + "pipeline_id in (select id from pipelines p where name = #{pipelineName} limit 10))")
     List<Stage> stageByPipelineNameAndCounter(@Param("pipelineName") String pipelineName);
+
+    @Results(id="stage_summary", value = {
+        @Result(property = "pipelineName", column = "pipeline_name"),
+        @Result(property = "stageName", column = "stage_name"),
+        @Result(property = "times", column = "times"),
+        @Result(property = "sumTotalTimeSecs", column = "sum_total_time_secs"),
+        @Result(property = "sumTimeWaitingSecs", column = "sum_time_waiting_secs")
+    })
+    @Select("SELECT pipeline_name, stage_name,\n"
+        + "       SUM(CASE WHEN result = #{result} THEN 1 ELSE 0 END) AS times,\n"
+        + "       SUM(CASE WHEN result = #{result} THEN duration_secs ELSE 0 END) AS sum_total_time_secs,\n"
+        + "       SUM(CASE WHEN result = #{result} THEN time_waiting_secs ELSE 0 END) AS sum_time_waiting_secs\n"
+        + "FROM stages\n"
+        + "GROUP BY pipeline_name, stage_name\n"
+        + "HAVING SUM(CASE WHEN result = #{result} THEN 1 ELSE 0 END) > 0\n"
+        + "order by times desc;")
+    List<StageTimeSummary> stageSummary(@Param("result") String result);
+
+    @ResultMap("Stage")
+    @Select("SELECT * FROM stages s WHERE s.stage_name = #{stageName} and s.result = #{result} "
+        + "ORDER BY s.scheduled_at")
+    List<Stage> stageSummaryDetails(@Param("stageName") String stageName,
+        @Param("result") String result);
 }
