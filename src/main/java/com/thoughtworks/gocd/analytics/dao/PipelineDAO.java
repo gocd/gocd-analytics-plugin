@@ -22,6 +22,8 @@ import com.thoughtworks.gocd.analytics.models.Pipeline;
 import com.thoughtworks.gocd.analytics.models.PipelineInstance;
 import com.thoughtworks.gocd.analytics.models.PipelineStateSummary;
 import com.thoughtworks.gocd.analytics.models.PipelineTimeSummary;
+import com.thoughtworks.gocd.analytics.models.PipelineTimeSummaryDetails;
+import com.thoughtworks.gocd.analytics.models.PipelineTimeSummaryTwo;
 import org.apache.ibatis.session.SqlSession;
 
 import java.time.ZonedDateTime;
@@ -40,6 +42,10 @@ public class PipelineDAO {
 
     public PipelineTimeSummary pipelineSummary(SqlSession sqlSession) {
         return mapper(sqlSession).pipelineSummary();
+    }
+
+    public List<PipelineTimeSummaryTwo> pipelineSummaryTwo(SqlSession sqlSession, String result) {
+        return mapper(sqlSession).pipelineSummaryTwo(result);
     }
 
     public List<PipelineStateSummary> pipelineStateSummary(SqlSession sqlSession) {
@@ -78,6 +84,11 @@ public class PipelineDAO {
     public List<PipelineInstance> allPipelineWithNameAndCounter(SqlSession sqlSession,
         String pipelineName) {
         return mapper(sqlSession).allPipelineWithNameAndCounter(pipelineName);
+    }
+
+    public List<PipelineInstance> pipelineSummaryDetails(SqlSession sqlSession,
+        String pipeline_name, String result) {
+        return mapper(sqlSession).pipelineSummaryDetails(pipeline_name, result);
     }
 
     private PipelineMapper mapper(SqlSession sqlSession) {
