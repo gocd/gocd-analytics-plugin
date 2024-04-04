@@ -1,268 +1,9 @@
 import _ from "lodash";
 
 import * as echarts from "echarts";
-import {updateChartSize} from "../utils";
+import {asyncRequest, color, groupBy, secondsToHms, uniq, uniqBy, updateChartSize} from "../utils";
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
-
-function groupByPipelineCounter(objects) {
-    // const obj = [{pipeline_counter: 1}];
-    // return _.groupBy(objects, 'pipeline_counter');
-
-    const grouped = {};
-
-    for (const obj of objects) {
-        const {pipeline_counter} = obj;
-
-        if (!grouped[pipeline_counter]) {
-            grouped[pipeline_counter] = [];
-        }
-
-        grouped[pipeline_counter].push(obj);
-    }
-
-    return grouped;
-}
-
-function removeDuplicateStages(grouped) {
-    console.log("removeDuplicateStages grouped = ", grouped);
-
-    const groupedStages = [];
-
-    // Group objects by stage_name
-    for (const obj of grouped) {
-        const {stage_name, scheduled_at} = obj;
-
-        if (
-            !groupedStages[stage_name] ||
-            scheduled_at > groupedStages[stage_name].scheduled_at
-        ) {
-            groupedStages[stage_name] = obj;
-        }
-    }
-
-    // Convert the grouped stages back to an array
-    const uniqueStages = Object.values(groupedStages);
-
-    console.log("removeDuplicate result = ", uniqueStages);
-
-    return uniqueStages;
-}
-
-function getUniqueStageNames(data) {
-    let stage_names = [];
-    data.forEach((pipline_counter) => {
-        pipline_counter.forEach((stage_info) => {
-            stage_names.push(stage_info.stage_name);
-        });
-    });
-
-    const uniqueStageNameSet = new Set(stage_names);
-    console.log(uniqueStageNameSet);
-
-    const uniqueStageNameArray = Array.from(uniqueStageNameSet);
-
-    console.log("unqiue stage names as array ", uniqueStageNameArray);
-
-    return uniqueStageNameArray;
-}
-
-function groupBy(list, key) {
-    return list.reduce((acc, cur) => {
-        const keyValue = cur[key];
-        acc[keyValue] = acc[keyValue] || [];
-        acc[keyValue].push(cur);
-        return acc;
-    }, {});
-}
-
-function uniqBy(list, property) {
-    const seenValues = new Set();
-    return list.filter((item) => {
-        const value = item[property];
-        if (!seenValues.has(value)) {
-            seenValues.add(value);
-            return true;
-        }
-        return false;
-    });
-}
-
-function uniq(arr) {
-    return [...new Set(arr)];
-}
-
-function getStageCompletionTime(dataArray, targetStageName) {
-    for (const item of dataArray) {
-        if (item.stage_name === targetStageName) {
-            return item.total_time_secs;
-        }
-    }
-    // If the specified stage name is not found, return an appropriate value (e.g., -1).
-    return 0;
-}
-
-function stageTimelineFunction(data, myChart) {
-    //   prepareData(data);
-
-    //   getKeys();
-
-    console.log("stageTimeline data = ", data);
-
-    //   console.log("VERSION", _.VERSION);
-
-    // console.log("lodash now ", _.now());
-
-    // console.log("Math.floor", _.groupBy([6.1, 4.2, 6.3], Math.floor));
-
-    // console.log("length", _.groupBy(["one", "two", "three"], "length"));
-
-    const groupedResult = groupBy(data, "pipeline_counter");
-
-    for (const key in groupedResult) {
-        // Sort the array in descending order of scheduled_at
-        groupedResult[key].sort(
-            (a, b) => new Date(b.scheduled_at) - new Date(a.scheduled_at)
-        );
-
-        // Remove duplicates based on stage_name
-        groupedResult[key] = uniqBy(groupedResult[key], "stage_name");
-    }
-
-    console.log("groupedResult ", groupedResult);
-
-    let keys = Object.keys(groupedResult);
-    console.log("keys", keys);
-
-    let stageNames = uniq(
-        Object.values(groupedResult).flatMap((item) =>
-            item.map((entry) => entry.stage_name)
-        )
-    );
-
-    console.log("stageNames", stageNames);
-    console.log("stageNames type array = ", Array.isArray(stageNames));
-
-    let rdata = [];
-
-    // for (const index in groupedResult) {
-    //   const d = [];
-    //   const workflowStages = groupedResult[index];
-    //   stageNames.forEach((stage) => {
-    //     d.push(getStageCompletionTime(workflowStages, stage));
-    //   });
-
-    //   console.log("d = ", d);
-    //   rdata.push(d);
-    // }
-
-    console.log("rdata = ", rdata);
-
-    stageNames.forEach((stage) => {
-        const d = [];
-        Object.values(groupedResult).flatMap((item) =>
-            item.map((entry) => {
-                if (entry.stage_name === stage) d.push(entry.time_waiting_secs);
-            })
-        );
-        rdata.push(d);
-    });
-
-    // var chartDom = document.getElementById("chart-container");
-
-    // var myChart = echarts.init(chartDom);
-    // updateChartSize(myChart, 1, 0.8);
-
-    var option;
-
-    // There should not be negative values in rawData
-    const rawData = rdata;
-
-    const totalData = [];
-    for (let i = 0; i < rawData[0].length; ++i) {
-        let sum = 0;
-        for (let j = 0; j < rawData.length; ++j) {
-            sum += rawData[j][i];
-        }
-        totalData.push(sum);
-    }
-    const grid = {
-        left: 100,
-        right: 100,
-        top: 50,
-        bottom: 50,
-    };
-    const gridWidth = myChart.getWidth() - grid.left - grid.right;
-    const gridHeight = myChart.getHeight() - grid.top - grid.bottom;
-    const categoryWidth = gridWidth / rawData[0].length;
-    const barWidth = categoryWidth * 0.6;
-    const barPadding = (categoryWidth - barWidth) / 2;
-    const series = stageNames.map((name, sid) => {
-        return {
-            name,
-            type: "bar",
-            stack: "total",
-            barWidth: "60%",
-            label: {
-                show: true,
-                formatter: (params) => Math.round(params.value * 1000) / 10 + "%",
-            },
-            data: rawData[sid].map((d, did) =>
-                totalData[did] <= 0 ? 0 : d / totalData[did]
-            ),
-        };
-    });
-    const color = ["#5470c6", "#91cc75", "#fac858", "#ee6666", "#73c0de"];
-    const elements = [];
-    for (let j = 1, jlen = rawData[0].length; j < jlen; ++j) {
-        const leftX = grid.left + categoryWidth * j - barPadding;
-        const rightX = leftX + barPadding * 2;
-        let leftY = grid.top + gridHeight;
-        let rightY = leftY;
-        for (let i = 0, len = series.length; i < len; ++i) {
-            const points = [];
-            const leftBarHeight = (rawData[i][j - 1] / totalData[j - 1]) * gridHeight;
-            points.push([leftX, leftY]);
-            points.push([leftX, leftY - leftBarHeight]);
-            const rightBarHeight = (rawData[i][j] / totalData[j]) * gridHeight;
-            points.push([rightX, rightY - rightBarHeight]);
-            points.push([rightX, rightY]);
-            points.push([leftX, leftY]);
-            leftY -= leftBarHeight;
-            rightY -= rightBarHeight;
-            elements.push({
-                type: "polygon",
-                shape: {
-                    points,
-                },
-                style: {
-                    fill: color[i],
-                    opacity: 0.25,
-                },
-            });
-        }
-    }
-    option = {
-        legend: {
-            selectedMode: false,
-        },
-        grid,
-        yAxis: {
-            type: "value",
-        },
-        xAxis: {
-            type: "category",
-            data: keys,
-        },
-        series,
-        graphic: {
-            elements,
-        },
-    };
-
-    // option && myChart.setOption(option);
-
-    return option;
-}
+import momentHumanizeForGocd from "../../lib/moment-humanize-for-gocd";
 
 /**
  * @class
@@ -273,32 +14,115 @@ class StageTimeline {
     chartWidth = null;
     chartHeight = null;
 
-    constructor(width, height) {
+    keys = [];
+
+    constructor(settings, width, height, footer) {
+        this.settings = settings;
+
         this.chartWidth = width;
         this.chartHeight = height;
+
+        this.footer = footer;
+
+        console.log('5. stage-timeline after init');
+    }
+
+    getTooltip(counter, stage_name) {
+        return counter;
+
+        const filteredObjects = this.data.filter(obj => obj.pipeline_counter === counter && obj.stage_name === stage_name);
+
+        const latestObject = filteredObjects.reduce((latest, current) => {
+            const latestTimestamp = new Date(latest.scheduled_at);
+            const currentTimestamp = new Date(current.scheduled_at);
+            return currentTimestamp > latestTimestamp ? current : latest;
+        }, filteredObjects[0]);
+
+        console.log('filteredObjects = ', filteredObjects);
+        console.log('latestObject = ', latestObject);
+
+        return latestObject;
     }
 
     draw(data) {
+
         this.data = data;
 
-        const {keys, grid, series, elements} = this.prepareData(this.data, this.chartWidth, this.chartHeight);
+        const filteredObjects = data.filter(obj => obj.pipeline_counter === 14 && obj.stage_name === 'stage-6');
+        console.log('filteredObjects = ', filteredObjects);
+
+        const {
+            keys, grid, series, elements, failedPipelineCounters
+        } = this.prepareData(this.data, this.chartWidth, this.chartHeight);
+
+        this.keys = keys;
+
+        console.log('stage-timeline draw keys, grid, series, elements = ', keys, grid, series, elements);
 
         var option;
 
         option = {
-            legend: {
-                selectedMode: false,
+            title: {
+                text: 'Stage timeline for pipeline'
             },
-            grid,
-            yAxis: {
+            tooltip: {
+                // trigger: "axis",
+                axisPointer: {
+                    type: "shadow",
+                },
+                formatter: (params) => {
+
+                    console.log('I will search data ', data);
+
+                    const pipeline_counter = params.name;
+                    const stage_name = params.seriesName;
+
+                    console.log('formatter params', params);
+                    console.log('to find pipeline_counter and stage_name', pipeline_counter, stage_name);
+                    console.log('typeof pipeline_counter', typeof pipeline_counter, ' typeof stage_name', typeof stage_name);
+
+                    const filteredObjects = data.filter(
+                        d =>
+                            d.pipeline_counter === parseInt(pipeline_counter)
+                            &&
+                            d.stage_name === stage_name
+                    );
+                    console.log('filteredObjects = ', filteredObjects);
+
+                    const latestObject = filteredObjects.reduce((latest, current) => {
+                        const latestTimestamp = new Date(latest.scheduled_at);
+                        const currentTimestamp = new Date(current.scheduled_at);
+                        return currentTimestamp > latestTimestamp ? current : latest;
+                    }, filteredObjects[0]);
+
+                    console.log('latestObject = ', latestObject);
+
+                    return `
+${params.marker} ${latestObject.stage_name}
+<br>
+🕰 Waiting time:️ ${secondsToHms(latestObject.time_waiting_secs)}
+<br>
+🔨 Building time: ${secondsToHms(latestObject.total_time_secs - latestObject.time_waiting_secs)}
+<br>
+⬆ Total time:️ ${secondsToHms(latestObject.total_time_secs)}
+<br>
+🗳️Result: ${latestObject.result}
+<hr>
+👦 Approved by: ${latestObject.approved_by}
+<hr>
+Scheduled at: ${latestObject.scheduled_at}
+<br>
+Completed at: ${latestObject.completed_at}
+`;
+                }
+            },
+            color: color, legend: {
+                selectedMode: false, top: "bottom", show: this.settings.showLegend === "Show" ? true : false
+            }, grid, yAxis: {
                 type: "value",
-            },
-            xAxis: {
-                type: "category",
-                data: keys,
-            },
-            series,
-            graphic: {
+            }, xAxis: {
+                type: "category", data: keys,
+            }, series, graphic: {
                 elements,
             },
         };
@@ -307,48 +131,102 @@ class StageTimeline {
     }
 
     prepareData(data, chartWidth, chartHeight) {
-        console.log("stageTimeline data = ", data);
+        console.log("1 stage-timeline data = ", data);
+
+        console.log('1.2 stage-timeline chartWidth, chartHeight', chartWidth, chartHeight);
+
+        const failedPipelineCounters = Array.from(new Set(data.filter((i) => i.result === "Failed").map((i) => i.pipeline_counter)));
+        console.log("failedPipelineCounters = ", failedPipelineCounters);
+
+        const passedPipelineCounters = Array.from(new Set(data.filter((i) => i.result === "Passed").map((i) => i.pipeline_counter)));
+        console.log("passedPipelineCounters = ", passedPipelineCounters);
+
+        const cancelledPipelineCounters = Array.from(new Set(data.filter((i) => i.result === "Cancelled").map((i) => i.pipeline_counter)));
+        console.log("cancelledPipelineCounters = ", cancelledPipelineCounters);
+
 
         const groupedResult = groupBy(data, "pipeline_counter");
 
+        console.log('2 stage-timeline groupedResult = ', groupedResult);
+
         for (const key in groupedResult) {
             // Sort the array in descending order of scheduled_at
-            groupedResult[key].sort(
-                (a, b) => new Date(b.scheduled_at) - new Date(a.scheduled_at)
-            );
+            groupedResult[key].sort((a, b) => new Date(b.scheduled_at) - new Date(a.scheduled_at));
 
             // Remove duplicates based on stage_name
             groupedResult[key] = uniqBy(groupedResult[key], "stage_name");
         }
 
-        console.log("groupedResult ", groupedResult);
+        console.log('2.1 stage-timeline groupedResult = ', groupedResult);
+
+        let footerMessage = '';
+
+        switch (this.settings.showPipelineCounterResult) {
+            case 'Only Passed':
+                failedPipelineCounters.forEach((pipelineCounter) => {
+                    delete groupedResult[pipelineCounter];
+                });
+                cancelledPipelineCounters.forEach((pipelineCounter) => {
+                    delete groupedResult[pipelineCounter];
+                });
+                footerMessage = "Instances ignored - Failed: " + failedPipelineCounters.length + " Cancelled: " + cancelledPipelineCounters.length;
+                break;
+            case 'Only Failed':
+                passedPipelineCounters.forEach((pipelineCounter) => {
+                    delete groupedResult[pipelineCounter];
+                });
+                cancelledPipelineCounters.forEach((pipelineCounter) => {
+                    delete groupedResult[pipelineCounter];
+                });
+                footerMessage = "Instances ignored - Passed: " + passedPipelineCounters.length + " Cancelled: " + cancelledPipelineCounters.length;
+                break;
+            case 'Only Cancelled':
+                passedPipelineCounters.forEach((pipelineCounter) => {
+                    delete groupedResult[pipelineCounter];
+                });
+                failedPipelineCounters.forEach((pipelineCounter) => {
+                    delete groupedResult[pipelineCounter];
+                });
+                footerMessage = "Instances ignored - Passed: " + passedPipelineCounters.length + " Failed: " + failedPipelineCounters.length;
+                break;
+        }
+
+        this.footer.showMessage(footerMessage, "Info", false);
 
         let keys = Object.keys(groupedResult);
-        console.log("keys", keys);
+        console.log('3 stage-timeline keys = ', keys);
 
-        let stageNames = uniq(
-            Object.values(groupedResult).flatMap((item) =>
-                item.map((entry) => entry.stage_name)
-            )
-        );
+        let stageNames = uniq(Object.values(groupedResult).flatMap((item) => item.map((entry) => entry.stage_name)));
 
-        console.log("stageNames", stageNames);
-        console.log("stageNames type array = ", Array.isArray(stageNames));
+        console.log('4 stage-timeline stageNames = ', stageNames);
 
         let rdata = [];
 
         stageNames.forEach((stage) => {
             const d = [];
-            Object.values(groupedResult).flatMap((item) =>
-                item.map((entry) => {
-                    if (entry.stage_name === stage) d.push(entry.time_waiting_secs);
-                })
-            );
+            Object.values(groupedResult).flatMap((item) => item.map((entry) => {
+                // if (entry.stage_name === stage) d.push(entry.time_waiting_secs);
+                if (entry.stage_name === stage) {
+                    switch (this.settings.showData) {
+                        case 'time_waiting_secs':
+                            d.push(entry.time_waiting_secs);
+                            break;
+                        case 'time_building_secs':
+                            d.push(entry.total_time_secs - entry.time_waiting_secs);
+                            break;
+                        case 'total_time_secs':
+                            d.push(entry.total_time_secs);
+                            break;
+                    }
+                }
+            }));
             rdata.push(d);
         });
 
         // There should not be negative values in rawData
         const rawData = rdata;
+
+        console.log('5 stage-timeline rawData = ', rawData);
 
         const totalData = [];
         for (let i = 0; i < rawData[0].length; ++i) {
@@ -360,10 +238,7 @@ class StageTimeline {
         }
 
         const grid = {
-            left: 100,
-            right: 100,
-            top: 50,
-            bottom: 50,
+            left: 100, right: 100, top: 50, bottom: 50,
         };
         const gridWidth = chartWidth - grid.left - grid.right;
         const gridHeight = chartHeight - grid.top - grid.bottom;
@@ -372,20 +247,13 @@ class StageTimeline {
         const barPadding = (categoryWidth - barWidth) / 2;
         const series = stageNames.map((name, sid) => {
             return {
-                name,
-                type: "bar",
-                stack: "total",
-                barWidth: "60%",
-                label: {
-                    show: true,
-                    formatter: (params) => Math.round(params.value * 1000) / 10 + "%",
-                },
-                data: rawData[sid].map((d, did) =>
-                    totalData[did] <= 0 ? 0 : d / totalData[did]
-                ),
+                name, type: "bar", stack: "total", barWidth: "60%", label: {
+                    show: true, formatter: (params) => Math.round(params.value * 1000) / 10 + "%",
+                }, data: rawData[sid].map((d, did) => totalData[did] <= 0 ? 0 : d / totalData[did]),
             };
         });
-        const color = ["#5470c6", "#91cc75", "#fac858", "#ee6666", "#73c0de"];
+        // const color = ["#5470c6", "#91cc75", "#fac858", "#ee6666", "#73c0de"];
+
         const elements = [];
         for (let j = 1, jlen = rawData[0].length; j < jlen; ++j) {
             const leftX = grid.left + categoryWidth * j - barPadding;
@@ -404,24 +272,27 @@ class StageTimeline {
                 leftY -= leftBarHeight;
                 rightY -= rightBarHeight;
                 elements.push({
-                    type: "polygon",
-                    shape: {
+                    type: "polygon", shape: {
                         points,
-                    },
-                    style: {
-                        fill: color[i],
-                        opacity: 0.25,
+                    }, style: {
+                        fill: color[i], opacity: 0.25,
                     },
                 });
             }
         }
 
-        return {keys: keys, grid: grid, series:series, elements:elements};
+        return {
+            keys: keys, grid: grid, series: series, elements: elements, failedPipelineCounters: failedPipelineCounters
+        };
     }
 
-    get_requestParamsPoint(index) {
+    get_requestParamsPoint(dataIndex, params) {
+        console.log('stage-timeline clicked params = ', params);
+        console.log('this.keys = ', this.keys);
         return {
-            "name": this.data[index].name
+            "stage_name": params.seriesName,
+            "pipeline_counter_start": this.keys[0],
+            "pipeline_counter_end": this.keys[this.keys.length - 1],
         }
     }
 
@@ -430,7 +301,7 @@ class StageTimeline {
     }
 
     insertBreadcrumb() {
-        return true;
+        return false;
     }
 
     breadcrumbCaption() {

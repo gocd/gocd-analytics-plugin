@@ -18,19 +18,72 @@
 
 import AnalyticsEndpoint from "gocd-server-comms";
 import GraphManager from "../../../santosh/GraphManager";
+import RequestMaster from "../../../RequestMaster";
+import Header from "../../../santosh/defination/stage-timeline/header";
 
 console.log("priority-view-chart.js start");
 
+
+let graphManager = null;
+let requestMaster = null;
+
+let header = null;
+
+let currentPrioritySettings;
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
   console.log("onInit called with initial data as ", initialData);
 
   const data = JSON.parse(initialData);
 
-  const graphManager = new GraphManager("standalone", null);
-  graphManager.initStandalone("priority", data);
+  requestMaster = new RequestMaster(transport);
+  header = new Header(requestMaster);
+
+  graphManager = new GraphManager("series", transport, informSeriesMovement);
+  graphManager.initSeries("priority", data);
 
   console.log("*********** priority graph loaded");
 });
+
+async function informSeriesMovement(graphName, requestParams){
+  console.log('📞 I am informed of graphName ', graphName, ' changing the header now.');
+  // return header.switchHeader(graphName);
+  if(graphName.includes("Details")) {
+    return await header.getPriorityDetailsHeader(pdChangeHandler, currentPrioritySettings);
+  }
+   const settings = await header.getPriorityPipelineHeader(ppChangeHandler, requestParams.result);
+  currentPrioritySettings = settings;
+  return settings;
+}
+
+function pdChangeHandler(settings) {
+  graphManager.call_initSeriesWithNewSettings(settings);
+}
+
+function ppChangeHandler(settings) {
+  currentPrioritySettings = settings;
+  doJob(settings);
+}
+
+async function doJob(settings) {
+  console.log('🛜 requesting priority pipeline with the settings', settings);
+
+  switch (settings.scope) {
+    case 'Pipelines':
+      const pp = await requestMaster.getPriorityPipeline(settings.result);
+      graphManager.initSeries("PipelinePriority", pp, settings);
+      break;
+    case 'Stages':
+      const ps = await requestMaster.getPriorityStage(settings.result);
+      graphManager.initSeries("StagePriority", ps, settings);
+      break;
+    case 'Jobs':
+      const pj = await requestMaster.getPriorityJob(settings.result);
+      graphManager.initSeries("JobPriority", pj, settings);
+      break;
+  }
+
+  // graphManager.call_initSeriesWithNewSettings(settings);
+}
 
 AnalyticsEndpoint.ensure("v1");

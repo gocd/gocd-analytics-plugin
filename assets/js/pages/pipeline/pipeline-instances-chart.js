@@ -18,7 +18,6 @@ import "css/global";
 
 import AnalyticsEndpoint from "gocd-server-comms";
 import PipelineChartFactories from "js/factories/pipeline-chart-factories.js";
-import H from "js/lib/load-highcharts.js";
 import GraphManager from "../../santosh/GraphManager";
 import moment from "../../lib/moment-humanize-for-gocd";
 import drawChartStats from "./header";
@@ -74,7 +73,7 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
 
     const am = auxiliaryMetrics(instances);
     drawChartStats(range, null, am);
-    const graphManager = new GraphManager('standalone', null);
+    const graphManager = new GraphManager('standalone', transport);
     graphManager.initStandalone('pipeline-instances', data);
 
 });

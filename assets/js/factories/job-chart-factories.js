@@ -33,6 +33,7 @@ export default new ChartFactories({
     },
 
     params: function (point) {
+      console.log('point is ', point);
       return {
         "job_name":      point.job_name,
         "stage_name":    point.stage_name,
@@ -53,6 +54,7 @@ export default new ChartFactories({
     },
 
     params: function (point) {
+      console.log('point is ', point);
       return {
         "type":            "drilldown",
         "metric":          this.id,
@@ -73,6 +75,7 @@ export default new ChartFactories({
     },
 
     params: function (point) {
+      console.log('point is ', point);
       return {
         "pipeline_name": point.name,
         "start":         ONE_WEEK_AGO,
@@ -91,6 +94,7 @@ export default new ChartFactories({
     },
 
     params: function (point) {
+      console.log('point is ', point);
       return {
         "type":            "drilldown",
         "metric":          this.id,
@@ -100,5 +104,70 @@ export default new ChartFactories({
         "agent_host_name": point.agent_host_name
       };
     }
+  },
+
+  JobsTimeline: {
+    id: "job_timeline",
+
+    params: function (point) {
+      return {
+        "type": "drilldown",
+        "metric": this.id,
+        "stage_name": point.stage_name,
+        "pipeline_counter_start": point.pipeline_counter_start,
+        "pipeline_counter_end": point.pipeline_counter_end,
+      }
+    },
+  },
+
+  PipelinePriority: {
+    id: "priority_pipeline",
+
+    params: function (point) {
+      return {
+        "type": "drilldown",
+        "metric": this.id,
+        "result": point.result,
+      }
+    },
+  },
+
+  PipelinePriorityDetails: {
+    id: "priority_pipeline_details",
+
+    params: function (point) {
+      return {
+        "type": "drilldown",
+        "metric": this.id,
+        "pipeline_name": point.pipeline_name,
+        "result": point.result
+      }
+    },
+  },
+
+  StagePriorityDetails: {
+    id: "priority_stage_details",
+
+    params: function (point) {
+      return {
+        "type": "drilldown",
+        "metric": this.id,
+        "stage_name": point.stage_name,
+        "result": point.result
+      }
+    },
+  },
+
+  JobPriorityDetails: {
+    id: "priority_job_details",
+
+    params: function (point) {
+      return {
+        "type": "drilldown",
+        "metric": this.id,
+        "job_name": point.job_name,
+        "result": point.result
+      }
+    },
   }
 });

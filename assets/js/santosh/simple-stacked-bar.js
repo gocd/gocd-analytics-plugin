@@ -50,6 +50,7 @@ class SimpleStackedBar {
         var data = [];
 
         var groupCount = 0;
+
         Object.entries(dateGroup).forEach(function ([key, value]) {
             console.log("key = ", key, " value = ", value);
             const states = value;
@@ -58,6 +59,10 @@ class SimpleStackedBar {
                 return new Date(a.transition_time) - new Date(b.transition_time);
             };
 
+            const getTimePartFromTimestamp = (ts) => {
+                return parseInt(new Date(ts).toTimeString().substring(0, 5).replace(':', ''));
+            }
+
             states.sort(compareTimestamps);
 
             for (let i = 0; i < states.length; i++) {
@@ -65,7 +70,10 @@ class SimpleStackedBar {
 
                 console.log('state = ', state);
 
-                const timePart = parseInt(state.transition_time.split("T")[1].split(".")[0].slice(0, 5).replace(":", ""));
+                const transition_time = new Date(state.transition_time).toString();
+
+                // const timePart = parseInt(transition_time.split("T")[1].split(".")[0].slice(0, 5).replace(":", ""));
+                const timePart = getTimePartFromTimestamp(state.transition_time);
                 console.log("timePart = ", timePart);
 
                 let duration = 0;
@@ -76,7 +84,8 @@ class SimpleStackedBar {
 
                     const nextState = states[i + 1];
                     console.log('nextState = ', nextState);
-                    const nextTimePart = parseInt(nextState.transition_time.split("T")[1].split(".")[0].slice(0, 5).replace(":", ""));
+                    // const nextTimePart = parseInt(nextState.transition_time.split("T")[1].split(".")[0].slice(0, 5).replace(":", ""));
+                    const nextTimePart = getTimePartFromTimestamp(nextState.transition_time);
                     duration = nextTimePart - timePart;
                 }
                 if (groupCount > 0 && i === 0) {
@@ -88,7 +97,7 @@ class SimpleStackedBar {
                     value: [groupCount, timePart, (timePart + duration), duration],
                     itemStyle: {
                         normal: {
-                            color: getAgentStates(state.agent_state),
+                            color: getAgentStateColor(state.agent_state),
                         }
                     }
                 });
@@ -134,17 +143,20 @@ class SimpleStackedBar {
 
         console.log('data is ', this.data);
 
-        function getAgentStates(state) {
+        function getAgentStateColor(state) {
+            console.log('🎨 getAgentStateColor(state)', state);
             const states = [
-                {'Idle': 'grey'},
-                {'Building': '#7b9ce1'},
-                {'Cancelled': '#bd6d6c'},
-                {'Missing': '#75d874'},
-                {'Lost Contact': '#e0bc78'},
-                {'Unknown': '#dc77dc'},
+                {'Idle': '#ADD8E6'},
+                {'Building': '#228C22'},
+                {'Cancelled': '#FF0000'},
+                {'Missing': '#FFFF00'},
+                {'LostContact': '#808080'},
+                {'Unknown': '#000000'},
             ];
 
             const stateObj = states.find(s => state in s);
+
+            console.log('about to return ', stateObj[state]);
 
             return stateObj ? stateObj[state] : 'black';
         }
@@ -257,26 +269,31 @@ class SimpleStackedBar {
         }
     }
 
+    test(params) {
+        console.log(params);
+
+        const duration = params.value[3];
+
+        let hours = Math.floor(duration / 100);
+        let minutes = duration % 100;
+        if (hours === 24) hours = 0;
+
+        const r = hours * 60 + minutes;
+
+        return params.marker + params.name + ': ' + r + ' m' + '<hr> Total this day: ';
+    }
+
     generate() {
 
         console.log('generating graph with columns, series = ', this.categories, this.series);
 
         const chartDom = document.getElementById('chart-container');
-        const myChart = echarts.init(chartDom, null, {
-            width: '900px',
-            height: '400px',
-        });
+        const myChart = echarts.init(chartDom);
         var option;
 
         option = {
-            // title: {
-            //     text: 'Title',
-            //     subtext: '',
-            // },
             tooltip: {
-                formatter: function (params) {
-                    return params.marker + params.name + ': ' + params.value[3] / 100 + ' h' + '<hr> Total this day: ';
-                },
+                formatter: this.test,
             },
             grid: {
                 // height: 100,

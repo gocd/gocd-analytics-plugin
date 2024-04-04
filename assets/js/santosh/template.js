@@ -97,7 +97,13 @@ function getAreaSeries(name, data, colorData = undefined) {
   console.log("s.data = ", s.data);
   if (colorData === undefined) {
     s.showSymbol = false;
+    s.areaStyle = {
+      color: 'brown',
+    }
   } else {
+    s.areaStyle = {
+      color: 'rgba(255, 255, 255, 0.5)',
+    }
     s.itemStyle = {
       normal: {
         color: function (params) {
@@ -105,9 +111,9 @@ function getAreaSeries(name, data, colorData = undefined) {
 
           switch (result) {
             case "Passed":
-              return "lime";
+              return "#00FF00";
             case "Failed":
-              return "red";
+              return "#FF0000";
             case "Cancelled":
               return "#FFC000";
             default:
@@ -119,6 +125,9 @@ function getAreaSeries(name, data, colorData = undefined) {
         borderType: "solid",
         borderWidth: 1,
       },
+    };
+    s.lineStyle = {
+      color: 'rgba(0, 0, 255, 0.5)',
     };
   }
   return s;

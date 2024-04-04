@@ -1,5 +1,6 @@
 import {getAreaSeries, getBarSeries} from "../template";
 import GET_STACKED_AREA_TEMPLATE from "./stacked-area";
+import {sendLinkRequest} from "../../lib/gocd-link-support";
 
 /**
  * @class
@@ -57,6 +58,21 @@ class PipelineInstances {
 
     getNextGraphName() {
         return null;
+    }
+
+    nativeClickHandler(transport, params) {
+        console.log('nativeClickHandler params', params);
+        const instance = this.data.instances;
+
+        const linkParam = {
+            link_to: 'vsm_page',
+            pipeline_name: this.data.name,
+            pipeline_counter: instance[params.dataIndex].counter,
+        };
+
+        console.log('linkParam = ', linkParam);
+
+        sendLinkRequest(transport, linkParam);
     }
 }
 

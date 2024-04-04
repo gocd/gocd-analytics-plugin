@@ -17,79 +17,82 @@
 // import "css/global";
 
 import AnalyticsEndpoint from "gocd-server-comms";
-import DrilldownSupport from "js/lib/drilldown-support.js";
-import PipelineChartFactories from "js/factories/pipeline-chart-factories.js";
-import JobChartFactories from "js/factories/job-chart-factories.js";
 import $ from "jquery";
 import stageTimeline from "../../../santosh/defination/stage-timeline";
-import pipelineTimeline from "../../../santosh/defination/pipeline-timeline";
-import {updateChartSize} from "../../../santosh/utils";
-import * as echarts from "echarts";
 
 import GraphManager from "../../../santosh/GraphManager";
-import stageTimelineHeader from "./stage-timeline-header";
+import Header from "../../../santosh/defination/stage-timeline/header";
+import RequestMaster from "../../../RequestMaster";
+import Footer from "../../../santosh/defination/stage-timeline/footer";
+import Console from "../../../santosh/Console";
 
 console.log("stage-timeline-chart.js start");
 
 let graphManager = null;
+let requestMaster = null;
+
+let header = null;
+let footer = null;
+
+const c = new Console('stage-timeline-chart.js');
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
     console.log("onInit called with initial data as ", initialData);
 
+    requestMaster = new RequestMaster(transport);
+    header = new Header(requestMaster);
+    footer = new Footer();
+
+    graphManager = new GraphManager("series", transport, informSeriesMovement, footer);
+
+
     (async () => {
-        const pipelines = await requestMask(transport);
+        const defaultSettings = await header.getStageTimelineHeader(changeHandler);
 
-        const pipelineSelector = await stageTimelineHeader(pipelines);
-
-        graphManager = new GraphManager("standalone", transport);
-
-        handleClick(pipelineSelector, transport);
-
-        console.log("*********** stage-timeline graph loaded");
+        await doStage(defaultSettings);
     })();
 
 });
 
-function handleClick(pipelineSelector, transport) {
-    let selectedPipeline = pipelineSelector.value;
+async function informSeriesMovement(graphName){
+    c.log('📞 I am informed of graphName ', graphName, ' changing the header now.');
 
-    pipelineSelector.addEventListener("change", function () {
-        selectedPipeline = pipelineSelector.value;
-
-        requestStageTimeline(transport, selectedPipeline);
-    });
-
-    requestStageTimeline(transport, selectedPipeline);
+    // return header.switchHeader(graphName);
+    return await header.getJobsTimelineHeader(jobChangeHandler);
 }
 
-async function requestMask(transport) {
-    return await requestPipelineList(transport);
+async function doStage(settings) {
+    c.log('🛜 requesting stage timeline with the settings', settings);
+    footer.clear();
+
+    const stageTimeline = await requestMaster.getStageTimeline(settings.selectedPipeline);
+
+    if (stageTimeline.length === 0) {
+        footer.showMessage("No data for selected option, can't draw a graph.", "Error", true, 10);
+        graphManager.clear();
+        return;
+    }
+
+    graphManager.initSeries("stage-timeline", stageTimeline, settings);
 }
 
-function requestStageTimeline(transport, selectedPipeline) {
-    transport
-        .request("fetch-analytics", {
-            metric: "stage_timeline", pipeline_name: selectedPipeline,
-        })
-        .done((data) => {
-            console.log("fetch-analytics ", data);
-
-            graphManager.initSeries("stage-timeline", JSON.parse(data));
-        })
-        .fail(console.error.toString());
+function changeHandler(settings) {
+    c.log('settings', settings);
+    doStage(settings);
 }
 
-async function requestPipelineList(transport) {
-    return new Promise((resolve) => {
-        transport
-            .request("fetch-analytics", {
-                metric: "pipeline_list",
-            })
-            .done((data) => {
-                resolve(JSON.parse(data));
-            })
-            .fail(console.error.toString());
-    });
+function jobChangeHandler(settings) {
+    doJob(settings);
+}
+
+async function doJob(settings) {
+    c.log('🛜 requesting job timeline with the settings', settings);
+
+    // caching for now
+    // const stageTimeline = await requestMaster.getJobTimeline(settings.selectedStage, settings.pipeline_counter_start, settings.pipeline_counter_end);
+
+    // graphManager.initSeries("JobsTimeline", stageTimeline, settings);
+    graphManager.call_initSeriesWithNewSettings(settings);
 }
 
 

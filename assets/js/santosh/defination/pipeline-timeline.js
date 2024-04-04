@@ -134,7 +134,7 @@ class PipelineTimeline {
   }
 
   prepareData(data) {
-    const legend = ["Waiting Time", "Building Time"];
+    const legend = ["Waiting Time", "Building Time", "Total Time"];
     const xData = [];
     const data1 = [];
     const data2 = [];

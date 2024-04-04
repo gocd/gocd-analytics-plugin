@@ -1,5 +1,5 @@
 import * as echarts from "echarts";
-import { updateChartSize } from "../utils";
+import {secondsToHms, updateChartSize} from "../utils";
 
 // import { getAreaSeries, getBarSeries } from "../template";
 import GET_STACKED_AREA_TEMPLATE from "./stacked-area";
@@ -96,18 +96,38 @@ class PipelineStateSummary {
         {
           gridIndex: 0,
           // min: 0, max: 15
+          axisLabel: {
+            formatter: function (value) {
+              return secondsToHms(value);
+            },
+          }
         },
         {
           gridIndex: 1,
           // min: 0, max: 15
+          axisLabel: {
+            formatter: function (value) {
+              return secondsToHms(value);
+            },
+          }
         },
         {
           gridIndex: 2,
           //  min: 0, max: 15
+          axisLabel: {
+            formatter: function (value) {
+              return secondsToHms(value);
+            },
+          }
         },
         {
           gridIndex: 3,
           // min: 0, max: 15
+          axisLabel: {
+            formatter: function (value) {
+              return secondsToHms(value);
+            },
+          }
         },
       ],
       series: [

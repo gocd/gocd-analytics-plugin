@@ -1,96 +1,108 @@
 import * as echarts from "echarts";
-import { updateChartSize } from "../utils";
+import {updateChartSize} from "../utils";
 
-// import { getAreaSeries, getBarSeries } from "../template";
-import GET_STACKED_AREA_TEMPLATE from "./stacked-area";
 import {
-  getAreaSeries,
-  getBarSeries,
-  getLineSeries,
-  getPlainBarSeries,
+    getAreaSeries,
+    getBarSeries,
+    getLineSeries,
+    getPlainBarSeries,
 } from "../template";
+import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 
 /**
  * @class
  * @interface {ChartInterface}
  */
 class Priority {
-  data = null;
+    data = null;
 
-  draw(data) {
-    console.log("draw with data ", data);
+    draw(data) {
+        console.log("draw with data ", data);
 
-    this.data = data;
+        this.data = data;
 
-    const info = this.prepareData(this.data);
+        const info = this.prepareData(this.data);
 
-    console.log("info is ", info);
+        console.log("info is ", info);
 
-    // const option = GET_STACKED_AREA_TEMPLATE(info.categories, info.xData, info.series);
-    // option.title.text = 'Pipelines with the Highest Wait Time';
+        // option.tooltip.formatter = this.tooltipFormatter();
 
-    // option.tooltip.formatter = this.tooltipFormatter();
+        // const option = GET_STACKED_BAR_TEMPLATE(info.categories, info.series);
+        const option = {
+            title: {
+                text: 'Pipeline overall',
+            },
+            xAxis: {
+                type: 'category',
+                data: ['Passed', 'Failed', 'Canceled']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    data: [data.passcount, data.failcount, data.cancelcount],
+                    type: 'bar'
+                }
+            ]
+        };
+        option.series[0].itemStyle = {
+            color: function (params) {
+                switch (params.name) {
+                    case 'Passed':
+                        return 'green';
+                    case 'Failed':
+                        return 'red';
+                    case 'Canceled':
+                        return 'yellow';
+                }
+            }
+        };
 
-    var option;
-    option = {
-      title: {
-        text: "Pipeline overall",
-      },
-      legend: {
-        top: "bottom",
-      },
-      toolbox: {
-        show: true,
-        feature: {
-          mark: { show: true },
-          dataView: { show: true, readOnly: false },
-          restore: { show: true },
-          saveAsImage: { show: true },
-        },
-      },
-      series: [
-        {
-          name: "Priorities",
-          type: "pie",
-          radius: [45, 150],
-          center: ["50%", "50%"],
-          roseType: "area",
-          itemStyle: {
-            borderRadius: 8,
-          },
-          data: info.seriesData,
-        },
-      ],
-    };
-
-    return option;
-  }
-
-  prepareData(data) {
-    const legend = ["Pass", "Fail", "Cancelled"];
-    const colorData = [];
-
-    const pc = { name: legend[0], value: data.passcount };
-    const fc = { name: legend[1], value: data.failcount };
-    const cc = { name: legend[2], value: data.cancelcount };
-
-    function getSeriesData() {
-      return [pc, fc, cc];
+        return option;
     }
 
-    return {
-      legends: legend,
-      seriesData: getSeriesData(),
-    };
-  }
+    prepareData(data) {
 
-  get_requestParamsPoint(index) {
-    return null;
-  }
+        console.log('🙋 priority')
 
-  getNextGraphName() {
-    return null;
-  }
+        const categories = ['Pass count', 'Fail count', 'Cancel count'];
+
+        return {
+            categories: categories,
+            series: [getBarSeries('', [data.passcount, data.failcount, data.cancelcount])],
+        }
+    }
+
+    get_requestParamsPoint(index) {
+        let result;
+        switch (index) {
+            case 0:
+                result = 'Passed';
+                break;
+            case 1:
+                result = 'Failed';
+                break;
+            case 2:
+                result = 'Cancelled';
+                break;
+        }
+        return {
+            "result": result
+        };
+    }
+
+    getNextGraphName() {
+        return "PipelinePriority";
+    }
+
+    getSeriesIndex() {
+        return 0;
+    }
+
+    breadcrumbCaption() {
+        return "All priorities";
+    }
 }
 
 export default Priority;

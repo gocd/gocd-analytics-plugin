@@ -4,7 +4,7 @@ function GET_STACKED_AREA_TEMPLATE(legends, xData, series) {
     var option;
 
     option = {
-        color: ['#FFFFE0', '#4cabce'],
+        // color: ['#FFFFE0', '#4cabce'],
         title: {
             text: null,
             subtext: null,
