@@ -24,8 +24,9 @@ import * as echarts from "echarts";
 import SlimSelect from 'slim-select'
 
 import GraphManager from "../../../santosh/GraphManager";
+import Console from "../../../santosh/Console";
 
-console.log("pipeline-timeline-chart.js start");
+const c = new Console('pipeline-timeline-chart.js', 'dev');
 
 function addPipelineNamesToSelect(data) {
     const pipelineSelector = document.getElementById("pipeline");
@@ -54,9 +55,10 @@ function requestPipelineList(transport) {
 }
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
-    console.log("onInit called with initial data as ", initialData);
 
     const data = JSON.parse(initialData);
+
+    c.log("data = " + data);
 
     requestPipelineList(transport);
 
@@ -104,7 +106,7 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
     // option = pipelineTimeline();
     // option && myChart.setOption(option);
 
-    const graphManager = new GraphManager("standalone", null);
+    const graphManager = new GraphManager("standalone", null, null, null, c);
     graphManager.initStandalone("pipeline-timeline", data);
 
     console.log("*********** pipeline-timeline graph loaded");
