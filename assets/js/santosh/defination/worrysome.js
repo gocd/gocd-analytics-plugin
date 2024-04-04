@@ -1,5 +1,5 @@
 import * as echarts from "echarts";
-import { updateChartSize } from "../utils";
+import {secondsToHms, updateChartSize} from "../utils";
 
 // import { getAreaSeries, getBarSeries } from "../template";
 import GET_STACKED_AREA_TEMPLATE from "./stacked-area";
@@ -45,6 +45,11 @@ class Worrysome {
       },
       yAxis: {
         type: "value",
+        axisLabel: {
+          formatter: function (value) {
+            return secondsToHms(value);
+          },
+        }
       },
       series: info.series,
     };

@@ -22,7 +22,6 @@ import moment from "js/lib/moment-humanize-for-gocd.js";
 import AnalyticsEndpoint from "gocd-server-comms";
 import VSMChartFactories from "js/factories/vsm-chart-factories.js";
 import WorkflowTimeDistributionChart from "js/pages/vsm/workflow-time-distribution-chart.js";
-import H from "js/lib/load-highcharts.js";
 import Tooltip from "js/lib/tooltip-util.js";
 import $ from "jquery";
 import renderChart from './chart';
