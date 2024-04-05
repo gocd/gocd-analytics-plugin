@@ -37,13 +37,12 @@ let footer = null;
 const c = new Console('stage-timeline-chart.js');
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
-    console.log("onInit called with initial data as ", initialData);
 
     requestMaster = new RequestMaster(transport);
     header = new Header(requestMaster);
     footer = new Footer();
 
-    graphManager = new GraphManager("series", transport, informSeriesMovement, footer);
+    graphManager = new GraphManager("series", transport, informSeriesMovement, footer, c);
 
 
     (async () => {

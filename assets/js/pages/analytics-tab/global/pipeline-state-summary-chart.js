@@ -18,18 +18,14 @@
 
 import AnalyticsEndpoint from "gocd-server-comms";
 import GraphManager from "../../../santosh/GraphManager";
+import Console from "../../../santosh/Console";
 
-console.log("pipeline-state-summary-chart.js start");
+const c = new Console('pipeline-state-summary-chart.js');
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
-  console.log(
-    "onInit called with initial data as (for pipeline-state-summary-chart.js) ",
-    initialData
-  );
-
   const data = JSON.parse(initialData);
 
-  const graphManager = new GraphManager("standalone", null);
+  const graphManager = new GraphManager("standalone", null, null, null, c);
   graphManager.initStandalone("pipeline-state-summary", data);
 
   console.log("*********** pipeline-state-summary graph loaded");
