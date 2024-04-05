@@ -18,8 +18,9 @@ import "css/global";
 
 import AnalyticsEndpoint from "gocd-server-comms";
 import GraphManager from "../../../santosh/GraphManager";
+import Console from "../../../santosh/Console";
 
-console.log("jobs-wait-vs-agents-available-chart.js start");
+const c = new Console('jobs-wait-vs-agents-available-chart.js');
 
 async function requestAgentData(transport, jobs_data) {
   transport
@@ -36,7 +37,7 @@ async function requestAgentData(transport, jobs_data) {
       console.log("jobs_data = ", jobs_data);
       console.log("agents_data = ", agents_data);
 
-      const graphManager = new GraphManager("standalone", null);
+      const graphManager = new GraphManager("standalone", null, null, null, c);
       graphManager.initStandalone("worrysome", {
         jobs: jobs_data,
         agents: agents_data,
