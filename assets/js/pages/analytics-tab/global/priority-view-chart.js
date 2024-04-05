@@ -20,6 +20,7 @@ import AnalyticsEndpoint from "gocd-server-comms";
 import GraphManager from "../../../santosh/GraphManager";
 import RequestMaster from "../../../RequestMaster";
 import Header from "../../../santosh/defination/stage-timeline/header";
+import Console from "../../../santosh/Console";
 
 console.log("priority-view-chart.js start");
 
@@ -31,15 +32,16 @@ let header = null;
 
 let currentPrioritySettings;
 
+const c = new Console('stage-timeline-chart.js');
+
 AnalyticsEndpoint.onInit(function (initialData, transport) {
-  console.log("onInit called with initial data as ", initialData);
 
   const data = JSON.parse(initialData);
 
   requestMaster = new RequestMaster(transport);
   header = new Header(requestMaster);
 
-  graphManager = new GraphManager("series", transport, informSeriesMovement);
+  graphManager = new GraphManager("series", transport, informSeriesMovement, null, c);
   graphManager.initSeries("priority", data);
 
   console.log("*********** priority graph loaded");
