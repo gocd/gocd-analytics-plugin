@@ -16,11 +16,13 @@ import {
  */
 class Worrysome {
   data = null;
+  c = null;
 
-  draw(data) {
+  draw(data, c) {
     console.log("worrysome draw with data ", data);
 
     this.data = data;
+    this.c = c;
 
     const info = this.prepareData(this.data);
 
@@ -81,7 +83,7 @@ class Worrysome {
 
     xData.forEach((d) => {
       data = agents_data.find((a) => {
-        console.log("a = ", a, " d = ", d);
+        this.c.log("a = ", a, " d = ", d);
 
         return a.utilization_date === d;
       });

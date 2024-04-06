@@ -20,7 +20,7 @@ import AnalyticsEndpoint from "gocd-server-comms";
 import GraphManager from "../../../santosh/GraphManager";
 import Console from "../../../santosh/Console";
 
-const c = new Console('agents-with-highest-utilization-chart.js', 'dev');
+const c = new Console('agents-with-highest-utilization-chart.js', 'prod');
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
     const agents = JSON.parse(initialData);

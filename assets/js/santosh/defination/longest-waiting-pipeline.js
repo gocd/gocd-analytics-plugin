@@ -8,10 +8,12 @@ import {getBarSeries} from "../template";
 class LongestWaitingPipeline {
 
     data = null;
+    c= null;
 
-    draw(data) {
+    draw(data, c) {
 
         this.data = data;
+        this.c = c;
 
         const info = this.prepareData(this.data);
 
@@ -25,7 +27,7 @@ class LongestWaitingPipeline {
 
     tooltipFormatter() {
         return function (params) {
-            console.log(params);
+            this.c.log(params);
 
             let result = null;
 

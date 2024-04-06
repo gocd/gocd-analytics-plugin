@@ -88,7 +88,7 @@ class GraphManager {
         var dynamicWidth = window.innerWidth * 0.9; // Adjust the multiplier as needed
         var dynamicHeight = window.innerHeight * 0.8; // Adjust the multiplier as needed
 
-        console.log(
+        this.c.log(
             "updating chart size with w, h = ",
             dynamicWidth,
             dynamicHeight
@@ -106,7 +106,7 @@ class GraphManager {
     }
 
     initSeries(name, data, settings) {
-        console.log("initSeries with name, data, settings", name, data, settings);
+        this.c.log("initSeries with name, data, settings", name, data, settings);
 
         this.current_initSeriesParams = {name: name, data: data, settings: settings};
         this.settings = settings;
@@ -175,7 +175,7 @@ class GraphManager {
         this.name = name;
         this.dataStack.length = 3;
 
-        this.draw(data);
+        this.draw(data, this.c);
         this.handleClick();
     }
 
@@ -201,7 +201,7 @@ class GraphManager {
 
         this.name = name;
 
-        this.draw(data);
+        this.draw(data, this.c);
         this.handleClick();
     }
 
@@ -251,14 +251,14 @@ class GraphManager {
     }
 
     getStackData(name, completeData = false) {
-        console.log("getStackData for name ", name);
-        console.log("stackdata available for getStack ", this.dataStack);
+        this.c.log("getStackData for name ", name);
+        this.c.log("stackdata available for getStack ", this.dataStack);
         // console.log('returning ', this.dataStack[this.name.toString()]);
         let index = this.dataStack.findIndex((obj) => obj.name === name);
         if (index === -1) {
             throw new Error("no data at index " + index);
         } else {
-            console.log("index is present, so I will return", this.dataStack[index]);
+            this.c.log("index is present, so I will return", this.dataStack[index]);
         }
 
         return completeData ? this.dataStack[index] : this.dataStack[index].data;
@@ -266,7 +266,7 @@ class GraphManager {
 
     setBreadcrumbOption(name) {
         if (!this.hasStackData(name)) {
-            console.log("cannot set breadcrumb option");
+            this.c.log("cannot set breadcrumb option");
             return;
         }
 
@@ -282,9 +282,9 @@ class GraphManager {
     }
 
     restoreGraph(index) {
-        console.log("restoreGraph index = ", index);
-        console.log("checking if dataStack is reachable ", this.dataStack);
-        console.log("printing newOption");
+        this.c.log("restoreGraph index = ", index);
+        this.c.log("checking if dataStack is reachable ", this.dataStack);
+        this.c.log("printing newOption");
 
         // const newOption = this.dataStack[index];
 
@@ -300,15 +300,15 @@ class GraphManager {
         //     return;
         // }
 
-        console.log('👆 handleClick() for ', this.child);
+        this.c.log('👆 handleClick() for ', this.child);
 
-        console.log("this.registerHandleClick = ", this.registerHandleClick);
+        this.c.log("this.registerHandleClick = ", this.registerHandleClick);
         if (this.registerHandleClick) {
             console.warn("handleClick already registered. returning");
             return;
         }
 
-        console.log(
+        this.c.log(
             "this.child.getNextGraphName() = ",
             this.child.getNextGraphName()
         );
@@ -328,19 +328,19 @@ class GraphManager {
                 return;
             }
 
-            console.log('chart is clicked with params', params);
+            this.c.log('chart is clicked with params', params);
 
             this.clickCount++;
-            console.log("clickCount = ", this.clickCount);
+            this.c.log("clickCount = ", this.clickCount);
 
             this.chart.showLoading();
 
-            console.log("current status name ", this.name);
+            this.c.log("current status name ", this.name);
 
             const requestParamPoint = this.child.get_requestParamsPoint(
                 params.dataIndex, params
             );
-            console.log("request param point is ", requestParamPoint);
+            this.c.log("request param point is ", requestParamPoint);
 
             // const index = this.dataStack.length - 1;
             // console.log('index = ', index);
@@ -349,7 +349,7 @@ class GraphManager {
                 this.child.getNextGraphName()
             ).params(requestParamPoint);
 
-            console.log("requestParams = ", requestParams);
+            this.c.log("requestParams = ", requestParams);
 
             this.request(requestParams);
         });
@@ -358,25 +358,25 @@ class GraphManager {
     }
 
     request(requestParams) {
-        console.log('requestParams = ', requestParams);
+        this.c.log('requestParams = ', requestParams);
 
         this.requestCount++;
-        console.log("requestCount = ", this.requestCount);
+        this.c.log("requestCount = ", this.requestCount);
 
-        console.log("current graph is name ", this.name);
+        this.c.log("current graph is name ", this.name);
 
         const nextGraphName = this.child.getNextGraphName();
 
-        console.log("next graph is name ", nextGraphName);
+        this.c.log("next graph is name ", nextGraphName);
 
         this.transport
             .request("fetch-analytics", requestParams)
             .done(async (data) => {
-                console.log("fetch-analytics ", data);
+                this.c.log("fetch-analytics ", data);
                 let settings;
                 if (this.informSeriesMovement !== null) {
                     settings = await this.informSeriesMovement(nextGraphName, requestParams);
-                    console.log('settings = ', settings);
+                    this.c.log('settings = ', settings);
                 }
                 this.initSeries(nextGraphName, JSON.parse(data), settings);
 

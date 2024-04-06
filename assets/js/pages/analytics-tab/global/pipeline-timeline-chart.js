@@ -26,7 +26,7 @@ import SlimSelect from 'slim-select'
 import GraphManager from "../../../santosh/GraphManager";
 import Console from "../../../santosh/Console";
 
-const c = new Console('pipeline-timeline-chart.js', 'dev');
+const c = new Console('pipeline-timeline-chart.js', 'prod');
 
 function addPipelineNamesToSelect(data) {
     const pipelineSelector = document.getElementById("pipeline");

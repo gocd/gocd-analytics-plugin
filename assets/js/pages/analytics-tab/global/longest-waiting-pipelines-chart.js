@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-// import "css/global";
+import "css/global";
 
 import AnalyticsEndpoint from "gocd-server-comms";
 import GraphManager from "../../../santosh/GraphManager";
 import Console from "../../../santosh/Console";
 
-const c = new Console('longest-waiting-pipelines-chart.js', 'dev');
+const c = new Console('longest-waiting-pipelines-chart.js', 'prod');
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
     const data = JSON.parse(initialData);
