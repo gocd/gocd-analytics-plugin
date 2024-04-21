@@ -48,6 +48,8 @@ public class GetPluginConfigurationExecutor implements RequestExecutor {
     private static final Field MAX_CONNECTIONS_IDLE = new IntegerField("max_connections_idle", "Maximum Idle Connections", null, false, false, "13");
     private static final Field MAX_CONNECTION_WAIT_TIME = new IntegerField("max_connection_wait_time", "Maximum connection wait time", null, false, false, "14");
     private static final Field PERIODIC_CLEANUP_TIME = new TimeField("periodic_cleanup_time", "Periodic Cleanup Time", null, false, false, "15");
+    private static final Field DATA_PURGE_INTERVAL = new IntegerField("data_purge_interval",
+            "Data Purge Interval", "365", false, false, "0");
     private static final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
     static {
@@ -67,9 +69,17 @@ public class GetPluginConfigurationExecutor implements RequestExecutor {
         FIELDS.put(MAX_CONNECTIONS_IDLE.key(), MAX_CONNECTIONS_IDLE);
         FIELDS.put(MAX_CONNECTION_WAIT_TIME.key(), MAX_CONNECTION_WAIT_TIME);
         FIELDS.put(PERIODIC_CLEANUP_TIME.key(), PERIODIC_CLEANUP_TIME);
+        FIELDS.put(DATA_PURGE_INTERVAL.key(), DATA_PURGE_INTERVAL);
     }
 
     public GoPluginApiResponse execute() {
+//        PipelineDAO pipelineDAO = new PipelineDAO();
+//        List<Pipeline> pipelines = doInTransaction(new Operation<List<Pipeline>>() {
+//            @Override
+//            public List<Pipeline> execute(SqlSession sqlSession) {
+//                return pipelineDAO.allPipelines(sqlSession);
+//            }
+//        });
         return new DefaultGoPluginApiResponse(200, GSON.toJson(FIELDS));
     }
 }
