@@ -1,3 +1,7 @@
+import Console from "./Console";
+
+const c = new Console('breadcrumb.js');
+
 class Breadcrumb {
 
     #dom
@@ -25,7 +29,7 @@ class Breadcrumb {
         for (let i = 0; i < totalNames; i++) {
             const name = this.names[i];
 
-            console.log('draw name, till ', name.name, till);
+            c.log('draw name, till ', name.name, till);
 
             if (name.name === till) {
                 const span = document.createElement("span");
@@ -87,7 +91,7 @@ class Breadcrumb {
 
     add(name, caption) {
 
-        console.log('breadcrumb add with name, caption', name, caption);
+        c.log('breadcrumb add with name, caption', name, caption);
 
         let found = false;
         for (let i = 0; i < this.names.length; i++) {
@@ -101,15 +105,15 @@ class Breadcrumb {
             this.names.push({name: name, caption: caption});
         }
 
-        console.log('breadcrumb names ', this.names);
+        c.log('breadcrumb names ', this.names);
 
         if (this.names.length === 1 || this.names[0].name === name) {
-            console.log('breadcrumb only one item, not displaying breadcrumb. returning.');
+            c.log('breadcrumb only one item, not displaying breadcrumb. returning.');
             this.#dom.innerHTML = "";
             return;
         }
 
-        console.log('now I can show breadcrumb');
+        c.log('now I can show breadcrumb');
 
         this.draw(name);
 
