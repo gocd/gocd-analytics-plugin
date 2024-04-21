@@ -30,9 +30,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class PluginSettings {
+
     private static final Gson GSON = new GsonBuilder().
-            excludeFieldsWithoutExposeAnnotation().
-            create();
+        excludeFieldsWithoutExposeAnnotation().
+        create();
 
     @Expose
     @SerializedName("host")
@@ -79,11 +80,15 @@ public class PluginSettings {
     @Expose
     @SerializedName("periodic_cleanup_time")
     private String periodicCleanupTime;
+    @Expose
+    @SerializedName("data_purge_interval")
+    private String dataPurgeInterval;
 
     public PluginSettings() {
     }
 
-    public PluginSettings(String dbHost, String dbPort, String dbUsername, String dbPassword, String dbName) {
+    public PluginSettings(String dbHost, String dbPort, String dbUsername, String dbPassword,
+        String dbName) {
         this.dbHost = dbHost;
         this.dbPort = dbPort;
         this.dbUsername = dbUsername;
@@ -96,16 +101,18 @@ public class PluginSettings {
     }
 
     public static PluginSettings fromValidateSettingsJSON(String json) {
-        Map<String, Map<String, String>> settings = deserializeValidateSettingsJson(json).get("plugin-settings");
+        Map<String, Map<String, String>> settings = deserializeValidateSettingsJson(json).get(
+            "plugin-settings");
 
         Map<String, String> pluginSettings = settings.entrySet().stream()
-                .filter(e -> !(e.getValue().isEmpty() || e.getValue() == null))
-                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().get("value")));
+            .filter(e -> !(e.getValue().isEmpty() || e.getValue() == null))
+            .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().get("value")));
 
         return fromJSON(GSON.toJson(pluginSettings));
     }
 
-    public static Map<String, Map<String, Map<String, String>>> deserializeValidateSettingsJson(String json) {
+    public static Map<String, Map<String, Map<String, String>>> deserializeValidateSettingsJson(
+        String json) {
         return GSON.fromJson(json, new TypeToken<Map<String, Map<String, Map<String, String>>>>() {
         }.getType());
     }
@@ -176,35 +183,47 @@ public class PluginSettings {
         return LocalTime.parse(time, DateTimeFormatter.ofPattern("HH:mm"));
     }
 
+    public int getDataPurgeInterval() {
+        return toInteger(dataPurgeInterval, 365);
+    }
+
     public boolean isConfigured() {
         return Util.isNotEmpty(dbUsername) && Util.isNotEmpty(dbName) && Util.isNotEmpty(dbHost);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof PluginSettings)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PluginSettings)) {
+            return false;
+        }
         PluginSettings that = (PluginSettings) o;
         return useSsl == that.useSsl &&
-                Objects.equals(getDbHost(), that.getDbHost()) &&
-                Objects.equals(getDbUsername(), that.getDbUsername()) &&
-                Objects.equals(getDbPassword(), that.getDbPassword()) &&
-                Objects.equals(getDbName(), that.getDbName()) &&
-                Objects.equals(getDbPort(), that.getDbPort()) &&
-                Objects.equals(getSslMode(), that.getSslMode()) &&
-                Objects.equals(getRootCert(), that.getRootCert()) &&
-                Objects.equals(getClientCert(), that.getClientCert()) &&
-                Objects.equals(getClientKey(), that.getClientKey()) &&
-                Objects.equals(getClientPKCS8Key(), that.getClientPKCS8Key()) &&
-                Objects.equals(maxActiveConnections, that.maxActiveConnections) &&
-                Objects.equals(maxIdleConnections, that.maxIdleConnections) &&
-                Objects.equals(getMaxConnectionWaitTime(), that.getMaxConnectionWaitTime()) &&
-                Objects.equals(getPeriodicCleanupTime(), that.getPeriodicCleanupTime());
+            Objects.equals(getDbHost(), that.getDbHost()) &&
+            Objects.equals(getDbUsername(), that.getDbUsername()) &&
+            Objects.equals(getDbPassword(), that.getDbPassword()) &&
+            Objects.equals(getDbName(), that.getDbName()) &&
+            Objects.equals(getDbPort(), that.getDbPort()) &&
+            Objects.equals(getSslMode(), that.getSslMode()) &&
+            Objects.equals(getRootCert(), that.getRootCert()) &&
+            Objects.equals(getClientCert(), that.getClientCert()) &&
+            Objects.equals(getClientKey(), that.getClientKey()) &&
+            Objects.equals(getClientPKCS8Key(), that.getClientPKCS8Key()) &&
+            Objects.equals(maxActiveConnections, that.maxActiveConnections) &&
+            Objects.equals(maxIdleConnections, that.maxIdleConnections) &&
+            Objects.equals(getMaxConnectionWaitTime(), that.getMaxConnectionWaitTime()) &&
+            Objects.equals(getPeriodicCleanupTime(), that.getPeriodicCleanupTime()) &&
+            Objects.equals(getDataPurgeInterval(), that.getDataPurgeInterval());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getDbHost(), getDbUsername(), getDbPassword(), getDbName(), getDbPort(), useSsl, getSslMode(), getRootCert(), getClientCert(), getClientKey(), getClientPKCS8Key(), maxActiveConnections, maxIdleConnections, getMaxConnectionWaitTime(), getPeriodicCleanupTime());
+        return Objects.hash(getDbHost(), getDbUsername(), getDbPassword(), getDbName(), getDbPort(),
+            useSsl, getSslMode(), getRootCert(), getClientCert(), getClientKey(),
+            getClientPKCS8Key(), maxActiveConnections, maxIdleConnections,
+            getMaxConnectionWaitTime(), getPeriodicCleanupTime());
     }
 
     private int toInteger(String valueAsString, int defaultValue) {
