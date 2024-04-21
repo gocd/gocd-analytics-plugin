@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-// import "css/global";
+import "css/global";
 
 import AnalyticsEndpoint from "gocd-server-comms";
-import DrilldownSupport from "js/lib/drilldown-support.js";
-import PipelineChartFactories from "js/factories/pipeline-chart-factories.js";
-import JobChartFactories from "js/factories/job-chart-factories.js";
 import $ from "jquery";
 import stageTimeline from "../../../santosh/defination/stage-timeline";
-import pipelineTimeline from "../../../santosh/defination/pipeline-timeline";
 import { updateChartSize } from "../../../santosh/utils";
 import * as echarts from "echarts";
 
