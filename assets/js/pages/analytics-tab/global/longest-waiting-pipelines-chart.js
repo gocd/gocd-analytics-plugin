@@ -27,7 +27,7 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
 
     c.log("data = " + data);
 
-    const graphManager = new GraphManager('series', transport, null, null, c);
+    const graphManager = new GraphManager('series', transport, null, null);
     graphManager.initSeries('LongestWaitingPipelines', data);
 
     c.log("*********** graph loaded");
