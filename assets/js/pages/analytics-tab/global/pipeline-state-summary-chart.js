@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// import "css/global";
+import "css/global";
 
 import AnalyticsEndpoint from "gocd-server-comms";
 import GraphManager from "../../../santosh/GraphManager";
