@@ -46,13 +46,18 @@ public class StageTimelineExecutor extends AbstractSessionFactoryAwareExecutor {
     protected GoPluginApiResponse doExecute() {
 
         final String pipelineName = param(PARAM_PIPELINE_NAME);
+        final String requestResult = param(PARAM_RESULT);
+
         List<Stage> stages = doInTransaction(new Operation<List<Stage>>() {
             @Override
             public List<Stage> execute(SqlSession sqlSession) {
                 if (pipelineName ==  null || pipelineName.isEmpty() || pipelineName.isBlank()) {
                     return new ArrayList<>();
                 }
-                return stageDAO.getAllStagesByPipelineNameAndCounter(sqlSession, pipelineName);
+//                if (requestResult.equalsIgnoreCase("any")) {
+                    return stageDAO.getAllStagesByPipelineNameAndCounter(sqlSession, pipelineName);
+//                } else {
+//                }
             }
         });
 
