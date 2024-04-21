@@ -1,11 +1,15 @@
+import Console from "./santosh/Console";
+
+const c = new Console('RequestMaster.js');
+
 class RequestMaster {
     constructor(transport) {
         this.transport = transport;
-        console.log('1. RequestMaster constructor');
+        c.log('1. RequestMaster constructor');
     }
 
     async getPipelineList() {
-        console.log('2. RequestMaster getPipelineList() called');
+        c.log('2. RequestMaster getPipelineList() called');
         const requestParams = {
             metric: "pipeline_list",
         };
@@ -13,9 +17,9 @@ class RequestMaster {
         return pipelines;
     }
 
-    async getStageTimeline(pipelineName) {
+    async getStageTimeline(pipelineName, requestResult) {
         const requestParams = {
-            metric: "stage_timeline", pipeline_name: pipelineName,
+            metric: "stage_timeline", pipeline_name: pipelineName, result: requestResult
         };
         const stageTimelines = await this.asyncRequest(requestParams);
         return stageTimelines;
@@ -37,7 +41,7 @@ class RequestMaster {
         const requestParams = {
             "type": "drilldown",
             metric: "priority_pipeline",
-            result:result
+            result: result
         };
         const priorityPipeline = await this.asyncRequest(requestParams);
         return priorityPipeline;
@@ -65,8 +69,8 @@ class RequestMaster {
 
 
     async asyncRequest(requestParams) {
-        console.log('3. RequestMaster asyncRequest');
-        console.log('🧩 asyncRequest() this.transport, requestParams ', this.transport, requestParams);
+        c.log('3. RequestMaster asyncRequest');
+        c.log('🧩 asyncRequest() this.transport, requestParams ', this.transport, requestParams);
         return new Promise((resolve) => {
             this.transport.request("fetch-analytics", requestParams)
                 .done((data) => resolve(JSON.parse(data)))
