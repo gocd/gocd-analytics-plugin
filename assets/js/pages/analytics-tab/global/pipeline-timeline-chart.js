@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-// import "css/global";
+import "css/global";
 
 import AnalyticsEndpoint from "gocd-server-comms";
-import stageTimeline from "../../../santosh/defination/stage-timeline";
-import pipelineTimeline from "../../../santosh/defination/pipeline-timeline";
 import {updateChartSize} from "../../../santosh/utils";
 import * as echarts from "echarts";
-import SlimSelect from 'slim-select'
 
 import GraphManager from "../../../santosh/GraphManager";
 import Console from "../../../santosh/Console";
