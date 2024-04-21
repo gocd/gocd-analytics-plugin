@@ -58,5 +58,6 @@ public class SessionFactory {
         configuration.addMapper(MaterialRevisionMapper.class);
         configuration.addMapper(WorkflowMapper.class);
         configuration.addMapper(PipelineWorkflowMapper.class);
+        configuration.addMapper(UniversalMapper.class);
     }
 }
