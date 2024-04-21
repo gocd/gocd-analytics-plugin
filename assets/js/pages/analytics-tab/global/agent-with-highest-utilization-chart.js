@@ -27,7 +27,7 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
 
     c.log("agents = " + agents);
 
-    const graphManager = new GraphManager('series', transport, null, null, c);
+    const graphManager = new GraphManager('series', transport, null, null);
     graphManager.initSeries('AgentsMostUtilized', agents);
 });
 
