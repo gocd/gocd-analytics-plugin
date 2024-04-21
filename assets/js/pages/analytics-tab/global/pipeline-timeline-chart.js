@@ -106,10 +106,10 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
     // option = pipelineTimeline();
     // option && myChart.setOption(option);
 
-    const graphManager = new GraphManager("standalone", null, null, null, c);
+    const graphManager = new GraphManager("standalone", null, null, null);
     graphManager.initStandalone("pipeline-timeline", data);
 
-    console.log("*********** pipeline-timeline graph loaded");
+    c.log("*********** pipeline-timeline graph loaded");
 });
 
 AnalyticsEndpoint.ensure("v1");
