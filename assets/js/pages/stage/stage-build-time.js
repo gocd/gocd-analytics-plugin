@@ -17,16 +17,19 @@
 import "css/global";
 
 import AnalyticsEndpoint from "gocd-server-comms";
-import StageChartFactories from "js/factories/stage-chart-factories.js";
-import H from "js/lib/load-highcharts.js";
+// import StageChartFactories from "js/factories/stage-chart-factories.js";
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
-  const data = JSON.parse(initialData),
-     factory = StageChartFactories.get("StageBuildTime"),
-      config = factory.config(data, transport),
-   container = document.getElementById("chart-container");
+  // const data = JSON.parse(initialData),
+  //    factory = StageChartFactories.get("StageBuildTime"),
+  //     config = factory.config(data, transport),
+  //  container = document.getElementById("chart-container");
+  //
+  // H.chart(container, config);
 
-  H.chart(container, config);
+
+  console.log('‼️ stage-build-time.js');
+
 });
 
 AnalyticsEndpoint.ensure("v1");
