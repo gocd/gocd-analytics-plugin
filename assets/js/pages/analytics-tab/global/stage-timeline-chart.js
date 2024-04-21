@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-// import "css/global";
+import "css/global";
 
 import AnalyticsEndpoint from "gocd-server-comms";
 import $ from "jquery";
-import stageTimeline from "../../../santosh/defination/stage-timeline";
 
 import GraphManager from "../../../santosh/GraphManager";
 import Header from "../../../santosh/defination/stage-timeline/header";
@@ -26,15 +25,13 @@ import RequestMaster from "../../../RequestMaster";
 import Footer from "../../../santosh/defination/stage-timeline/footer";
 import Console from "../../../santosh/Console";
 
-console.log("stage-timeline-chart.js start");
-
 let graphManager = null;
 let requestMaster = null;
 
 let header = null;
 let footer = null;
 
-const c = new Console('stage-timeline-chart.js');
+const c = new Console('stage-timeline-chart.js', 'dev');
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
 
@@ -53,18 +50,26 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
 
 });
 
-async function informSeriesMovement(graphName){
+async function informSeriesMovement(graphName) {
     c.log('📞 I am informed of graphName ', graphName, ' changing the header now.');
 
     // return header.switchHeader(graphName);
-    return await header.getJobsTimelineHeader(jobChangeHandler);
+
+    if (graphName === 'JobsTimeline') {
+        return await header.getJobsTimelineHeader(jobChangeHandler);
+    } else if (graphName === 'stage-timeline') {
+        c.log("I have to send stage-timeline header");
+    }
+
+    footer.clear();
+
 }
 
 async function doStage(settings) {
     c.log('🛜 requesting stage timeline with the settings', settings);
     footer.clear();
 
-    const stageTimeline = await requestMaster.getStageTimeline(settings.selectedPipeline);
+    const stageTimeline = await requestMaster.getStageTimeline(settings.selectedPipeline, settings.requestResult);
 
     if (stageTimeline.length === 0) {
         footer.showMessage("No data for selected option, can't draw a graph.", "Error", true, 10);
