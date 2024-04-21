@@ -28,29 +28,27 @@ async function requestAgentData(transport, jobs_data) {
       metric: "helper_agent_utilization",
     })
     .done((data) => {
-      console.log("fetch-analytics worrysome", data);
+      c.log("fetch-analytics worrysome", data);
       // this.initSeries(this.child.getNextGraphName(), JSON.parse(data));
       // return JSON.parse(data);
 
       const agents_data = JSON.parse(data);
 
-      console.log("jobs_data = ", jobs_data);
-      console.log("agents_data = ", agents_data);
+      c.log("jobs_data = ", jobs_data);
+      c.log("agents_data = ", agents_data);
 
-      const graphManager = new GraphManager("standalone", null, null, null, c);
+      const graphManager = new GraphManager("standalone", null, null, null);
       graphManager.initStandalone("worrysome", {
         jobs: jobs_data,
         agents: agents_data,
       });
 
-      console.log("*********** worrysome graph loaded");
+      c.log("*********** worrysome graph loaded");
     })
     .fail(console.error.toString());
 }
 
 AnalyticsEndpoint.onInit(async function (initialData, transport) {
-  console.log("onInit called with initial data as ", initialData);
-
   const jobs_data = JSON.parse(initialData);
 
   const agents_data = await requestAgentData(transport, jobs_data);
