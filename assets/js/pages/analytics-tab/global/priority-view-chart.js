@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-// import "css/global";
+import "css/global";
 
 import AnalyticsEndpoint from "gocd-server-comms";
 import GraphManager from "../../../santosh/GraphManager";
 import RequestMaster from "../../../RequestMaster";
 import Header from "../../../santosh/defination/stage-timeline/header";
 import Console from "../../../santosh/Console";
-
-console.log("priority-view-chart.js start");
-
 
 let graphManager = null;
 let requestMaster = null;
@@ -32,7 +29,7 @@ let header = null;
 
 let currentPrioritySettings;
 
-const c = new Console('stage-timeline-chart.js');
+const c = new Console('priority-view-chart.js');
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
 
@@ -41,7 +38,7 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
   requestMaster = new RequestMaster(transport);
   header = new Header(requestMaster);
 
-  graphManager = new GraphManager("series", transport, informSeriesMovement, null, c);
+  graphManager = new GraphManager("series", transport, informSeriesMovement, null);
   graphManager.initSeries("priority", data);
 
   console.log("*********** priority graph loaded");
