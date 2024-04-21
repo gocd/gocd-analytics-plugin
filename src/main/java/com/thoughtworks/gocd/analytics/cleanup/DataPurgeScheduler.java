@@ -82,6 +82,7 @@ public class DataPurgeScheduler implements Runnable {
             dbAccess.connectIfRequired();
             if (dbAccess.canConnectToDB()) {
                 int dataPurgeIntervalInDays = SystemProperties.getAnalyticsDbDataPurgeInterval();
+//                int dataPurgeIntervalInDays = new PluginSettings().getDataPurgeInterval();
                 new DataPurger(dbAccess.sessionFactory()).purge(nowInUTC().minusDays(dataPurgeIntervalInDays).truncatedTo(ChronoUnit.DAYS));
                 LOG.info("[Data-Purge-Scheduler] Done purging data.");
             } else {
