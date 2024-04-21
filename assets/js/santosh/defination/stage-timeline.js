@@ -4,11 +4,14 @@ import * as echarts from "echarts";
 import {asyncRequest, color, groupBy, secondsToHms, uniq, uniqBy, updateChartSize} from "../utils";
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import momentHumanizeForGocd from "../../lib/moment-humanize-for-gocd";
+import Console from "../Console";
 
 /**
  * @class
  * @interface {ChartInterface}
  */
+const c = new Console('stage-timeline.js', 'dev');
+
 class StageTimeline {
     data = null;
     chartWidth = null;
@@ -49,7 +52,7 @@ class StageTimeline {
         this.data = data;
 
         const filteredObjects = data.filter(obj => obj.pipeline_counter === 14 && obj.stage_name === 'stage-6');
-        console.log('filteredObjects = ', filteredObjects);
+        c.log('filteredObjects = ', filteredObjects);
 
         const {
             keys, grid, series, elements, failedPipelineCounters
@@ -57,6 +60,7 @@ class StageTimeline {
 
         this.keys = keys;
 
+        c.log('stage-timeline draw keys, grid, series, elements = ', keys, grid, series, elements);
         console.log('stage-timeline draw keys, grid, series, elements = ', keys, grid, series, elements);
 
         var option;
@@ -72,14 +76,14 @@ class StageTimeline {
                 },
                 formatter: (params) => {
 
-                    console.log('I will search data ', data);
+                    c.log('I will search data ', data);
 
                     const pipeline_counter = params.name;
                     const stage_name = params.seriesName;
 
-                    console.log('formatter params', params);
-                    console.log('to find pipeline_counter and stage_name', pipeline_counter, stage_name);
-                    console.log('typeof pipeline_counter', typeof pipeline_counter, ' typeof stage_name', typeof stage_name);
+                    c.log('formatter params', params);
+                    c.log('to find pipeline_counter and stage_name', pipeline_counter, stage_name);
+                    c.log('typeof pipeline_counter', typeof pipeline_counter, ' typeof stage_name', typeof stage_name);
 
                     const filteredObjects = data.filter(
                         d =>
@@ -87,7 +91,7 @@ class StageTimeline {
                             &&
                             d.stage_name === stage_name
                     );
-                    console.log('filteredObjects = ', filteredObjects);
+                    c.log('filteredObjects = ', filteredObjects);
 
                     const latestObject = filteredObjects.reduce((latest, current) => {
                         const latestTimestamp = new Date(latest.scheduled_at);
@@ -95,7 +99,7 @@ class StageTimeline {
                         return currentTimestamp > latestTimestamp ? current : latest;
                     }, filteredObjects[0]);
 
-                    console.log('latestObject = ', latestObject);
+                    c.log('latestObject = ', latestObject);
 
                     return `
 ${params.marker} ${latestObject.stage_name}
@@ -131,22 +135,24 @@ Completed at: ${latestObject.completed_at}
     }
 
     prepareData(data, chartWidth, chartHeight) {
+        c.log("1 stage-timeline data = ", data);
         console.log("1 stage-timeline data = ", data);
 
-        console.log('1.2 stage-timeline chartWidth, chartHeight', chartWidth, chartHeight);
+        c.log('1.2 stage-timeline chartWidth, chartHeight', chartWidth, chartHeight);
 
         const failedPipelineCounters = Array.from(new Set(data.filter((i) => i.result === "Failed").map((i) => i.pipeline_counter)));
-        console.log("failedPipelineCounters = ", failedPipelineCounters);
+        c.log("failedPipelineCounters = ", failedPipelineCounters);
 
         const passedPipelineCounters = Array.from(new Set(data.filter((i) => i.result === "Passed").map((i) => i.pipeline_counter)));
-        console.log("passedPipelineCounters = ", passedPipelineCounters);
+        c.log("passedPipelineCounters = ", passedPipelineCounters);
 
         const cancelledPipelineCounters = Array.from(new Set(data.filter((i) => i.result === "Cancelled").map((i) => i.pipeline_counter)));
-        console.log("cancelledPipelineCounters = ", cancelledPipelineCounters);
+        c.log("cancelledPipelineCounters = ", cancelledPipelineCounters);
 
 
         const groupedResult = groupBy(data, "pipeline_counter");
 
+        c.log('2 stage-timeline groupedResult = ', groupedResult);
         console.log('2 stage-timeline groupedResult = ', groupedResult);
 
         for (const key in groupedResult) {
@@ -157,7 +163,7 @@ Completed at: ${latestObject.completed_at}
             groupedResult[key] = uniqBy(groupedResult[key], "stage_name");
         }
 
-        console.log('2.1 stage-timeline groupedResult = ', groupedResult);
+        c.log('2.1 stage-timeline groupedResult = ', groupedResult);
 
         let footerMessage = '';
 
@@ -194,11 +200,11 @@ Completed at: ${latestObject.completed_at}
         this.footer.showMessage(footerMessage, "Info", false);
 
         let keys = Object.keys(groupedResult);
-        console.log('3 stage-timeline keys = ', keys);
+        c.log('3 stage-timeline keys = ', keys);
 
         let stageNames = uniq(Object.values(groupedResult).flatMap((item) => item.map((entry) => entry.stage_name)));
 
-        console.log('4 stage-timeline stageNames = ', stageNames);
+        c.log('4 stage-timeline stageNames = ', stageNames);
 
         let rdata = [];
 
@@ -226,6 +232,7 @@ Completed at: ${latestObject.completed_at}
         // There should not be negative values in rawData
         const rawData = rdata;
 
+        c.log('5 stage-timeline rawData = ', rawData);
         console.log('5 stage-timeline rawData = ', rawData);
 
         const totalData = [];
@@ -287,8 +294,8 @@ Completed at: ${latestObject.completed_at}
     }
 
     get_requestParamsPoint(dataIndex, params) {
-        console.log('stage-timeline clicked params = ', params);
-        console.log('this.keys = ', this.keys);
+        c.log('stage-timeline clicked params = ', params);
+        c.log('this.keys = ', this.keys);
         return {
             "stage_name": params.seriesName,
             "pipeline_counter_start": this.keys[0],
