@@ -25,7 +25,7 @@ const c = new Console('pipeline-state-summary-chart.js');
 AnalyticsEndpoint.onInit(function (initialData, transport) {
   const data = JSON.parse(initialData);
 
-  const graphManager = new GraphManager("standalone", null, null, null, c);
+  const graphManager = new GraphManager("standalone", null, null, null);
   graphManager.initStandalone("pipeline-state-summary", data);
 
   console.log("*********** pipeline-state-summary graph loaded");
