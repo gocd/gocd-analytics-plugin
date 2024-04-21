@@ -16,9 +16,9 @@ class Console {
 
     }
 
-    log(msg) {
+    log(...msg) {
         if (this.dev === true) {
-            console.log(this.source, ' ', msg);
+            console.log(this.source, ' ', msg.join(''));
         }
     }
 
