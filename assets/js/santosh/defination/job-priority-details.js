@@ -121,7 +121,7 @@ class JobPriorityDetails {
                     name: 'Total time spent',
                     type: 'bar',
                     yAxisIndex: 1,
-                    data: info.map(i => i.total_time_secs),
+                    data: info.map(i => i.time_waiting_secs + i.time_building_secs),
                     emphasis: {
                         focus: 'series'
                     },
@@ -152,7 +152,7 @@ class JobPriorityDetails {
                     emphasis: {
                         focus: 'series'
                     },
-                    data: info.map(i => (i.total_time_secs - i.time_waiting_secs))
+                    data: info.map(i => (i.time_building_secs))
                 },
             ],
         };
