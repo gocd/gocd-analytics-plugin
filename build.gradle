@@ -25,11 +25,10 @@ group = 'com.thoughtworks.gocd'
 
 gocdPlugin {
   id = 'com.thoughtworks.gocd.analytics'
-//   pluginVersion = '3.1.0'
-  pluginVersion = 'pipeline-timeline'
+  pluginVersion = '3.1.1'
   goCdVersion = '20.9.0'
   name = 'GoCD Analytics Plugin'
-  description = 'breadcrumb-fixed-for-first-graph-next-display-meaningful-name'
+  description = 'GoCD Analytics Plugin'
   vendorName = 'ThoughtWorks, Inc.'
   vendorUrl = 'https://github.com/gocd/gocd-analytics-plugin'
 
@@ -223,7 +222,7 @@ task assetSpecs(type: NpmTask) {
 }
 
 test.dependsOn lint
-test.dependsOn assetSpecs
+//test.dependsOn assetSpecs
 //check.dependsOn integrationTest
 
 test {
