@@ -49,6 +49,13 @@ class JobPriorityDetails {
                         color: "#999",
                     },
                 },
+                formatter: (params) => {
+                    let ret = params[0].axisValueLabel + '<br>';
+                    params.forEach(item => {
+                        ret += `<div><span style="margin-right: 6px;">${item.marker} ${item.seriesName}</span> <span style="float: right; font-weight: bold;">${item.seriesName === "Times" ? item.value + 'x' : secondsToHms(item.value)}</span></div>`;
+                    });
+                    return ret + '<hr><i>Click to see the specific details</i>';
+                },
             },
             toolbox: {
                 feature: {
@@ -69,7 +76,7 @@ class JobPriorityDetails {
                         type: "shadow",
                     },
                     axisLabel: {
-                        formatter: function(value) {
+                        formatter: function (value) {
                             return timestampToWords(value);
                         }
                     }
@@ -118,7 +125,7 @@ class JobPriorityDetails {
                     data: info.map(i => i.times)
                 },
                 {
-                    name: 'Total time spent',
+                    name: 'Total time',
                     type: 'bar',
                     yAxisIndex: 1,
                     data: info.map(i => i.time_waiting_secs + i.time_building_secs),
@@ -134,21 +141,21 @@ class JobPriorityDetails {
                     }
                 },
                 {
-                    name: 'Time Waiting',
+                    name: 'Waiting time',
                     type: 'bar',
                     yAxisIndex: 1,
                     barWidth: 5,
-                    stack: 'Total time spent',
+                    stack: 'Total time',
                     emphasis: {
                         focus: 'series'
                     },
                     data: info.map(i => i.time_waiting_secs)
                 },
                 {
-                    name: 'Time building',
+                    name: 'Building time',
                     type: 'bar',
                     yAxisIndex: 1,
-                    stack: 'Total time spent',
+                    stack: 'Total time',
                     emphasis: {
                         focus: 'series'
                     },
@@ -171,14 +178,14 @@ class JobPriorityDetails {
             if (!groupedData[scheduledDate]) {
                 groupedData[scheduledDate] = {
                     date: scheduledDate,
-                    total_time_secs: obj.total_time_secs,
                     time_waiting_secs: obj.time_waiting_secs,
+                    time_building_secs: obj.time_building_secs,
                     times: 1, // Initialize count to 1
                 };
             } else {
                 // Update existing grouped data
-                groupedData[scheduledDate].total_time_secs += obj.total_time_secs;
                 groupedData[scheduledDate].time_waiting_secs += obj.time_waiting_secs;
+                groupedData[scheduledDate].time_building_secs += obj.time_building_secs;
                 groupedData[scheduledDate].times++;
             }
         }
