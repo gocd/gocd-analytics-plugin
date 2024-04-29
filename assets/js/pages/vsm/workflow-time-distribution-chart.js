@@ -17,7 +17,7 @@
 import "css/global";
 
 import _ from "lodash";
-import H from "js/lib/load-highcharts.js";
+// import H from "js/lib/load-highcharts.js";
 import VSMChartFactories from "js/factories/vsm-chart-factories.js";
 import WorkflowTrendsChart from "js/pages/vsm/workflow-trends-chart.js";
 
@@ -53,7 +53,7 @@ function renderChart(initialData, trendsChartInitialData, transport) {
         WorkflowTrendsChart.render(trendsChartInitialData, transport);
     };
 
-	let chart = H.chart(container, factory.config(groupByPipelines(data.stages), data.pipelines_in_workflow, transport));
+	// let chart = H.chart(container, factory.config(groupByPipelines(data.stages), data.pipelines_in_workflow, transport));
 
 	supportDrillUp(chart, drillUpOnClick);
 }

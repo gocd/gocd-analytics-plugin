@@ -15,7 +15,7 @@
  */
 
 import _ from "lodash";
-import H from "./load-highcharts.js";
+// import H from "./load-highcharts.js";
 
 /**
  * This "class" is responsible for managing a linear history of chart
@@ -35,7 +35,7 @@ function DrilldownConfigCache() {
   this.restore = function restore() {
     const config = cache.pop();
     config.chart = config.chart || {};
-    H.merge(true, config.chart, frameDimensions());
+    // H.merge(true, config.chart, frameDimensions());
     return config;
   };
 
@@ -121,8 +121,8 @@ function DrilldownSupport() {
         $current = snap(config);
         chart.destroy();
 
-        chart = H.chart(element, config);
-        if (CONFIG.level() > 0) ensureDrillupButton(chart, drillup);
+        // chart = H.chart(element, config);
+        // if (CONFIG.level() > 0) ensureDrillupButton(chart, drillup);
       }
     }
 
@@ -156,7 +156,7 @@ function DrilldownSupport() {
 
           $current = snap(config);
 
-          ensureDrillupButton(H.chart(element, config), drillup);
+          // ensureDrillupButton(H.chart(element, config), drillup);
         }).
         fail(console.error); // eslint-disable-line no-console
 
