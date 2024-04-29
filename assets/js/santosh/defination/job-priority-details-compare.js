@@ -6,6 +6,7 @@ import {
     timestampToWords,
     updateChartSize
 } from "../utils";
+import {sendLinkRequest} from "../../lib/gocd-link-support";
 
 /**
  * @class
@@ -176,6 +177,21 @@ class JobPriorityDetailsCompare {
 
     nativeClickHandler(transport, params) {
         console.log('nativeClickHandler params', params);
+
+        const d = this.data[params.dataIndex];
+
+        const linkParam = {
+            link_to: 'job_details_page',
+            pipeline_name: d.pipeline_name,
+            pipeline_counter: d.pipeline_counter,
+            stage_name: d.stage_name,
+            stage_counter: d.stage_counter,
+            job_name: d.job_name
+        };
+
+        console.log('linkParam = ', linkParam);
+
+        sendLinkRequest(transport, linkParam);
     }
 }
 
