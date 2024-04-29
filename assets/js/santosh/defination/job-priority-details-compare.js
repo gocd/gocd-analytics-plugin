@@ -53,6 +53,24 @@ class JobPriorityDetailsCompare {
             }
         };
 
+        option.tooltip = {
+            axisPointer: {
+                type: "shadow"
+            },
+            formatter: (param) => {
+                const d = this.data[param.dataIndex];
+
+                let ret = param.name + ' (' + timestampToWords(d.scheduled_at) + ')' + '<br>';
+                ret += param.seriesName + ' ';
+                ret += '<b>';
+                ret += param.seriesName === 'Waiting time' ? secondsToHms(d.time_waiting_secs) : secondsToHms(d.time_building_secs);
+                ret += '</b>';
+                ret += '<hr>🤖 ' + d.agent_uuid;
+
+                return ret;
+            },
+        }
+
         return option;
     }
 
@@ -60,7 +78,7 @@ class JobPriorityDetailsCompare {
         const keys = [];
         // data.map(d => getTimeFromTimestampString(d.scheduled_at));
 
-        const rawData = [[],[]];
+        const rawData = [[], []];
 
         data.forEach((d) => {
             keys.push(getTimeFromTimestampString(d.scheduled_at));
@@ -136,7 +154,7 @@ class JobPriorityDetailsCompare {
             }
         }
 
-        return {keys:keys, grid: grid, series: series, elements: elements}
+        return {keys: keys, grid: grid, series: series, elements: elements}
     }
 
 
