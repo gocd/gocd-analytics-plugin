@@ -16,7 +16,7 @@
 
 import moment from "./moment-humanize-for-gocd.js";
 import $ from "jquery";
-import H from "js/lib/load-highcharts.js";
+// import H from "js/lib/load-highcharts.js";
 
 const DATE_FMT = "YYYY-MM-DD";
 
@@ -48,7 +48,7 @@ function RangeSelector(transport, chart, options) {
       chart.showNoData();
     }
 
-    H.fireEvent(chart, "range");
+    // H.fireEvent(chart, "range");
   }
 
   function changeRange(e) {
@@ -92,7 +92,7 @@ function RangeSelectorSupport() {
       delete chart.ranger;
     }
 
-    H.merge(true, chart.options, { lang: { noData: "No data to display for selected time period" } });
+    // H.merge(true, chart.options, { lang: { noData: "No data to display for selected time period" } });
 
     new RangeSelector(transport, chart, options);
   };
