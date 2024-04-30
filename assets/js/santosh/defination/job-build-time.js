@@ -1,7 +1,7 @@
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import {getAreaSeries, getBarSeries} from "../template";
 import GET_STACKED_AREA_TEMPLATE from "./stacked-area";
-import {timestampToWords} from "../utils";
+import {secondsToHms, timestampToWords} from "../utils";
 import {sendLinkRequest} from "../../lib/gocd-link-support";
 
 /**
@@ -30,6 +30,7 @@ class JobBuildTime {
         option.title.text = 'Job Build Time';
 
         // option.tooltip.formatter = this.tooltipFormatter();
+        option.tooltip.valueFormatter = (value) => secondsToHms(value);
 
         return option;
     }

@@ -1,5 +1,6 @@
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import {getBarSeries} from "../template";
+import {secondsToHms} from "../utils";
 
 /**
  * @class
@@ -17,6 +18,7 @@ class AgentsMostUtilized {
 
         const option = GET_STACKED_BAR_TEMPLATE(info.categories, info.series);
         option.title.text = 'Agents with the Highest Utilization';
+        option.tooltip.valueFormatter = (value) => secondsToHms(value);
 
         // option.series.label = {
         //     show: true,

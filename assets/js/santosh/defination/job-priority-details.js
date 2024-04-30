@@ -1,5 +1,5 @@
 import * as echarts from "echarts";
-import {secondsToHms, timestampToWords, updateChartSize} from "../utils";
+import {getDateFromTimestampString, secondsToHms, timestampToWords, updateChartSize} from "../utils";
 
 // import { getAreaSeries, getBarSeries } from "../template";
 import GET_STACKED_AREA_TEMPLATE from "./stacked-area";
@@ -11,6 +11,7 @@ import {
 } from "../template";
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import momentHumanizeForGocd from "../../lib/moment-humanize-for-gocd";
+import {sendLinkRequest} from "../../lib/gocd-link-support";
 
 /**
  * @class
@@ -261,11 +262,41 @@ class JobPriorityDetails {
     }
 
     getNextGraphName() {
-        return null;
+        return "JobPriorityDetailsCompare";
     }
 
     getSeriesIndex() {
         return 1;
+    }
+
+    nativeClickHandler(transport, params) {
+        console.log('nativeClickHandler params', params);
+
+        const selectedDate = params.name.toString();
+        console.log("Searching for data on ", selectedDate);
+
+        const filteredData =
+        this.data.filter(item => selectedDate === getDateFromTimestampString(item.scheduled_at));
+
+        // this.data.forEach(d => {
+
+
+        // console.log("getDateFromTimestampString(d.scheduled_at)", getDateFromTimestampString(d.scheduled_at));
+        // console.log("typeof", typeof getDateFromTimestampString(d.scheduled_at));
+        // console.log("selectedDate", selectedDate);
+        // console.log("typeof", typeof selectedDate);
+
+        //     if (getDateFromTimestampString(d.scheduled_at) === selectedDate) {
+        //         filteredData.push(d);
+        //     } else {
+        //         console.log("getDateFromTimestampString(d.scheduled_at) !== selectedDate", getDateFromTimestampString(d.scheduled_at), selectedDate);
+        //     }
+        // });
+
+
+        console.log(filteredData);
+
+        return filteredData;
     }
 }
 

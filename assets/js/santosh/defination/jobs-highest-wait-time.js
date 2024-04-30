@@ -1,5 +1,6 @@
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import {getBarSeries} from "../template";
+import {secondsToHms} from "../utils";
 
 
 class JobsHighestWaitTime {
@@ -14,6 +15,8 @@ class JobsHighestWaitTime {
 
         const option = GET_STACKED_BAR_TEMPLATE(info.categories, info.series);
         option.title.text = 'Jobs with the Highest Wait Time';
+        option.tooltip.valueFormatter = (value) => secondsToHms(value);
+
         // option.yAxis.axisLabel = {
         //     inside: true,
         //     verticalAlign: 'top',

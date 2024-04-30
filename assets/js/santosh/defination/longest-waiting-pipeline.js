@@ -1,5 +1,6 @@
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import {getBarSeries} from "../template";
+import {secondsToHms} from "../utils";
 
 /**
  * @class
@@ -21,6 +22,7 @@ class LongestWaitingPipeline {
         option.title.text = 'Pipelines with the Highest Wait Time';
 
         // option.tooltip.formatter = this.tooltipFormatter();
+        option.tooltip.valueFormatter = (value) => secondsToHms(value);
 
         return option;
     }

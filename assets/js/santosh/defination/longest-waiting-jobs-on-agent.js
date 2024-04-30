@@ -1,5 +1,6 @@
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import {getBarSeries} from "../template";
+import {secondsToHms} from "../utils";
 
 /**
  * @class
@@ -19,6 +20,7 @@ class LongestWaitingJobsOnAgent {
         option.title.text = 'Jobs with the Highest Wait Time on an Agent';
 
         // option.tooltip.formatter = this.tooltipFormatter();
+        option.tooltip.valueFormatter = (value) => secondsToHms(value);
 
         return option;
     }

@@ -1,7 +1,7 @@
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import {getAreaSeries, getBarSeries} from "../template";
 import GET_STACKED_AREA_TEMPLATE from "./stacked-area";
-import {timestampToWords} from "../utils";
+import {secondsToHms, timestampToWords} from "../utils";
 import {sendLinkRequest} from "../../lib/gocd-link-support";
 
 /**
@@ -22,6 +22,7 @@ class JobBuildTimeOnAgent {
 
         const option = GET_STACKED_AREA_TEMPLATE(info.categories, info.xData, info.series);
         option.title.text = 'Job Build Time on an Agent';
+        option.tooltip.valueFormatter = (value) => secondsToHms(value);
 
         // option.tooltip.formatter = this.tooltipFormatter();
 

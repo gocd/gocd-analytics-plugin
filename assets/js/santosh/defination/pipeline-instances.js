@@ -1,6 +1,7 @@
 import {getAreaSeries, getBarSeries} from "../template";
 import GET_STACKED_AREA_TEMPLATE from "./stacked-area";
 import {sendLinkRequest} from "../../lib/gocd-link-support";
+import {secondsToHms} from "../utils";
 
 /**
  * @class
@@ -20,6 +21,7 @@ class PipelineInstances {
         // option.title.text = 'Pipelines with the Highest Wait Time';
 
         // option.tooltip.formatter = this.tooltipFormatter();
+        option.tooltip.valueFormatter = (value) => secondsToHms(value);
 
         return option;
     }
