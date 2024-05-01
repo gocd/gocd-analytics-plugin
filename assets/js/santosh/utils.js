@@ -128,7 +128,25 @@ async function addOptionsToSelect(selector, options) {
 function getDateFromTimestampString(timestamp) {
     const dt = new Date(timestamp);
 
-   return dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + dt.getDate();
+    const year = dt.getFullYear();
+    const month = String(dt.getMonth() + 1).padStart(2, '0');
+    const day = String(dt.getDate()).padStart(2, '0');
+
+   return `${year}-${month}-${day}`;
+}
+
+function getTimeFromTimestampString(dateTimeString) {
+    const dateObject = new Date(dateTimeString);
+
+    if (isNaN(dateObject.getTime())) {
+        throw new Error(`Invalid date time string: ${dateTimeString}`);
+    }
+
+    const hours = dateObject.getHours().toString().padStart(2, '0');
+    const minutes = dateObject.getMinutes().toString().padStart(2, '0');
+    const seconds = dateObject.getSeconds().toString().padStart(2, '0');
+
+    return `${hours}:${minutes}:${seconds}`;
 }
 
 
@@ -144,5 +162,6 @@ export {
     color,
     asyncRequest,
     addOptionsToSelect,
-    getDateFromTimestampString
+    getDateFromTimestampString,
+    getTimeFromTimestampString
 }
