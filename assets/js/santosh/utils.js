@@ -101,7 +101,10 @@ const color = [
     "#e7bcf3",
     "#9d96f5",
     "#8378EA",
-    "#96BFFF",];
+    "#96BFFF",
+    "#ffe9e3",
+    "#c4c1e0"
+];
 
 const asyncRequest = async (transport, requestParams) => {
     console.log('🧩 asyncRequest() transport, requestParams ', transport, requestParams);
