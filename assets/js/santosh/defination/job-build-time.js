@@ -67,7 +67,7 @@ class JobBuildTime {
 
 
     get_requestParamsPoint(index) {
-        return  {
+        return {
             "job_name": this.data[index].job_name,
             "stage_name": this.data[index].stage_name,
             "pipeline_name": this.data[index].pipeline_name

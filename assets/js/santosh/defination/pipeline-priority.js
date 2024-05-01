@@ -11,6 +11,8 @@ import {
 } from "../template";
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import momentHumanizeForGocd from "../../lib/moment-humanize-for-gocd";
+import TooltipManager from "../TooltipManager";
+import getPipelinePriorityTooltipFormatterFunction from "../TooltipHelper";
 
 /**
  * @class
@@ -18,6 +20,7 @@ import momentHumanizeForGocd from "../../lib/moment-humanize-for-gocd";
  */
 class PipelinePriority {
     data = null;
+    tooltipManager = null;
 
     constructor(settings) {
         this.settings = settings;
@@ -44,7 +47,24 @@ class PipelinePriority {
                 trigger: 'axis',
                 axisPointer: {
                     type: 'shadow'
-                }
+                },
+                // formatter: (params) => {
+                //     this.tooltipManager = new TooltipManager();
+                //     this.tooltipManager.addTitle(params[0].name);
+                //     params.forEach(item => {
+                //         let value = null;
+                //         if(item.seriesName === 'Frequency'){
+                //             value = item.value + 'x';
+                //         } else {
+                //             value = secondsToHms(item.value);
+                //         }
+                //         this.tooltipManager.addItem(item.marker, item.seriesName, value);
+                //     });
+                //     this.tooltipManager.addFooter('Click to see the specific details');
+                //     return this.tooltipManager.getStandard();
+                // },
+                // valueFormatter: (value) => secondsToHms(value)
+                formatter: getPipelinePriorityTooltipFormatterFunction('Frequency')
             },
             legend: {right: "5%"},
             grid: {

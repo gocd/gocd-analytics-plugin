@@ -11,6 +11,7 @@ import {
 } from "../template";
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import momentHumanizeForGocd from "../../lib/moment-humanize-for-gocd";
+import getPipelinePriorityTooltipFormatterFunction from "../TooltipHelper";
 
 /**
  * @class
@@ -49,6 +50,7 @@ class StagePriorityDetails {
                         color: "#999",
                     },
                 },
+                formatter: getPipelinePriorityTooltipFormatterFunction('Times')
             },
             toolbox: {
                 feature: {

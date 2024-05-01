@@ -24,7 +24,7 @@ class JobPriorityDetailsCompare {
         this.chartHeight = height;
 
 
-        console.log('job-priority-details-compare constructor settings', settings);
+        console.log('job-priority-details-compare constructor settings, chartWidth, chartHeight', settings, this.chartWidth, this.chartHeight);
     }
 
     draw(data) {
@@ -32,7 +32,7 @@ class JobPriorityDetailsCompare {
 
         this.data = data;
 
-        const {keys, grid, series, elements} = this.prepareDate(this.data);
+        const {keys, grid, series, elements} = this.prepareDate(this.data, this.chartWidth, this.chartHeight);
 
 
         var option;
@@ -79,13 +79,15 @@ class JobPriorityDetailsCompare {
         const keys = [];
         // data.map(d => getTimeFromTimestampString(d.scheduled_at));
 
-        const rawData = [[], []];
+        const rawData = [[],[]];
 
         data.forEach((d) => {
             keys.push(getTimeFromTimestampString(d.scheduled_at));
             rawData[0].push(d.time_waiting_secs);
             rawData[1].push(d.time_building_secs);
         });
+
+        console.log('rawData', rawData);
 
         const totalData = [];
         for (let i = 0; i < rawData[0].length; ++i) {
@@ -124,7 +126,7 @@ class JobPriorityDetailsCompare {
                 )
             };
         });
-        const color = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de'];
+        const color = ['#5470c6', '#91cc75']//, '#fac858', '#ee6666', '#73c0de'];
         const elements = [];
         for (let j = 1, jlen = rawData[0].length; j < jlen; ++j) {
             const leftX = grid.left + categoryWidth * j - barPadding;
@@ -160,7 +162,7 @@ class JobPriorityDetailsCompare {
 
 
     breadcrumbCaption() {
-        return "jon details compare";
+        return "Job Details Compare";
     }
 
     get_requestParamsPoint(index) {

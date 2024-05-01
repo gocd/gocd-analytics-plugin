@@ -11,6 +11,8 @@ import {
 } from "../template";
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import momentHumanizeForGocd from "../../lib/moment-humanize-for-gocd";
+import TooltipManager from "../TooltipManager";
+import getPipelinePriorityTooltipFormatterFunction from "../TooltipHelper";
 
 /**
  * @class
@@ -49,6 +51,12 @@ class PipelinePriorityDetails {
                         color: "#999",
                     },
                 },
+                // valueFormatter: (value, dataIndex) => dataIndex === 0 ? value + 'x' : secondsToHms(value)
+                // valueFormatter: (value, dataIndex) => dataIndex
+                // formatter: (param) => {
+                //     console.log(param);
+                // }
+                formatter: getPipelinePriorityTooltipFormatterFunction('Times'),
             },
             toolbox: {
                 feature: {
@@ -69,7 +77,7 @@ class PipelinePriorityDetails {
                         type: "shadow",
                     },
                     axisLabel: {
-                        formatter: function(value) {
+                        formatter: function (value) {
                             return timestampToWords(value);
                         }
                     }

@@ -11,6 +11,7 @@ import {
 } from "../template";
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import momentHumanizeForGocd from "../../lib/moment-humanize-for-gocd";
+import getPipelinePriorityTooltipFormatterFunction from "../TooltipHelper";
 
 /**
  * @class
@@ -44,7 +45,8 @@ class StagePriority {
                 trigger: 'axis',
                 axisPointer: {
                     type: 'shadow'
-                }
+                },
+                formatter: getPipelinePriorityTooltipFormatterFunction('Frequency')
             },
             legend: {right: "5%"},
             grid: {
