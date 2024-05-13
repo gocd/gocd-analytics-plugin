@@ -39,7 +39,7 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
     header = new Header(requestMaster);
     footer = new Footer();
 
-    graphManager = new GraphManager("series", transport, informSeriesMovement, footer, c);
+    graphManager = new GraphManager("series", transport, informSeriesMovement, footer);
 
 
     (async () => {
