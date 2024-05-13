@@ -6,7 +6,7 @@ let pipelineSelector = undefined;
 let dateSelector = undefined;
 let requestResultSelector = undefined;
 let requestOrderSelector = undefined;
-let requestLimitSelector = undefined;
+let requestLimitInput = undefined;
 let resultFilterSelector = undefined;
 let dataFilterSelector = undefined;
 let legendVisibilityFilterSelector = undefined;
@@ -19,7 +19,7 @@ async function stageTimelineHeader(pipelines, settingsDOM) {
     pipelineSelector = document.getElementById("pipeline");
     requestResultSelector = document.getElementById("requestResult");
     requestOrderSelector = document.getElementById("requestOrder");
-    requestLimitSelector = document.getElementById("requestLimit");
+    requestLimitInput = document.getElementById("requestLimit");
     resultFilterSelector = document.getElementById("resultFilter");
     dataFilterSelector = document.getElementById("dataFilter");
     legendVisibilityFilterSelector = document.getElementById("legendVisibilityFilter");
@@ -33,7 +33,7 @@ async function stageTimelineHeader(pipelines, settingsDOM) {
     await addOptionsToSelect(requestResultSelector, [{text: "Passed", value: "Passed"}, {
         text: "Failed",
         value: "Failed"
-    }, {text: "Cancelled", value: "Cancelled"}, {text: "Any", valuer: "Any"}]);
+    }, {text: "Cancelled", value: "Cancelled"}, {text: "Any", value: "Any"}]);
 
     await addOptionsToSelect(requestOrderSelector, [{text: "Ascending", value: "ASC"}, {
         text: "Descending",
@@ -68,6 +68,8 @@ async function stageTimelineHeader(pipelines, settingsDOM) {
         pipelineSelector,
         requestResultSelector,
         resultFilterSelector,
+        requestOrderSelector,
+        requestLimitInput,
         dataFilterSelector,
         legendVisibilityFilterSelector
     };
