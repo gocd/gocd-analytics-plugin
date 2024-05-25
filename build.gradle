@@ -73,8 +73,8 @@ configurations {
 }
 
 dependencies {
-  compileOnly 'cd.go.plugin:go-plugin-api:23.5.0'
-  implementation 'com.google.code.gson:gson:2.10.1'
+  compileOnly 'cd.go.plugin:go-plugin-api:24.1.0'
+  implementation 'com.google.code.gson:gson:2.11.0'
   implementation('org.postgresql:postgresql:42.7.3') {
     exclude(module: 'checker-qual')
   }
