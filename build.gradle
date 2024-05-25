@@ -88,7 +88,7 @@ dependencies {
   testImplementation 'org.skyscreamer:jsonassert:1.5.1'
   testImplementation 'org.jsoup:jsoup:1.17.2'
   testImplementation 'org.skyscreamer:jsonassert:1.5.1'
-  testImplementation 'cd.go.plugin:go-plugin-api:23.5.0'
+  testImplementation 'cd.go.plugin:go-plugin-api:24.1.0'
 
   integrationTestImplementation 'org.slf4j:slf4j-simple:2.0.13'
 }
