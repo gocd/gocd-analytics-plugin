@@ -78,6 +78,30 @@ const pages = [
         based_on_template: 'basic-template.html.ejs'
     },
     {
+        name: 'stage-reruns-chart',
+        entrypoint: 'analytics-tab/global/stage-reruns-chart.js',
+        output_filename: 'stage-reruns-chart.html',
+        based_on_template: 'basic-template.html.ejs'
+    },
+    {
+        name: 'stage-startup-chart',
+        entrypoint: 'analytics-tab/global/stage-startup-chart.js',
+        output_filename: 'stage-startup-chart.html',
+        based_on_template: 'basic-template.html.ejs'
+    },
+    {
+        name: 'db-info-chart',
+        entrypoint: 'analytics-tab/global/db-info-chart.js',
+        output_filename: 'db-info-chart.html',
+        based_on_template: 'basic-template.html.ejs'
+    },
+    {
+        name: 'dora-metrics-chart',
+        entrypoint: 'analytics-tab/global/dora-metrics-chart.js',
+        output_filename: 'dora-metrics-chart.html',
+        based_on_template: 'basic-template.html.ejs'
+    },
+    {
         name: 'agent-with-highest-utilization',
         entrypoint: 'analytics-tab/global/agent-with-highest-utilization-chart.js',
         output_filename: 'agent-with-highest-utilization-chart.html',
