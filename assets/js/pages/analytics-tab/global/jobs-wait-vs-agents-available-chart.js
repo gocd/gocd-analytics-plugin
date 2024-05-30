@@ -28,14 +28,14 @@ async function requestAgentData(transport, jobs_data) {
       metric: "helper_agent_utilization",
     })
     .done((data) => {
-      c.log("fetch-analytics worrysome", data);
+      c.logs("fetch-analytics worrysome", data);
       // this.initSeries(this.child.getNextGraphName(), JSON.parse(data));
       // return JSON.parse(data);
 
       const agents_data = JSON.parse(data);
 
-      c.log("jobs_data = ", jobs_data);
-      c.log("agents_data = ", agents_data);
+      c.logs("jobs_data = ", jobs_data);
+      c.logs("agents_data = ", agents_data);
 
       const graphManager = new GraphManager("standalone", null, null, null);
       graphManager.initStandalone("worrysome", {
@@ -43,7 +43,7 @@ async function requestAgentData(transport, jobs_data) {
         agents: agents_data,
       });
 
-      c.log("*********** worrysome graph loaded");
+      c.logs("*********** worrysome graph loaded");
     })
     .fail(console.error.toString());
 }

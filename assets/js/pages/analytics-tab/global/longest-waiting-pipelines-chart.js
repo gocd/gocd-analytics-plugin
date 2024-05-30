@@ -25,12 +25,12 @@ const c = new Console('longest-waiting-pipelines-chart.js', 'prod');
 AnalyticsEndpoint.onInit(function (initialData, transport) {
     const data = JSON.parse(initialData);
 
-    c.log("data = " + data);
+    c.logs("data = " + data);
 
     const graphManager = new GraphManager('series', transport, null, null);
     graphManager.initSeries('LongestWaitingPipelines', data);
 
-    c.log("*********** graph loaded");
+    c.logs("*********** graph loaded");
 });
 
 AnalyticsEndpoint.ensure("v1");
