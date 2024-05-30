@@ -30,7 +30,7 @@ class Priority {
         // const option = GET_STACKED_BAR_TEMPLATE(info.categories, info.series);
         const option = {
             title: {
-                text: 'Pipeline overall',
+                text: 'Waits, Failures, and Cancellations',
             },
             xAxis: {
                 type: 'category',
