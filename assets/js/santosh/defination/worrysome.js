@@ -83,7 +83,7 @@ class Worrysome {
 
         xData.forEach((d) => {
             data = agents_data.find((a) => {
-                this.c.log("a = ", a, " d = ", d);
+                this.c.logs("a = ", a, " d = ", d);
 
                 return a.utilization_date === d;
             });
