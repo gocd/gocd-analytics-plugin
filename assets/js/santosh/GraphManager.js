@@ -77,7 +77,7 @@ class GraphManager {
 
         this.breadcrumb = new Breadcrumb(this.restoreGraph.bind(this));
 
-        c.log("#GraphManager constructor");
+        c.logs("#GraphManager constructor");
     }
 
     initChart() {
@@ -284,8 +284,8 @@ class GraphManager {
     }
 
     getStackData(name, completeData = false) {
-        c.log("getStackData for name ", name);
-        c.log("stackdata available for getStack ", JSON.stringify(this.dataStack));
+        c.logs("getStackData for name ", name);
+        c.logs("stackdata available for getStack ", JSON.stringify(this.dataStack));
         // console.log('returning ', this.dataStack[this.name.toString()]);
         let index = this.dataStack.findIndex((obj) => obj.name === name);
         if (index === -1) {
@@ -316,9 +316,9 @@ class GraphManager {
     }
 
     restoreGraph(index) {
-        c.log("restoreGraph index = ", index);
-        c.log("checking if dataStack is reachable ", this.dataStack);
-        c.log("printing newOption");
+        c.logs("restoreGraph index = ", index);
+        c.logs("checking if dataStack is reachable ", this.dataStack);
+        c.logs("printing newOption");
 
         // const newOption = this.dataStack[index];
 
@@ -333,7 +333,7 @@ class GraphManager {
     async informRoot(nextGraphName, requestParams) {
         if (this.informSeriesMovement !== null) {
             const settings = await this.informSeriesMovement(nextGraphName, requestParams);
-            c.log('settings = ', settings);
+            c.logs('settings = ', settings);
             return settings;
         }
     }
@@ -344,15 +344,15 @@ class GraphManager {
         //     return;
         // }
 
-        c.log('👆 handleClick() for ', this.child);
+        c.logs('👆 handleClick() for ', this.child);
 
-        c.log("this.registerHandleClick = ", this.registerHandleClick);
+        c.logs("this.registerHandleClick = ", this.registerHandleClick);
         if (this.registerHandleClick) {
             console.warn("handleClick already registered. returning");
             return;
         }
 
-        c.log(
+        c.logs(
             "this.child.getNextGraphName() = ",
             this.child.getNextGraphName()
         );
@@ -377,19 +377,19 @@ class GraphManager {
                 return;
             }
 
-            c.log('chart is clicked with params', params);
+            c.logs('chart is clicked with params', params);
 
             this.clickCount++;
-            c.log("clickCount = ", this.clickCount);
+            c.logs("clickCount = ", this.clickCount);
 
             this.chart.showLoading();
 
-            c.log("current status name ", this.name);
+            c.logs("current status name ", this.name);
 
             const requestParamPoint = this.child.get_requestParamsPoint(
                 params.dataIndex, params
             );
-            c.log("request param point is ", requestParamPoint);
+            c.logs("request param point is ", requestParamPoint);
 
             // const index = this.dataStack.length - 1;
             // console.log('index = ', index);
@@ -398,7 +398,7 @@ class GraphManager {
                 this.child.getNextGraphName()
             ).params(requestParamPoint);
 
-            c.log("requestParams = ", requestParams);
+            c.logs("requestParams = ", requestParams);
 
             this.request(requestParams);
         });
@@ -407,21 +407,21 @@ class GraphManager {
     }
 
     request(requestParams) {
-        c.log('requestParams = ', requestParams);
+        c.logs('requestParams = ', requestParams);
 
         this.requestCount++;
-        c.log("requestCount = ", this.requestCount);
+        c.logs("requestCount = ", this.requestCount);
 
-        c.log("current graph is ", this.name);
+        c.logs("current graph is ", this.name);
 
         const nextGraphName = this.child.getNextGraphName();
 
-        c.log("next graph is ", nextGraphName);
+        c.logs("next graph is ", nextGraphName);
 
         this.transport
             .request("fetch-analytics", requestParams)
             .done(async (data) => {
-                c.log("fetch-analytics ", data);
+                c.logs("fetch-analytics ", data);
                 const settings = await this.informRoot(nextGraphName, requestParams);
                 // if (this.informSeriesMovement !== null) {
                 //     settings = await this.informSeriesMovement(nextGraphName, requestParams);
