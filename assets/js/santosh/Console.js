@@ -16,7 +16,28 @@ class Console {
 
     }
 
-    log(...msg) {
+    isDevMode() {
+        return this.dev === true;
+    }
+
+    log(message, data = null, level = 'info') {
+        if (this.isDevMode()) {
+            const levelPrefix = `[${level.toUpperCase()}]`;
+            let messageToLog = `${levelPrefix} ${message}`;
+
+            if (data != null) {
+                if (typeof data === 'object') {
+                    messageToLog += ` ${JSON.stringify(data)}`;
+                } else {
+                    messageToLog += ` ${data}`;
+                }
+            }
+
+            console.log(messageToLog);
+        }
+    }
+
+    logs(...msg) {
         if (this.dev === true) {
             console.log(this.source, ' ', msg.join(''));
         }
