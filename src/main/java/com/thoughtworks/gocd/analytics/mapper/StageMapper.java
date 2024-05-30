@@ -112,11 +112,87 @@ public interface StageMapper {
         @Param("pipelines") List<String> pipelines);
 
     @ResultMap("Stage")
-    @Select("select * from stages where id in (select stage_id from pipeline_workflows pw where "
-        + "pipeline_id in (select id from pipelines p where name = #{pipelineName} limit 10))")
-    List<Stage> stageByPipelineNameAndCounter(@Param("pipelineName") String pipelineName);
+//    @Select("select * from stages where id in (select stage_id from pipeline_workflows pw where "
+//        + "pipeline_id in (select id from pipelines p where name = #{pipelineName} limit 10))")
+    @Select("<script>"
+        + "select * from stages where "
+        + "<if test='result != null'>"
+        + "result = #{result} and "
+        + "</if>"
+        + "id in (select stage_id from pipeline_workflows pw where "
+        + "pipeline_id in (select id from pipelines p where name = #{pipelineName} order by id "
+        + "<if test='order != null'>"
+        + "desc "
+        + "</if>"
+        + "limit #{limit})) "
+        + "</script>"
+    )
+    List<Stage> stageByPipelineNameAndCounter(@Param("pipelineName") String pipelineName, @Param(
+        "result") String result, @Param("order") String order, @Param("limit") int limit);
 
-    @Results(id="stage_summary", value = {
+    @ResultMap("Stage")
+    @Select("<script>"
+        + "SELECT pipeline_name, stage_name, MAX(stage_counter) AS stage_counter\n"
+        + "FROM stages s \n"
+        + "GROUP BY pipeline_name, stage_name\n"
+        + "HAVING MAX(stage_counter) > 1\n"
+        + "order by stage_counter ${order} limit #{limit} ;"
+        + "</script>"
+    )
+    List<Stage> stageRerunsForAllPipelines(@Param("result") String result,
+        @Param("order") String order, @Param("limit") int limit);
+
+    @ResultMap("Stage")
+    @Select("<script>"
+        + "SELECT pipeline_name, stage_name, pipeline_counter, MAX(stage_counter) AS stage_counter\n"
+        + "FROM stages s \n"
+        + "WHERE pipeline_name = #{pipelineName} \n"
+        + "GROUP BY pipeline_name, stage_name, pipeline_counter\n"
+        + "HAVING MAX(stage_counter) > 1\n"
+        + "order by stage_counter ${order} limit #{limit} ;"
+        + "</script>"
+    )
+    List<Stage> stageReruns(@Param("pipelineName") String pipelineName, @Param(
+        "result") String result, @Param("order") String order, @Param("limit") int limit);
+
+    @ResultMap("Stage")
+    @Select("<script>"
+        + "select * from stages \n"
+        + "where pipeline_name = #{pipelineName} \n"
+        + "and stage_name = #{stageName} \n"
+        + "and pipeline_counter = #{pipelineCounter} \n"
+        + "order by id asc \n"
+        + "</script>"
+    )
+    List<Stage> stageRerunsForPipelineStageAndCounter(@Param("pipelineName") String pipelineName,
+        @Param("stageName") String stageName, @Param("pipelineCounter") int pipelineCounter,
+        @Param("result") String result, @Param("order") String order, @Param("limit") int limit);
+
+    @ResultMap("Stage")
+    @Select("<script>"
+        + "SELECT *\n"
+        + "FROM (\n"
+        + "  SELECT *, ROW_NUMBER() OVER (PARTITION BY pipeline_counter ORDER BY id ASC) AS row_num\n"
+        + "  FROM stages\n"
+        + "  WHERE pipeline_name = #{pipelineName}\n"
+        + ") AS ranked_data\n"
+        + "WHERE row_num = 1;"
+        + "</script>"
+    )
+    List<Stage> stageStartupTime(@Param("pipelineName") String pipelineName, @Param(
+        "result") String result, @Param("order") String order, @Param("limit") int limit);
+
+    @ResultMap("Stage")
+    @Select("<script>"
+        + "select * from stages where pipeline_name = #{pipelineName} \n"
+        + "and pipeline_counter = #{pipelineCounter} \n"
+        + "order by id;"
+        + "</script>"
+    )
+    List<Stage> stageStartupTimeCompare(@Param("pipelineName") String pipelineName,
+        @Param("pipelineCounter") int pipelineCounter);
+
+    @Results(id = "stage_summary", value = {
         @Result(property = "pipelineName", column = "pipeline_name"),
         @Result(property = "stageName", column = "stage_name"),
         @Result(property = "times", column = "times"),

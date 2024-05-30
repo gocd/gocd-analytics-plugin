@@ -24,20 +24,18 @@ import com.thoughtworks.gocd.analytics.executors.AbstractSessionFactoryAwareExec
 import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
 import com.thoughtworks.gocd.analytics.models.AnalyticsResponseBody;
 import com.thoughtworks.gocd.analytics.models.Stage;
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.ibatis.session.SqlSession;
-import org.flywaydb.core.internal.util.StringUtils;
 
-public class StageTimelineExecutor extends AbstractSessionFactoryAwareExecutor {
+public class StageStartupTimeExecutor extends AbstractSessionFactoryAwareExecutor {
 
     private final StageDAO stageDAO;
 
-    public StageTimelineExecutor(AnalyticsRequest analyticsRequest, SessionFactory sessionFactory) {
+    public StageStartupTimeExecutor(AnalyticsRequest analyticsRequest, SessionFactory sessionFactory) {
         this(analyticsRequest, new StageDAO(), sessionFactory);
     }
 
-    public StageTimelineExecutor(AnalyticsRequest analyticsRequest, StageDAO stageDAO,
+    public StageStartupTimeExecutor(AnalyticsRequest analyticsRequest, StageDAO stageDAO,
         SessionFactory sessionFactory) {
         super(analyticsRequest, sessionFactory);
         this.stageDAO = stageDAO;
@@ -47,27 +45,30 @@ public class StageTimelineExecutor extends AbstractSessionFactoryAwareExecutor {
     protected GoPluginApiResponse doExecute() {
 
         final String pipelineName = param(PARAM_PIPELINE_NAME);
-        final String requestResult = param(PARAM_RESULT);
-        final String requestOrder = param(PARAM_ORDER);
-        final String requestLimit = param(PARAM_LIMIT);
+        final String pipelineCounter = param(PARAM_PIPELINE_COUNTER);
 
-        final String result = new String("Any").equals(requestResult) ? null : requestResult;
-        final String order = new String("ASC").equals(requestOrder) ? null : "DESC";
-        final int limit = requestLimit == null ? 1 : Integer.parseInt(requestLimit);
+//        final String requestResult = param(PARAM_RESULT);
+//        final String requestOrder = param(PARAM_ORDER);
+//        final String requestLimit = param(PARAM_LIMIT);
+//
+//        final String result = new String("Any").equals(requestResult) ? null : requestResult;
+//        final String order = new String("ASC").equals(requestOrder) ? null : "DESC";
+//        final int limit = requestLimit == null ? 1 : Integer.parseInt(requestLimit);
+
+        final int counter = pipelineCounter == null ? 0 : Integer.parseInt(pipelineCounter);
 
         List<Stage> stages = doInTransaction(new Operation<List<Stage>>() {
             @Override
             public List<Stage> execute(SqlSession sqlSession) {
-                if (pipelineName == null || pipelineName.isEmpty() || pipelineName.isBlank()) {
-                    return new ArrayList<>();
+                if (counter == 0) {
+                    return stageDAO.getStageStartupTime(sqlSession, pipelineName);
                 }
-                return stageDAO.getAllStagesByPipelineNameAndCounter(sqlSession, pipelineName,
-                    result, order, limit);
+                return stageDAO.getStageStartupTimeCompare(sqlSession, pipelineName, counter);
             }
         });
 
         AnalyticsResponseBody responseBody = new AnalyticsResponseBody(stages,
-            "stage-timeline-chart.html");
+            "stage-startup-chart.html");
 
         return new DefaultGoPluginApiResponse(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE,
             responseBody.toJson());

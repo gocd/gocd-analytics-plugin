@@ -27,6 +27,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 public class StageDAO {
+
     public static final Logger LOG = Logger.getLoggerFor(StageDAO.class);
 
     protected static StageMapper mapper(SqlSession sqlSession) {
@@ -37,15 +38,19 @@ public class StageDAO {
         return mapper(sqlSession).allStages(pipelineName);
     }
 
-    public List<Stage> stageHistory(SqlSession sqlSession, String pipelineName, String stageName, ZonedDateTime start, ZonedDateTime end) {
+    public List<Stage> stageHistory(SqlSession sqlSession, String pipelineName, String stageName,
+        ZonedDateTime start, ZonedDateTime end) {
         return mapper(sqlSession).stageHistory(pipelineName, stageName, start, end);
     }
 
-    public Stage One(SqlSession sqlSession, PipelineInstance pipelineInstance, String stageName, int stageCounter) {
-        return mapper(sqlSession).One(pipelineInstance.getName(), pipelineInstance.getCounter(), stageName, stageCounter);
+    public Stage One(SqlSession sqlSession, PipelineInstance pipelineInstance, String stageName,
+        int stageCounter) {
+        return mapper(sqlSession).One(pipelineInstance.getName(), pipelineInstance.getCounter(),
+            stageName, stageCounter);
     }
 
-    public Stage find(SqlSession sqlSession, String pipelineName, int pipelineCounter, String stageName, int stageCounter) {
+    public Stage find(SqlSession sqlSession, String pipelineName, int pipelineCounter,
+        String stageName, int stageCounter) {
         return mapper(sqlSession).One(pipelineName, pipelineCounter, stageName, stageCounter);
     }
 
@@ -57,21 +62,46 @@ public class StageDAO {
         mapper(sqlSession).deleteStageRunsPriorTo(scheduledDate);
     }
 
-    public List<Stage> allStagesWithWorkflowIdInPipelines(SqlSession sqlSession, Long workflowID, List<String> pipelines) {
+    public List<Stage> allStagesWithWorkflowIdInPipelines(SqlSession sqlSession, Long workflowID,
+        List<String> pipelines) {
         return mapper(sqlSession).allStageInstancesWithWorkflowIdOfPipelines(workflowID, pipelines);
     }
 
     public List<Stage> getAllStagesByPipelineNameAndCounter(SqlSession sqlSession,
-        String pipelineName) {
-        return mapper(sqlSession).stageByPipelineNameAndCounter(pipelineName);
+        String pipelineName, String result, String order, int limit) {
+        return mapper(sqlSession).stageByPipelineNameAndCounter(pipelineName, result, order, limit);
+    }
+
+    public List<Stage> getStageRerunsForAllPipelines(SqlSession sqlSession, String order,
+        int limit) {
+        return mapper(sqlSession).stageRerunsForAllPipelines(null, order, limit);
+    }
+
+    public List<Stage> getStageReruns(SqlSession sqlSession, String pipelineName, String order,
+        int limit) {
+        return mapper(sqlSession).stageReruns(pipelineName, null, order, limit);
+    }
+
+    public List<Stage> getStageRerunsForPipelineStageAndCounter(SqlSession sqlSession,
+        String pipelineName, String stageName, int pipelineCounter, String order, int limit) {
+        return mapper(sqlSession).stageRerunsForPipelineStageAndCounter(pipelineName, stageName,
+            pipelineCounter, null, order, limit);
+    }
+
+    public List<Stage> getStageStartupTime(SqlSession sqlSession, String pipelineName) {
+        return mapper(sqlSession).stageStartupTime(pipelineName, null, null, 0);
+    }
+
+    public List<Stage> getStageStartupTimeCompare(SqlSession sqlSession, String pipelineName,
+        int pipelineCounter) {
+        return mapper(sqlSession).stageStartupTimeCompare(pipelineName, pipelineCounter);
     }
 
     public List<StageTimeSummary> stageSummary(SqlSession sqlSession, String result) {
         return mapper(sqlSession).stageSummary(result);
     }
 
-    public List<Stage> stageSummaryDetails(SqlSession sqlSession, String stageName,
-        String result) {
+    public List<Stage> stageSummaryDetails(SqlSession sqlSession, String stageName, String result) {
         return mapper(sqlSession).stageSummaryDetails(stageName, result);
     }
 }
