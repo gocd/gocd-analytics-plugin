@@ -1,6 +1,6 @@
 import Console from "./santosh/Console";
 
-const c = new Console('RequestMaster.js');
+const c = new Console('RequestMaster.js', 'dev');
 
 class RequestMaster {
     constructor(transport) {
@@ -17,9 +17,24 @@ class RequestMaster {
         return pipelines;
     }
 
-    async getStageTimeline(pipelineName, requestResult) {
+    async getStageTimeline(pipelineName, requestResult, requestOrder, requestLimit) {
         const requestParams = {
-            metric: "stage_timeline", pipeline_name: pipelineName, result: requestResult
+            metric: "stage_timeline",
+            pipeline_name: pipelineName,
+            result: requestResult,
+            order: requestOrder,
+            limit: requestLimit
+        };
+        const stageTimelines = await this.asyncRequest(requestParams);
+        return stageTimelines;
+    }
+
+    async getStageStartupTime(pipelineName, requestOrder, requestLimit) {
+        const requestParams = {
+            metric: "stage_startup_time",
+            pipeline_name: pipelineName,
+            order: requestOrder,
+            limit: requestLimit
         };
         const stageTimelines = await this.asyncRequest(requestParams);
         return stageTimelines;
@@ -67,10 +82,24 @@ class RequestMaster {
         return priorityJob;
     }
 
+    async getStageReruns(settings) {
+        const requestParams = {
+            "type": "dashboard",
+            "metric": "stage_reruns",
+            "pipeline_name": settings.selectedPipeline,
+            "order": settings.requestOrder,
+            "limit": settings.requestLimit
+        }
+        const stageReruns = await this.asyncRequest(requestParams);
+        return stageReruns;
+    }
+
 
     async asyncRequest(requestParams) {
         c.log('3. RequestMaster asyncRequest');
-        c.log('🧩 asyncRequest() this.transport, requestParams ', this.transport, requestParams);
+        c.log('🧩 asyncRequest() this.transport', this.transport);
+        c.log('🧩 asyncRequest() requestParams ', requestParams);
+
         return new Promise((resolve) => {
             this.transport.request("fetch-analytics", requestParams)
                 .done((data) => resolve(JSON.parse(data)))
