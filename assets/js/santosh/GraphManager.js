@@ -26,6 +26,16 @@ import JobPriority from "./defination/job-priority";
 import PipelinePriorityDetails from "./defination/pipeline-priority-details";
 import StagePriorityDetails from "./defination/stage-priority-details";
 import JobPriorityDetails from "./defination/job-priority-details";
+import Console from "./Console";
+import JobPriorityDetailsCompare from "./defination/job-priority-details-compare";
+import StageTimelineModern from "./defination/stage-timeline-modern";
+import StageReruns from "./defination/stage-reruns";
+import StageRerunsInstances from "./defination/stage-reruns-instances";
+import StageStartupTime from "./defination/stage-startup-time";
+import StageStartupTimeCompare from "./defination/stage-startup-time-compare";
+import DBInfoSummary from "./defination/db-info";
+
+const c = new Console('GraphManager.js', 'dev');
 
 class GraphManager {
     dataStack = [];
@@ -38,7 +48,7 @@ class GraphManager {
     breadcrumb = null;
     settings = null;
 
-    constructor(type, transport, informSeriesMovement = null, footer=null, c = null) {
+    constructor(type, transport, informSeriesMovement = null, footer = null) {
         let chartDom = null;
 
         switch (type) {
@@ -58,7 +68,6 @@ class GraphManager {
 
         this.informSeriesMovement = informSeriesMovement;
         this.footer = footer;
-        this.c = c;
 
         this.chart = echarts.init(chartDom);
 
@@ -68,7 +77,7 @@ class GraphManager {
 
         this.breadcrumb = new Breadcrumb(this.restoreGraph.bind(this));
 
-        this.c.log("#GraphManager constructor");
+        c.log("#GraphManager constructor");
     }
 
     initChart() {
@@ -88,7 +97,7 @@ class GraphManager {
         var dynamicWidth = window.innerWidth * 0.9; // Adjust the multiplier as needed
         var dynamicHeight = window.innerHeight * 0.8; // Adjust the multiplier as needed
 
-        this.c.log(
+        c.logs(
             "updating chart size with w, h = ",
             dynamicWidth,
             dynamicHeight
@@ -106,7 +115,7 @@ class GraphManager {
     }
 
     initSeries(name, data, settings) {
-        this.c.log("initSeries with name, data, settings", name, data, settings);
+        // c.log("initSeries with name, data, settings", name, data, settings);
 
         this.current_initSeriesParams = {name: name, data: data, settings: settings};
         this.settings = settings;
@@ -133,7 +142,8 @@ class GraphManager {
                 break;
 
             case "stage-timeline":
-                this.child = new StageTimeline(settings, this.chart.getWidth(), this.chart.getHeight(), this.footer);
+                // this.child = new StageTimeline(settings, this.chart.getWidth(), this.chart.getHeight(), this.footer);
+                this.child = new StageTimelineModern(settings, this.chart.getWidth(), this.chart.getHeight(), this.footer);
                 break;
 
             case "JobsTimeline":
@@ -160,12 +170,32 @@ class GraphManager {
                 this.child = new JobPriorityDetails(settings);
                 break;
 
+            case "JobPriorityDetailsCompare":
+                this.child = new JobPriorityDetailsCompare(settings, this.chart.getWidth(), this.chart.getHeight());
+                break;
+
             case "StagePriority":
                 this.child = new StagePriority(settings);
                 break;
 
             case "JobPriority":
                 this.child = new JobPriority(settings);
+                break;
+
+            case "StageReruns":
+                this.child = new StageReruns(settings);
+                break;
+
+            case "StageRerunsInstances":
+                this.child = new StageRerunsInstances(settings);
+                break;
+
+            case "stage-startup-time":
+                this.child = new StageStartupTime(settings);
+                break;
+
+            case "StageStartupTimeCompare":
+                this.child = new StageStartupTimeCompare(settings)
                 break;
 
             default:
@@ -175,7 +205,7 @@ class GraphManager {
         this.name = name;
         this.dataStack.length = 3;
 
-        this.draw(data, this.c);
+        this.draw(data);
         this.handleClick();
     }
 
@@ -195,13 +225,16 @@ class GraphManager {
             case "pipeline-state-summary":
                 this.child = new PipelineStateSummary(data);
                 break;
+            case "db-info":
+                this.child = new DBInfoSummary(data);
+                break;
             default:
                 throw new Error("Invalid standalone graph request " + name);
         }
 
         this.name = name;
 
-        this.draw(data, this.c);
+        this.draw(data);
         this.handleClick();
     }
 
@@ -251,22 +284,27 @@ class GraphManager {
     }
 
     getStackData(name, completeData = false) {
-        this.c.log("getStackData for name ", name);
-        this.c.log("stackdata available for getStack ", this.dataStack);
+        c.log("getStackData for name ", name);
+        c.log("stackdata available for getStack ", JSON.stringify(this.dataStack));
         // console.log('returning ', this.dataStack[this.name.toString()]);
         let index = this.dataStack.findIndex((obj) => obj.name === name);
         if (index === -1) {
             throw new Error("no data at index " + index);
         } else {
-            this.c.log("index is present, so I will return", this.dataStack[index]);
+            c.logs("index is present, so I will return", this.dataStack[index]);
         }
 
         return completeData ? this.dataStack[index] : this.dataStack[index].data;
     }
 
+    getStackNameByIndex(index) {
+        console.log('console.log this.dataStack[index] = ', JSON.stringify(this.dataStack[index]));
+        return this.dataStack[index].name;
+    }
+
     setBreadcrumbOption(name) {
         if (!this.hasStackData(name)) {
-            this.c.log("cannot set breadcrumb option");
+            c.logs("cannot set breadcrumb option");
             return;
         }
 
@@ -274,24 +312,30 @@ class GraphManager {
     }
 
     insertBreadcrumb() {
-        // if (this.child.insertBreadcrumb()) {
-        // breadcrumb.add(["LongestWaitingPipelines", "LongestWaitingJobs", "JobBuildTime"], this.restoreGraph.bind(this));
-        // }
-
         this.breadcrumb.add(this.name, this.child.breadcrumbCaption());
     }
 
     restoreGraph(index) {
-        this.c.log("restoreGraph index = ", index);
-        this.c.log("checking if dataStack is reachable ", this.dataStack);
-        this.c.log("printing newOption");
+        c.log("restoreGraph index = ", index);
+        c.log("checking if dataStack is reachable ", this.dataStack);
+        c.log("printing newOption");
 
         // const newOption = this.dataStack[index];
 
         this.initSeries(index, this.getStackData(index), this.current_initSeriesParams.settings);
 
+        this.informRoot(this.getStackNameByIndex(index));
+
         // console.log('newOption = ', newOption);
         // this.chart.setOption(newOption, true);
+    }
+
+    async informRoot(nextGraphName, requestParams) {
+        if (this.informSeriesMovement !== null) {
+            const settings = await this.informSeriesMovement(nextGraphName, requestParams);
+            c.log('settings = ', settings);
+            return settings;
+        }
     }
 
     handleClick() {
@@ -300,15 +344,15 @@ class GraphManager {
         //     return;
         // }
 
-        this.c.log('👆 handleClick() for ', this.child);
+        c.log('👆 handleClick() for ', this.child);
 
-        this.c.log("this.registerHandleClick = ", this.registerHandleClick);
+        c.log("this.registerHandleClick = ", this.registerHandleClick);
         if (this.registerHandleClick) {
             console.warn("handleClick already registered. returning");
             return;
         }
 
-        this.c.log(
+        c.log(
             "this.child.getNextGraphName() = ",
             this.child.getNextGraphName()
         );
@@ -319,8 +363,13 @@ class GraphManager {
 
         this.chart.on("click", (params) => {
 
-            if(typeof this.child.nativeClickHandler === 'function') {
-                this.child.nativeClickHandler(this.transport, params);
+            if (typeof this.child.nativeClickHandler === 'function') {
+                const result = this.child.nativeClickHandler(this.transport, params);
+                if (typeof result === 'object') {
+                    const nextGraphName = this.child.getNextGraphName();
+                    const settings = this.informRoot(nextGraphName);
+                    this.initSeries(nextGraphName, result, settings);
+                }
             }
 
             if (this.child.getNextGraphName() === null) {
@@ -328,19 +377,19 @@ class GraphManager {
                 return;
             }
 
-            this.c.log('chart is clicked with params', params);
+            c.log('chart is clicked with params', params);
 
             this.clickCount++;
-            this.c.log("clickCount = ", this.clickCount);
+            c.log("clickCount = ", this.clickCount);
 
             this.chart.showLoading();
 
-            this.c.log("current status name ", this.name);
+            c.log("current status name ", this.name);
 
             const requestParamPoint = this.child.get_requestParamsPoint(
                 params.dataIndex, params
             );
-            this.c.log("request param point is ", requestParamPoint);
+            c.log("request param point is ", requestParamPoint);
 
             // const index = this.dataStack.length - 1;
             // console.log('index = ', index);
@@ -349,7 +398,7 @@ class GraphManager {
                 this.child.getNextGraphName()
             ).params(requestParamPoint);
 
-            this.c.log("requestParams = ", requestParams);
+            c.log("requestParams = ", requestParams);
 
             this.request(requestParams);
         });
@@ -358,26 +407,26 @@ class GraphManager {
     }
 
     request(requestParams) {
-        this.c.log('requestParams = ', requestParams);
+        c.log('requestParams = ', requestParams);
 
         this.requestCount++;
-        this.c.log("requestCount = ", this.requestCount);
+        c.log("requestCount = ", this.requestCount);
 
-        this.c.log("current graph is name ", this.name);
+        c.log("current graph is ", this.name);
 
         const nextGraphName = this.child.getNextGraphName();
 
-        this.c.log("next graph is name ", nextGraphName);
+        c.log("next graph is ", nextGraphName);
 
         this.transport
             .request("fetch-analytics", requestParams)
             .done(async (data) => {
-                this.c.log("fetch-analytics ", data);
-                let settings;
-                if (this.informSeriesMovement !== null) {
-                    settings = await this.informSeriesMovement(nextGraphName, requestParams);
-                    this.c.log('settings = ', settings);
-                }
+                c.log("fetch-analytics ", data);
+                const settings = await this.informRoot(nextGraphName, requestParams);
+                // if (this.informSeriesMovement !== null) {
+                //     settings = await this.informSeriesMovement(nextGraphName, requestParams);
+                //     c.log('settings = ', settings);
+                // }
                 this.initSeries(nextGraphName, JSON.parse(data), settings);
 
             })
