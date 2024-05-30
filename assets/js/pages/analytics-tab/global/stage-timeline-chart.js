@@ -51,14 +51,14 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
 });
 
 async function informSeriesMovement(graphName) {
-    c.log('📞 I am informed of graphName ', graphName, ' changing the header now.');
+    c.logs('📞 I am informed of graphName ', graphName, ' changing the header now.');
 
     // return header.switchHeader(graphName);
 
     if (graphName === 'JobsTimeline') {
         return await header.getJobsTimelineHeader(jobChangeHandler);
     } else if (graphName === 'stage-timeline') {
-        c.log("I have to send stage-timeline header");
+        c.logs("I have to send stage-timeline header");
     }
 
     footer.clear();
@@ -66,10 +66,11 @@ async function informSeriesMovement(graphName) {
 }
 
 async function doStage(settings) {
-    c.log('🛜 requesting stage timeline with the settings', settings);
+    c.logs('🛜 requesting stage timeline with the settings', settings);
+    console.log('🛜 requesting stage timeline with the settings', settings);
     footer.clear();
 
-    const stageTimeline = await requestMaster.getStageTimeline(settings.selectedPipeline, settings.requestResult);
+    const stageTimeline = await requestMaster.getStageTimeline(settings.selectedPipeline, settings.requestResult, settings.requestOrder, settings.requestLimit);
 
     if (stageTimeline.length === 0) {
         footer.showMessage("No data for selected option, can't draw a graph.", "Error", true, 10);
@@ -81,7 +82,7 @@ async function doStage(settings) {
 }
 
 function changeHandler(settings) {
-    c.log('settings', settings);
+    c.logs('settings', settings);
     doStage(settings);
 }
 
@@ -90,7 +91,7 @@ function jobChangeHandler(settings) {
 }
 
 async function doJob(settings) {
-    c.log('🛜 requesting job timeline with the settings', settings);
+    c.logs('🛜 requesting job timeline with the settings', settings);
 
     // caching for now
     // const stageTimeline = await requestMaster.getJobTimeline(settings.selectedStage, settings.pipeline_counter_start, settings.pipeline_counter_end);
