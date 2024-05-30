@@ -165,7 +165,7 @@ class PipelineTimeline {
         },
       };
 
-      const monitor = getLineSeries("", data3);
+      const monitor = getLineSeries("Total Time", data3);
 
       return [wt, bt, monitor];
     }
