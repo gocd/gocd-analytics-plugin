@@ -1,10 +1,5 @@
 import {getUniqueDatesFromArray, groupObjectsByDate, secondsToHms, timestampToWords} from "./utils";
-import JobChartFactories from "js/factories/job-chart-factories.js";
-import GraphDataManager from "./GraphDataManager";
 import * as echarts from "echarts";
-import StackedArea from "./stacked-area";
-import {DomManager} from "./DomManager"
-import {getBarSeries} from "./template";
 
 console.log('santosh/simple-stacked-bar.js loaded');
 
@@ -149,7 +144,7 @@ class SimpleStackedBar {
                 {'Idle': '#ADD8E6'},
                 {'Building': '#228C22'},
                 {'Cancelled': '#FF0000'},
-                {'Missing': '#FFFF00'},
+                {'Missing': '#F9982C'},
                 {'LostContact': '#808080'},
                 {'Unknown': '#000000'},
             ];
