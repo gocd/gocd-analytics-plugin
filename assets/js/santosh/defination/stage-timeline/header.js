@@ -5,6 +5,8 @@ import jobTimelineHeader from "./job-timeline-header";
 import pipelinePriorityHeader from "./pipeline-priority-header";
 import requestMaster from "../../../RequestMaster";
 import priorityDetailsHeader from "./priority-details-header";
+import stageRerunsHeader from "./stage-reruns-header";
+import stageStartupHeader from "./stage-startup-header";
 
 class Header {
 
@@ -176,6 +178,9 @@ class Header {
     async getStageTimelineHeader(changeHandler) {
         let settings = {
             selectedPipeline: undefined,
+            requestResult: 'Passed',
+            requestOrder: 'DESC',
+            requestLimit: 10,
             showPipelineCounterResult: 'Only Passed',
             showData: 'time_waiting_secs',
             showLegend: 'Show'
@@ -189,12 +194,27 @@ class Header {
         setSelectedPipeline(selectors.pipelineSelector.value);
 
         handlePipelineSelect(selectors.pipelineSelector);
+        handleRequestResultSelect(selectors.requestResultSelector);
+        handleRequestOrderSelect(selectors.requestOrderSelector);
+        handleRequestLimitInput(selectors.requestLimitInput);
         handleResultSelect(selectors.resultFilterSelector);
         handleDataSelect(selectors.dataFilterSelector);
         handleLegendSelect(selectors.legendVisibilityFilterSelector);
 
         function setSelectedPipeline(pipeline_name) {
             settings.selectedPipeline = pipeline_name;
+        }
+
+        function setSelectedRequestResult(result) {
+            settings.requestResult = result;
+        }
+
+        function setSelectedRequestOrder(result) {
+            settings.requestOrder = result;
+        }
+
+        function setSelectedRequestLimit(result) {
+            settings.requestLimit = result;
         }
 
         function setSelectedResult(result) {
@@ -212,6 +232,259 @@ class Header {
         function handlePipelineSelect(selector) {
             selector.addEventListener("change", () => {
                 setSelectedPipeline(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function handleRequestResultSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedRequestResult(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function handleRequestOrderSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedRequestOrder(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function handleRequestLimitInput(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedRequestLimit(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function handleResultSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedResult(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function handleDataSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedData(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function handleLegendSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedLegendFilter(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        return settings;
+    }
+
+    async getStageStartupHeader(changeHandler) {
+        let settings = {
+            selectedPipeline: undefined,
+            // requestResult: 'Passed',
+            requestOrder: 'DESC',
+            requestLimit: 10,
+            // showPipelineCounterResult: 'Only Passed',
+            showData: 'time_waiting_secs',
+            showLegend: 'Show'
+        };
+
+        const pipelines = await this.requestMaster.getPipelineList();
+        await console.log('pipelines = ', pipelines);
+
+        const selectors = await stageStartupHeader(pipelines.map(p => p.name), this.#dom);
+
+        setSelectedPipeline(selectors.pipelineSelector.value);
+
+        handlePipelineSelect(selectors.pipelineSelector);
+        // handleRequestResultSelect(selectors.requestResultSelector);
+        handleRequestOrderSelect(selectors.requestOrderSelector);
+        handleRequestLimitInput(selectors.requestLimitInput);
+        // handleResultSelect(selectors.resultFilterSelector);
+        // handleDataSelect(selectors.dataFilterSelector);
+        handleLegendSelect(selectors.legendVisibilityFilterSelector);
+
+        function setSelectedPipeline(pipeline_name) {
+            settings.selectedPipeline = pipeline_name;
+        }
+
+        function setSelectedRequestResult(result) {
+            settings.requestResult = result;
+        }
+
+        function setSelectedRequestOrder(result) {
+            settings.requestOrder = result;
+        }
+
+        function setSelectedRequestLimit(result) {
+            settings.requestLimit = result;
+        }
+
+        function setSelectedResult(result) {
+            settings.showPipelineCounterResult = result;
+        }
+
+        function setSelectedData(data) {
+            settings.showData = data;
+        }
+
+        function setSelectedLegendFilter(data) {
+            settings.showLegend = data;
+        }
+
+        function handlePipelineSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedPipeline(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function handleRequestResultSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedRequestResult(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function handleRequestOrderSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedRequestOrder(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function handleRequestLimitInput(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedRequestLimit(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function handleResultSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedResult(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function handleDataSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedData(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function handleLegendSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedLegendFilter(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        return settings;
+    }
+
+    async getStageRerunsHeader(changeHandler) {
+        let settings = {
+            selectedPipeline: '',
+            // requestResult: 'Passed',
+            requestOrder: 'DESC',
+            requestLimit: 10,
+            requestMinimumStageCounter: 2,
+            // showPipelineCounterResult: 'Only Passed',
+            // showData: 'time_waiting_secs',
+            // showLegend: 'Show'
+        };
+
+        const pipelines = await this.requestMaster.getPipelineList();
+        await console.log('pipelines = ', pipelines);
+
+        const selectors = await stageRerunsHeader(pipelines.map(p => p.name), this.#dom);
+
+        selectors.requestOrderSelector.value = settings.requestOrder;
+
+        setSelectedPipeline(selectors.pipelineSelector.value);
+
+        handlePipelineSelect(selectors.pipelineSelector);
+        // handleRequestResultSelect(selectors.requestResultSelector);
+        handleRequestOrderSelect(selectors.requestOrderSelector);
+        handleRequestLimitInput(selectors.requestLimitInput);
+        // handleResultSelect(selectors.resultFilterSelector);
+        // handleDataSelect(selectors.dataFilterSelector);
+        // handleLegendSelect(selectors.legendVisibilityFilterSelector);
+
+        function setSelectedPipeline(pipeline_name) {
+            settings.selectedPipeline = pipeline_name;
+        }
+
+        function setSelectedRequestResult(result) {
+            settings.requestResult = result;
+        }
+
+        function setSelectedRequestOrder(result) {
+            settings.requestOrder = result;
+        }
+
+        function setSelectedRequestLimit(result) {
+            settings.requestLimit = result;
+        }
+
+        function setSelectedResult(result) {
+            settings.showPipelineCounterResult = result;
+        }
+
+        function setSelectedData(data) {
+            settings.showData = data;
+        }
+
+        function setSelectedLegendFilter(data) {
+            settings.showLegend = data;
+        }
+
+        function handlePipelineSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedPipeline(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function handleRequestResultSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedRequestResult(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function handleRequestOrderSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedRequestOrder(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function handleRequestLimitInput(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedRequestLimit(selector.value);
 
                 changeHandler(settings);
             });
