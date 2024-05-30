@@ -119,8 +119,8 @@ async function addOptionsToSelect(selector, options) {
 
     options.forEach((option) => {
         const selectOption = document.createElement("option");
-        selectOption.setAttribute("value", option);
-        selectOption.text = option;
+        selectOption.setAttribute("value", option.value ? option.value : option);
+        selectOption.text = option.text ? option.text : option;
 
         selector.appendChild(selectOption);
     });
@@ -135,7 +135,7 @@ function getDateFromTimestampString(timestamp) {
     const month = String(dt.getMonth() + 1).padStart(2, '0');
     const day = String(dt.getDate()).padStart(2, '0');
 
-   return `${year}-${month}-${day}`;
+    return `${year}-${month}-${day}`;
 }
 
 function getTimeFromTimestampString(dateTimeString) {
