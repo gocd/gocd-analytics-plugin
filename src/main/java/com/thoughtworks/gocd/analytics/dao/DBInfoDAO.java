@@ -17,25 +17,20 @@
 package com.thoughtworks.gocd.analytics.dao;
 
 import com.thoughtworks.go.plugin.api.logging.Logger;
-import com.thoughtworks.gocd.analytics.mapper.PipelineMapper;
 import com.thoughtworks.gocd.analytics.mapper.UniversalMapper;
-import com.thoughtworks.gocd.analytics.models.Pipeline;
 import com.thoughtworks.gocd.analytics.models.PipelineInstance;
-import com.thoughtworks.gocd.analytics.models.PipelineStateSummary;
-import com.thoughtworks.gocd.analytics.models.PipelineTimeSummary;
-import com.thoughtworks.gocd.analytics.models.PipelineTimeSummaryTwo;
-import java.time.ZonedDateTime;
+import com.thoughtworks.gocd.analytics.models.UniversalSummary;
 import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 
-public class UniversalDAO {
-    public static final Logger LOG = Logger.getLoggerFor(UniversalDAO.class);
+public class DBInfoDAO {
+    public static final Logger LOG = Logger.getLoggerFor(DBInfoDAO.class);
 
-    public List<PipelineInstance> getAllDB(SqlSession sqlSession) {
+    public List<UniversalSummary> getAllDB(SqlSession sqlSession) {
         return mapper(sqlSession).getAllDB();
     }
 
-    private UniversalMapper mapper(SqlSession sqlSession) {
+    protected static UniversalMapper mapper(SqlSession sqlSession) {
         return sqlSession.getMapper(UniversalMapper.class);
     }
 }

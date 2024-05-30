@@ -31,12 +31,17 @@ public interface AnalyticTypes {
     String PARAM_STAGE_NAME = "stage_name";
     String PARAM_JOB_NAME = "job_name";
 
+    String PARAM_PIPELINE_COUNTER = "pipeline_counter";
+
     String PARAM_PIPELINE_COUNTER_START = "pipeline_counter_start";
     String PARAM_PIPELINE_COUNTER_END = "pipeline_counter_end";
 
     String PARAM_RESULT = "result";
     String PARAM_START_DATE = "start";
     String PARAM_END_DATE = "end";
+
+    String PARAM_ORDER = "order";
+    String PARAM_LIMIT = "limit";
 
     String PARAM_AGENT_UUID = "agent_uuid";
     String PARAM_AGENT_HOST_NAME = "agent_host_name";

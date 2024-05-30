@@ -51,6 +51,8 @@ import com.thoughtworks.gocd.analytics.executors.pipeline.PriorityPipelineExecut
 import com.thoughtworks.gocd.analytics.executors.stage.PriorityStageDetailsExecutor;
 import com.thoughtworks.gocd.analytics.executors.stage.PriorityStageExecutor;
 import com.thoughtworks.gocd.analytics.executors.stage.StageBuildTimeExecutor;
+import com.thoughtworks.gocd.analytics.executors.stage.StageRerunsExecutor;
+import com.thoughtworks.gocd.analytics.executors.stage.StageStartupTimeExecutor;
 import com.thoughtworks.gocd.analytics.executors.stage.StageTimelineExecutor;
 import com.thoughtworks.gocd.analytics.executors.vsm.VSMTrendAcrossMultipleRunsExecutor;
 import com.thoughtworks.gocd.analytics.executors.vsm.VSMWorkflowTimeDistributionExecutor;
@@ -144,6 +146,9 @@ public class AnalyticsPlugin implements GoPlugin, Initializable {
             .registerExecutor(PRIORITY_JOB_DETAILS.getId(), PriorityJobDetailsExecutor.class)
             .registerExecutor(PIPELINE_STATE_SUMMARY.getId(), PipelineStateSummaryExecutor.class)
             .registerExecutor(JOBS_WAIT_VS_AGENTS_AVAILABLE.getId(), JobsWaitVsAgentsAvailableExecutor.class)
+            .registerExecutor(STAGE_RERUNS.getId(), StageRerunsExecutor.class)
+            .registerExecutor(STAGE_STARTUP_TIME.getId(), StageStartupTimeExecutor.class)
+            .registerExecutor(DB_INFO.getId(), DBInfoExecutor.class)
             .registerExecutor(HELPER_AGENT_UTILIZATION.getId(), AgentUtilizationExecutor.class)
         ;
 

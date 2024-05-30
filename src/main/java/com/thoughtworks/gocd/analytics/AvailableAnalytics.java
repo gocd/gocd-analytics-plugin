@@ -68,6 +68,11 @@ public enum AvailableAnalytics {
     PIPELINE_STATE_SUMMARY(AnalyticTypes.TYPE_DASHBOARD, "pipeline_state_summary", "Pipeline "
         + "State Summary"),
 
+    STAGE_RERUNS(AnalyticTypes.TYPE_DASHBOARD, "stage_reruns", "Stage Reruns"),
+
+    STAGE_STARTUP_TIME(AnalyticTypes.TYPE_DASHBOARD, "stage_startup_time", "Stage Startup Time"),
+    DB_INFO(AnalyticTypes.TYPE_DASHBOARD, "db_info", "DB Info"),
+
     JOBS_WAIT_VS_AGENTS_AVAILABLE(AnalyticTypes.TYPE_DASHBOARD, "worrysome", "Worrysome"),
     HELPER_AGENT_UTILIZATION(AnalyticTypes.TYPE_JOB, "helper_agent_utilization", "?"),
 
