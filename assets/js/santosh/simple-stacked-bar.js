@@ -291,8 +291,12 @@ class SimpleStackedBar {
                 formatter: this.test,
             },
             grid: {
-                // height: 100,
+                height: 'auto',
                 // show: true
+                // left: 0,
+                top: 10,
+                // right: 0,
+                bottom: 20
             },
             xAxis: {
                 type: "value",
