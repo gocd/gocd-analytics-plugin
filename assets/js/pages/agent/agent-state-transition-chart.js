@@ -21,7 +21,6 @@ import AnalyticsEndpoint from "gocd-server-comms";
 import Agents from "../../charts/agents";
 
 import $ from "jquery";
-import Gantt from "../../lib/chart-utils/gantt";
 import moment from "../../lib/moment-humanize-for-gocd";
 import SimpleStackedBar from "../../santosh/simple-stacked-bar";
 import drawChartStats from "./header";
