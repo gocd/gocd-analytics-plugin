@@ -2,7 +2,7 @@
 
 #FOR_ENVIRONMENT=webpack-dev
 
-./gradlew build
+./gradlew build --info
 
 cd ./build/libs
 
