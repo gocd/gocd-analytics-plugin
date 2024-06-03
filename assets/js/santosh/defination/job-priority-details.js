@@ -253,7 +253,7 @@ class JobPriorityDetails {
     }
 
     breadcrumbCaption() {
-        return "pipeline-priority";
+        return "Job Priority Details";
     }
 
     get_requestParamsPoint(index) {
@@ -266,7 +266,7 @@ class JobPriorityDetails {
     }
 
     getSeriesIndex() {
-        return 1;
+        return 2;
     }
 
     nativeClickHandler(transport, params) {

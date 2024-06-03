@@ -174,7 +174,7 @@ class StageRerunsInstances {
     }
 
     getSeriesIndex() {
-        return 0;
+        return 1;
     }
 
     nativeClickHandler2remove(transport, params) {

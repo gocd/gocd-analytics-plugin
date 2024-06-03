@@ -174,7 +174,7 @@ class JobPriorityDetailsCompare {
     }
 
     getSeriesIndex() {
-        return 4;
+        return 3;
     }
 
     nativeClickHandler(transport, params) {
