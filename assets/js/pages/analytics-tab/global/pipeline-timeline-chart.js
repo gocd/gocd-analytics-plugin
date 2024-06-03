@@ -68,7 +68,7 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
 
     const chartMeta = document.getElementById("chart-container-meta");
     chartMeta.innerHTML = `
-    <div style="position:relative;"><span style="font-size:18px"><b>Pipeline timeline across workflow</b></span>
+    <div style="position:relative;"><span style="font-size:18px"><b>Pipeline timings</b></span>
 
     <select id="pipeline" style="float:right">
 </select>
