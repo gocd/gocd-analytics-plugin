@@ -185,6 +185,10 @@ class JobPriority {
         }
     }
 
+    breadcrumbCaption() {
+        return "Jobs Priority";
+    }
+
     get_requestParamsPoint(index) {
         console.log('get_requestParamsPoint this.data, index', this.data, index);
         return {job_name: this.data[index].job_name, result: this.settings.result};
