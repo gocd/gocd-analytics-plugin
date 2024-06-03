@@ -462,7 +462,7 @@ Completed at: ${latestObject.completed_at}
     }
 
     getSeriesIndex() {
-        return 0;
+        return 1;
     }
 }
 
