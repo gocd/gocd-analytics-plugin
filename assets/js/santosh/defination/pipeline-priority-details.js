@@ -253,7 +253,7 @@ class PipelinePriorityDetails {
     }
 
     breadcrumbCaption() {
-        return "pipeline-priority-details";
+        return "Pipeline Priority Details";
     }
 
     get_requestParamsPoint(index) {

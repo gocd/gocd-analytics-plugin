@@ -188,7 +188,7 @@ class StagePriority {
     }
 
     breadcrumbCaption() {
-        return "stage-priority";
+        return "Stage Priority";
     }
 
     get_requestParamsPoint(index) {

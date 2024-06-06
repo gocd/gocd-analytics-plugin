@@ -247,7 +247,7 @@ class StagePriorityDetails {
     }
 
     breadcrumbCaption() {
-        return "pipeline-priority";
+        return "Stage Priority Details";
     }
 
     get_requestParamsPoint(index) {
@@ -260,7 +260,7 @@ class StagePriorityDetails {
     }
 
     getSeriesIndex() {
-        return 1;
+        return 2;
     }
 }
 
