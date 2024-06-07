@@ -18,7 +18,7 @@ function GET_STACKED_BAR_TEMPLATE(categories = null, series = null) {
         },
         toolbox: {
             feature: {
-                saveAsImage: {},
+                // saveAsImage: {},
                 // dataZoom: {
                     // yAxisIndex: 'none',
                 // },
