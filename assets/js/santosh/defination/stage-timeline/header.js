@@ -1,12 +1,10 @@
 import stageTimelineHeader from "./stage-timeline-header";
-import GraphManager from "../../GraphManager";
-import {asyncRequest} from "../../utils";
 import jobTimelineHeader from "./job-timeline-header";
 import pipelinePriorityHeader from "./pipeline-priority-header";
-import requestMaster from "../../../RequestMaster";
 import priorityDetailsHeader from "./priority-details-header";
 import stageRerunsHeader from "./stage-reruns-header";
 import stageStartupHeader from "./stage-startup-header";
+import longestWaitingPipelinesHeader from "./longest-waiting-pipelines-header";
 
 class Header {
 
@@ -67,7 +65,7 @@ class Header {
 
         function handleTicksSelect(selector) {
             selector.addEventListener("change", () => {
-                if(selector.value === 'Align Y-Axis Ticks') {
+                if (selector.value === 'Align Y-Axis Ticks') {
                     setSelectedTicks(true);
                 } else {
                     setSelectedTicks(false);
@@ -113,13 +111,14 @@ class Header {
         const selectors = await priorityDetailsHeader(selectedOptions, this.#dom);
 
         handleTicksSelect(selectors.ticksFilterSelector);
+
         function setSelectedTicks(result) {
             settings.alignTicks = result;
         }
 
         function handleTicksSelect(selector) {
             selector.addEventListener("change", () => {
-                if(selector.value === 'Align Y-Axis Ticks') {
+                if (selector.value === 'Align Y-Axis Ticks') {
                     setSelectedTicks(true);
                 } else {
                     setSelectedTicks(false);
@@ -512,6 +511,30 @@ class Header {
 
                 changeHandler(settings);
             });
+        }
+
+        return settings;
+    }
+
+    async getLongestWaitingPipelinesHeader(changeHandler) {
+        let settings = {
+            truncateOrder: 'Last'
+        };
+
+        const selectors = await longestWaitingPipelinesHeader(this.#dom);
+
+        handleTruncateOrderSelect(selectors.truncateOrderSelector);
+
+        function handleTruncateOrderSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedTruncateOrder(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function setSelectedTruncateOrder(result) {
+            settings.truncateOrder = result;
         }
 
         return settings;
