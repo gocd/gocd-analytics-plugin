@@ -59,14 +59,13 @@
       "braces": "^3.0.3"
     },
     "webpack": {
-      "terser-webpack-plugin": "^4.2.3",
+      "terser-webpack-plugin": "^4.2.3"
+    },
+    "micromatch": {
       "braces": "^3.0.3"
     },
     "tap-diff": {
       "diff": "^5.2.0"
-    },
-    "micromatch": {
-      "braces": "^3.0.3"
     }
   }
 }
