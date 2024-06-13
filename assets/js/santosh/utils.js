@@ -152,6 +152,28 @@ function getTimeFromTimestampString(dateTimeString) {
     return `${hours}:${minutes}:${seconds}`;
 }
 
+function truncateString(text, truncateOrder, maxLength = 10) {
+    if (truncateOrder === 'None' || text.length <= maxLength) {
+        return text;
+    } else if (truncateOrder === 'Last') {
+        return text.substring(0, maxLength - 3) + "...";
+    } else if (truncateOrder === 'Middle') {
+        let numFirstChars = 2;
+        let numLastChars = 2;
+
+        if (text.length <= (numFirstChars + numLastChars + 3)) {
+            return text; // String is already short enough
+        }
+        const middleLength = text.length - numFirstChars - numLastChars;
+        if (middleLength <= 3) {
+            // Not enough space for ellipsis, shorten last characters
+            numLastChars = Math.max(0, middleLength);
+        }
+        return `${text.slice(0, numFirstChars)}...${text.slice(-numLastChars)}`;
+    }
+
+}
+
 
 export {
     secondsToHms,
@@ -166,5 +188,6 @@ export {
     asyncRequest,
     addOptionsToSelect,
     getDateFromTimestampString,
-    getTimeFromTimestampString
+    getTimeFromTimestampString,
+    truncateString
 }
