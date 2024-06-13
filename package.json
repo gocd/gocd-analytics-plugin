@@ -56,10 +56,12 @@
   },
   "overrides": {
     "chokidar": {
-      "glob-parent": "^5.1.2"
+      "glob-parent": "^5.1.2",
+      "braces": "^3.0.3"
     },
     "webpack": {
-      "terser-webpack-plugin": "^4.2.3"
+      "terser-webpack-plugin": "^4.2.3",
+      "braces": "^3.0.3"
     },
     "tap-diff": {
       "diff": "^5.2.0"
