@@ -88,7 +88,7 @@ class Worrysome {
                 return a.utilization_date === d;
             });
 
-            console.log("data found = ", data);
+            // console.log("data found = ", data);
 
             if (data !== null) {
                 data2.push(data.idle_duration_secs);
