@@ -199,6 +199,10 @@ processResources {
   dependsOn "generateResources" // defined in gocd-plugin-gradle-task-helpers
 }
 
+npm_install {
+  args = ['--force']
+}
+
 task lint(type: NpmTask) {
   inputs.files(fileTree('node_modules'))
   inputs.files(fileTree('assets/js'))
