@@ -19,4 +19,21 @@ function getPipelinePriorityTooltipFormatterFunction(xSeriesName) {
     }
 }
 
-export default getPipelinePriorityTooltipFormatterFunction;
+function getLabelTruncateAwareTooltipFormatterFunction(actualCategories) {
+    return (params) => {
+        const tooltip = new TooltipManager();
+        const extractedTitle = actualCategories[params[0].dataIndex];
+        if(Array.isArray(extractedTitle)) {
+            tooltip.addTitle(extractedTitle[0] + ' >> ' + extractedTitle[1]);
+        } else {
+            tooltip.addTitle(extractedTitle);
+        }
+        params.forEach(item => {
+            tooltip.addItem(item.marker, item.seriesName, secondsToHms(item.value));
+        });
+        tooltip.addFooter('Click to see the specific details');
+        return tooltip.getStandard();
+    }
+}
+
+export {getPipelinePriorityTooltipFormatterFunction, getLabelTruncateAwareTooltipFormatterFunction};
