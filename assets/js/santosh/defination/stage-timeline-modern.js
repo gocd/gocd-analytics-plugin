@@ -143,6 +143,7 @@ Completed at: ${latestObject.completed_at}
                 selectedMode: true, top: "bottom", show: this.settings.showLegend === "Show" ? true : false
             }, grid, yAxis: {
                 type: "value",
+                max: 1
             }, xAxis: {
                 type: "category", data: keys,
             }, series,
@@ -203,8 +204,17 @@ Completed at: ${latestObject.completed_at}
         return this.getPipelineCountersByResult('Cancelled');
     }
 
+     filterObjectsWithOnlyResult(obj, result) {
+         for (let prop in obj) {
+             if (obj.hasOwnProperty(prop)) {
+                 obj[prop] = obj[prop].filter(item => item.result === result);
+             }
+         }
+         return obj;
+    }
+
     filterDataBySettingsResultVisibility(unique_sorted_pipeline_counter_group) {
-        const array = _.cloneDeep(unique_sorted_pipeline_counter_group);
+        let array = _.cloneDeep(unique_sorted_pipeline_counter_group);
         console.log('array before filter', array);
         console.log('array length', array.length);
         switch (this.settings.showPipelineCounterResult) {
@@ -212,6 +222,10 @@ Completed at: ${latestObject.completed_at}
                 console.log('Only Passed');
                 this.getFailedPipelineCounters().forEach(pipeline_counter => delete array[pipeline_counter]);
                 this.getCancelledPipelineCounters().forEach(pipeline_counter => delete array[pipeline_counter]);
+                break;
+            case 'Any Passed':
+                array = this.filterObjectsWithOnlyResult(array, 'Passed');
+                console.log('Any Passed array: ', array);
                 break;
             case 'Only Failed':
                 console.log('Only Failed');
@@ -292,11 +306,11 @@ Completed at: ${latestObject.completed_at}
                 );
                 // if (pipeline.length === 0) {
                 if (pipeline === undefined) {
-                    console.log('❌ No stage name found for stage_name ', stage);
+                    // console.log('❌ No stage name found for stage_name ', stage);
                     rdata[index].push(0);
                     // d.push(0);
                 } else {
-                    console.log('✅ stage name found and time_waiting_secs is', pipeline.time_waiting_secs);
+                    // console.log('✅ stage name found and time_waiting_secs is', pipeline.time_waiting_secs);
                     switch (this.settings.showData) {
                         case 'time_waiting_secs':
                             // d.push(pipeline.time_waiting_secs);
@@ -400,6 +414,8 @@ Completed at: ${latestObject.completed_at}
                 }, data: rawData[sid].map((d, did) => totalData[did] <= 0 ? 0 : d / totalData[did]),
             };
         });
+
+        console.log('series', series);
 
         // const color = ["#5470c6", "#91cc75", "#fac858", "#ee6666", "#73c0de"];
 
