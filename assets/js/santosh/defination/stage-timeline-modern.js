@@ -63,7 +63,7 @@ class StageTimelineModern {
 
         this.keys = keys;
 
-        c.logs('stage-timeline draw keys, grid, series, elements = ', keys, grid, series, elements);
+        // c.logs('stage-timeline draw keys, grid, series, elements = ', keys, grid, series, elements);
         console.log('stage-timeline draw keys, grid, series, elements = ', keys, grid, series, elements);
 
         var option;
@@ -79,7 +79,7 @@ class StageTimelineModern {
                 },
                 formatter: (params) => {
 
-                    console.log('params', params);
+                    // console.log('params', params);
                     // c.log('I will search data ', data);
 
                     const pipeline_counter = params.name;
@@ -96,7 +96,7 @@ class StageTimelineModern {
                             ));
 
 
-                    console.log('allFilteredObjects', allFilteredObjects);
+                    // console.log('allFilteredObjects', allFilteredObjects);
 
                     const filteredObjects = data.filter(
                         d =>
@@ -462,7 +462,7 @@ Completed at: ${latestObject.completed_at}
     }
 
     getSeriesIndex() {
-        return 1;
+        return 0;
     }
 }
 
