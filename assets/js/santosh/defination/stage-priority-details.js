@@ -11,7 +11,9 @@ import {
 } from "../template";
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import momentHumanizeForGocd from "../../lib/moment-humanize-for-gocd";
-import getPipelinePriorityTooltipFormatterFunction from "../TooltipHelper";
+import {
+    getPipelinePriorityTooltipFormatterFunction
+} from "../TooltipHelper";
 
 /**
  * @class
@@ -27,7 +29,7 @@ class StagePriorityDetails {
     }
 
     draw(data) {
-        console.log("StagePriorityDetails draw with data ", data);
+        // console.log("StagePriorityDetails draw with data ", data);
 
         this.data = data;
 

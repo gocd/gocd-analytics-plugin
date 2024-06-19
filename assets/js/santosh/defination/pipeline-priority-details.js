@@ -12,7 +12,9 @@ import {
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import momentHumanizeForGocd from "../../lib/moment-humanize-for-gocd";
 import TooltipManager from "../TooltipManager";
-import getPipelinePriorityTooltipFormatterFunction from "../TooltipHelper";
+import {
+    getPipelinePriorityTooltipFormatterFunction
+} from "../TooltipHelper";
 
 /**
  * @class
@@ -28,7 +30,7 @@ class PipelinePriorityDetails {
     }
 
     draw(data) {
-        console.log("PipelinePriorityDetails draw with data ", data);
+        // console.log("PipelinePriorityDetails draw with data ", data);
 
         this.data = data;
 

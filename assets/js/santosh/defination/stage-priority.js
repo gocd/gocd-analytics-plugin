@@ -11,7 +11,9 @@ import {
 } from "../template";
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import momentHumanizeForGocd from "../../lib/moment-humanize-for-gocd";
-import getPipelinePriorityTooltipFormatterFunction from "../TooltipHelper";
+import {
+    getPipelinePriorityTooltipFormatterFunction
+} from "../TooltipHelper";
 
 /**
  * @class
@@ -27,7 +29,7 @@ class StagePriority {
     }
 
     draw(data) {
-        console.log("StagePriority draw with data ", data);
+        // console.log("StagePriority draw with data ", data);
 
         this.data = data;
 
@@ -177,7 +179,7 @@ class StagePriority {
 
     prepareData(data) {
 
-        console.log('🙋 priority')
+        // console.log('🙋 priority')
 
         const categories = ['Pass count', 'Fail count', 'Cancel count'];
 
