@@ -23,8 +23,12 @@ function getLabelTruncateAwareTooltipFormatterFunction(actualCategories) {
     return (params) => {
         const tooltip = new TooltipManager();
         const extractedTitle = actualCategories[params[0].dataIndex];
-        if(Array.isArray(extractedTitle)) {
-            tooltip.addTitle(extractedTitle[0] + ' >> ' + extractedTitle[1]);
+        if (Array.isArray(extractedTitle)) {
+            if (extractedTitle.length > 2) {
+                tooltip.addTitle(extractedTitle[0] + ' >> ' + extractedTitle[1] + ' >> ' + extractedTitle[2]);
+            } else {
+                tooltip.addTitle(extractedTitle[0] + ' >> ' + extractedTitle[1]);
+            }
         } else {
             tooltip.addTitle(extractedTitle);
         }
