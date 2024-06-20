@@ -56,7 +56,7 @@ function updateChartSize(chart, w, h) {
         dynamicHeight = window.innerHeight * h;
     }
 
-    console.log('updating chart size with w, h = ', dynamicWidth, dynamicHeight);
+    // console.log('updating chart size with w, h = ', dynamicWidth, dynamicHeight);
 
     chart.resize({
         width: dynamicWidth,

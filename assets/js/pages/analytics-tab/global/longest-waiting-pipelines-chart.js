@@ -19,18 +19,81 @@ import "css/global";
 import AnalyticsEndpoint from "gocd-server-comms";
 import GraphManager from "../../../santosh/GraphManager";
 import Console from "../../../santosh/Console";
+import RequestMaster from "../../../RequestMaster";
+import Header from "../../../santosh/defination/stage-timeline/header";
 
-const c = new Console('longest-waiting-pipelines-chart.js', 'prod');
+let graphManager = null;
+let requestMaster = null;
+
+let header = null;
+
+const c = new Console('longest-waiting-pipelines-chart.js', 'dev');
+
+const settings = {"LongestWaitingPipelines": null, "LongestWaitingJobs": null, "JobBuildTime": null};
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
     const data = JSON.parse(initialData);
 
-    c.logs("data = " + data);
+    c.log("data = " + data);
 
-    const graphManager = new GraphManager('series', transport, null, null);
-    graphManager.initSeries('LongestWaitingPipelines', data);
+    requestMaster = new RequestMaster(transport);
+    header = new Header(requestMaster);
 
-    c.logs("*********** graph loaded");
+    graphManager = new GraphManager('series', transport, informSeriesMovement, null);
+
+    init(data);
+
+    c.log("*********** graph loaded");
 });
+
+async function init(data) {
+    settings["LongestWaitingPipelines"] = await header.getLongestWaitingPipelinesHeader(graphOneHeaderChangeHandler);
+    // settings["LongestWaitingJobs"] = await header.getLongestWaitingPipelinesHeader(graphTwoHeaderChangeHandler);
+
+    graphManager.initSeries('LongestWaitingPipelines', data, settings["LongestWaitingPipelines"]);
+}
+
+async function informSeriesMovement(graphName, requestParams) {
+    console.log('📞 I am informed of graphName ', graphName, ' changing the header now.');
+    console.log('requestParams', requestParams);
+    // return header.switchHeader(graphName);
+    header.clear();
+
+    let headerSettings = null;
+
+    switch (graphName) {
+        case "LongestWaitingPipelines":
+            headerSettings = await header.getLongestWaitingPipelinesHeader(graphOneHeaderChangeHandler, settings["LongestWaitingPipelines"]);
+            break;
+
+        case "LongestWaitingJobs":
+            // if(settings.LongestWaitingJobs === null) {
+            //     settings["LongestWaitingJobs"] = await header.getLongestWaitingPipelinesHeader(graphTwoHeaderChangeHandler);
+            //     headerSettings = settings["LongestWaitingJobs"];
+            // } else {
+            headerSettings = await header.getLongestWaitingPipelinesHeader(graphTwoHeaderChangeHandler, settings["LongestWaitingJobs"]);
+            // }
+            break;
+
+        default:
+            return null;
+    }
+
+    return headerSettings;
+}
+
+function graphOneHeaderChangeHandler(changedSettings) {
+    c.log("graphOneHeaderChangeHandler", changedSettings);
+
+    settings["LongestWaitingPipelines"] = changedSettings;
+    graphManager.call_initSeriesWithNewSettings(changedSettings);
+}
+
+function graphTwoHeaderChangeHandler(changedSettings) {
+    c.log("graphTwoHeaderChangeHandler", changedSettings);
+
+    settings["LongestWaitingJobs"] = changedSettings;
+    graphManager.call_initSeriesWithNewSettings(changedSettings);
+}
 
 AnalyticsEndpoint.ensure("v1");

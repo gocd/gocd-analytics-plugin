@@ -1,6 +1,7 @@
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import {getBarSeries} from "../template";
 import {getLabelTruncateAwareTooltipFormatterFunction} from "../TooltipHelper";
+import {truncateString} from "../utils";
 
 /**
  * @class
@@ -14,7 +15,7 @@ class LongestWaitingPipeline {
     constructor(settings) {
         this.settings = settings;
 
-        console.log('settings = ', settings);
+        // console.log('settings = ', settings);
     }
 
     draw(data, c) {
@@ -57,28 +58,6 @@ class LongestWaitingPipeline {
         const categories = [];
         const data1 = [];
         const data2 = [];
-
-        function truncateString(text, truncateOrder, maxLength = 10) {
-            if (truncateOrder === 'None' || text.length <= maxLength) {
-                return text;
-            } else if (truncateOrder === 'Last') {
-                return text.substring(0, maxLength - 3) + "...";
-            } else if (truncateOrder === 'Middle') {
-                let numFirstChars = 2;
-                let numLastChars = 2;
-
-                if (text.length <= (numFirstChars + numLastChars + 3)) {
-                    return text; // String is already short enough
-                }
-                const middleLength = text.length - numFirstChars - numLastChars;
-                if (middleLength <= 3) {
-                    // Not enough space for ellipsis, shorten last characters
-                    numLastChars = Math.max(0, middleLength);
-                }
-                return `${text.slice(0, numFirstChars)}...${text.slice(-numLastChars)}`;
-            }
-
-        }
 
         data.forEach(m => {
             actualCategories.push(m.name);

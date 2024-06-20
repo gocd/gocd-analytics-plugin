@@ -1,11 +1,18 @@
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import {getBarSeries} from "../template";
-import {secondsToHms} from "../utils";
+import {secondsToHms, truncateString} from "../utils";
+import {getLabelTruncateAwareTooltipFormatterFunction} from "../TooltipHelper";
 
 
 class JobsHighestWaitTime {
 
     data = null;
+
+    constructor(settings) {
+        this.settings = settings;
+
+        // console.log('settings = ', settings);
+    }
 
     draw(data) {
 
@@ -15,7 +22,6 @@ class JobsHighestWaitTime {
 
         const option = GET_STACKED_BAR_TEMPLATE(info.categories, info.series);
         option.title.text = 'Jobs with the Highest Wait Time';
-        option.tooltip.valueFormatter = (value) => secondsToHms(value);
 
         // option.yAxis.axisLabel = {
         //     inside: true,
@@ -28,24 +34,27 @@ class JobsHighestWaitTime {
         //     formatter: '{b}'
         // }
 
-        // option.tooltip.formatter = this.tooltipFormatter();
+        option.tooltip.formatter = getLabelTruncateAwareTooltipFormatterFunction(info.actualCategories);
 
         return option;
     }
 
     prepareData(data) {
+        const actualCategories = [];
         const categories = [];
         const data1 = [];
         const data2 = [];
 
         data.forEach(m => {
-            categories.push(m.stage_name + ' >> ' + m.job_name);
+            actualCategories.push([m.stage_name, m.job_name]);
+            categories.push(truncateString(m.stage_name, this.settings.truncateOrder) + ' >> ' + truncateString(m.job_name, this.settings.truncateOrder));
 
             data1.push(m.time_waiting_secs);
             data2.push(m.time_building_secs);
         });
 
         return {
+            actualCategories: actualCategories,
             categories: categories,
             series: [getBarSeries('Waiting Secs', data1), getBarSeries('Building Secs', data2)],
         }
