@@ -28,7 +28,7 @@ class Header {
         };
         this.requestMaster = requestMaster;
 
-        console.log('1. Header stage-timeline constructor()');
+        // console.log('1. Header stage-timeline constructor()');
     }
 
     setSelectedPipeline(pipelineName) {
@@ -43,7 +43,7 @@ class Header {
     }
 
     async getPriorityPipelineHeader(changeHandler, selectedResult) {
-        console.log('getPriorityPipelineHeader()');
+        // console.log('getPriorityPipelineHeader()');
 
         let settings = {
             scope: 'Pipelines',
@@ -96,13 +96,13 @@ class Header {
             });
         }
 
-        console.log('returning settings', settings);
+        // console.log('returning settings', settings);
 
         return settings;
     }
 
     async getPriorityDetailsHeader(changeHandler, selectedOptions) {
-        console.log('getPriorityDetailsHeader()');
+        // console.log('getPriorityDetailsHeader()');
 
         let settings = {
             alignTicks: true,
@@ -127,13 +127,13 @@ class Header {
             });
         }
 
-        console.log('returning settings', settings);
+        // console.log('returning settings', settings);
 
         return settings;
     }
 
     async getJobsTimelineHeader(changeHandler) {
-        console.log('getJobsTimelineHeader()');
+        // console.log('getJobsTimelineHeader()');
 
         let settings = {
             showPipelineCounterResult: 'Only Passed',
@@ -169,7 +169,7 @@ class Header {
             });
         }
 
-        console.log('returning settings', settings);
+        // console.log('returning settings', settings);
 
         return settings;
     }
@@ -182,15 +182,18 @@ class Header {
             requestLimit: 10,
             showPipelineCounterResult: 'Only Passed',
             showData: 'time_waiting_secs',
-            showLegend: 'Show'
+            showLegend: 'Show',
+            visualizeVariation: true
         };
 
         const pipelines = await this.requestMaster.getPipelineList();
-        await console.log('pipelines = ', pipelines);
+        // await console.log('pipelines = ', pipelines);
 
         const selectors = await stageTimelineHeader(pipelines.map(p => p.name), this.#dom);
 
         setSelectedPipeline(selectors.pipelineSelector.value);
+        selectors.requestOrderSelector.value = settings.requestOrder;
+        selectors.visualizeVariationSelector.checked = settings.visualizeVariation;
 
         handlePipelineSelect(selectors.pipelineSelector);
         handleRequestResultSelect(selectors.requestResultSelector);
@@ -199,6 +202,7 @@ class Header {
         handleResultSelect(selectors.resultFilterSelector);
         handleDataSelect(selectors.dataFilterSelector);
         handleLegendSelect(selectors.legendVisibilityFilterSelector);
+        handleVisualizeVariationSelect(selectors.visualizeVariationSelector)
 
         function setSelectedPipeline(pipeline_name) {
             settings.selectedPipeline = pipeline_name;
@@ -226,6 +230,10 @@ class Header {
 
         function setSelectedLegendFilter(data) {
             settings.showLegend = data;
+        }
+
+        function setSelectedVisualizeVariation(checked) {
+            settings.visualizeVariation = checked;
         }
 
         function handlePipelineSelect(selector) {
@@ -284,6 +292,19 @@ class Header {
             });
         }
 
+        function handleVisualizeVariationSelect(selector) {
+            selector.addEventListener("change", () => {
+
+                if(selector.checked) {
+                    setSelectedVisualizeVariation(true);
+                } else {
+                    setSelectedVisualizeVariation(false);
+                }
+
+                changeHandler(settings);
+            });
+        }
+
         return settings;
     }
 
@@ -299,7 +320,7 @@ class Header {
         };
 
         const pipelines = await this.requestMaster.getPipelineList();
-        await console.log('pipelines = ', pipelines);
+        // await console.log('pipelines = ', pipelines);
 
         const selectors = await stageStartupHeader(pipelines.map(p => p.name), this.#dom);
 
@@ -413,7 +434,7 @@ class Header {
         };
 
         const pipelines = await this.requestMaster.getPipelineList();
-        await console.log('pipelines = ', pipelines);
+        // await console.log('pipelines = ', pipelines);
 
         const selectors = await stageRerunsHeader(pipelines.map(p => p.name), this.#dom);
 
@@ -516,7 +537,10 @@ class Header {
         return settings;
     }
 
-    async getLongestWaitingPipelinesHeader(changeHandler) {
+    async getLongestWaitingPipelinesHeader(changeHandler, savedSettings) {
+
+        console.log("getLongestWaitingPipelinesHeader savedSettings = ", savedSettings);
+
         let settings = {
             truncateOrder: 'Last'
         };
@@ -537,7 +561,17 @@ class Header {
             settings.truncateOrder = result;
         }
 
+        if (savedSettings != undefined) {
+            console.log('savedSettings = ', savedSettings);
+            selectors.truncateOrderSelector.value = savedSettings.truncateOrder;
+            return savedSettings;
+        }
+
         return settings;
+    }
+
+    async clear() {
+        this.#dom.innerHTML = "";
     }
 
 }
