@@ -28,7 +28,7 @@ class JobPriorityDetailsCompare {
     }
 
     draw(data) {
-        console.log("JobPriorityDetailsCompare draw with data ", data);
+        // console.log("JobPriorityDetailsCompare draw with data ", data);
 
         this.data = data;
 

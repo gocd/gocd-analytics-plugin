@@ -42,8 +42,10 @@ class Header {
         }
     }
 
-    async getPriorityPipelineHeader(changeHandler, selectedResult) {
-        // console.log('getPriorityPipelineHeader()');
+    async getPriorityPipelineHeader(changeHandler, requestParams, savedSettings) {
+        console.log('getPriorityPipelineHeader() must have been graph movement');
+
+        const selectedResult = requestParams === null ? "" : requestParams.result;
 
         let settings = {
             scope: 'Pipelines',
@@ -60,12 +62,15 @@ class Header {
         handleResultSelect(selectors.resultFilterSelector);
 
         function setSelectedTicks(result) {
+            console.log("setting tick selector value = ", result);
             settings.alignTicks = result;
         }
 
         function handleTicksSelect(selector) {
+            console.log('handleTicksSelect()');
             selector.addEventListener("change", () => {
-                if (selector.value === 'Align Y-Axis Ticks') {
+                console.log("about to set selected ticks to ", selector.value);
+                if (selector.value === "true") {
                     setSelectedTicks(true);
                 } else {
                     setSelectedTicks(false);
@@ -90,7 +95,9 @@ class Header {
         }
 
         function handleResultSelect(selector) {
+            console.log("handle result select()");
             selector.addEventListener("change", () => {
+                console.log("about to set selected result to ", selector.value);
                 setSelectedResult(selector.value);
                 changeHandler(settings);
             });
@@ -98,10 +105,29 @@ class Header {
 
         // console.log('returning settings', settings);
 
+        if (savedSettings != undefined) {
+            console.log('savedSettings = ', savedSettings);
+
+            savedSettings.result = savedSettings.result === "" ? selectedResult : savedSettings.result;
+
+            selectors.scopeFilterSelector.value = savedSettings.scope;
+            selectors.resultFilterSelector.value = savedSettings.result;
+            selectors.ticksFilterSelector.value = savedSettings.alignTicks;
+
+            // for alignment to work
+            setSelectedScope(savedSettings.scope);
+            setSelectedResult(savedSettings.result);
+            setSelectedTicks(savedSettings.alignTicks);
+
+            console.log("savedSettings returning = ", savedSettings);
+
+            return savedSettings;
+        }
+
         return settings;
     }
 
-    async getPriorityDetailsHeader(changeHandler, selectedOptions) {
+    async getPriorityDetailsHeader(changeHandler, selectedOptions, savedSettings) {
         // console.log('getPriorityDetailsHeader()');
 
         let settings = {
@@ -128,6 +154,15 @@ class Header {
         }
 
         // console.log('returning settings', settings);
+
+        if (savedSettings != undefined) {
+            console.log('savedSettings = ', savedSettings);
+
+            selectors.ticksFilterSelector.value = savedSettings.alignTicks;
+            setSelectedTicks(savedSettings.alignTicks);
+
+            return savedSettings;
+        }
 
         return settings;
     }

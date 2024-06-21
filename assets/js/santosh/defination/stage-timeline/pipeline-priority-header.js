@@ -13,11 +13,18 @@ async function pipelinePriorityHeader(settingsDOM) {
     scopeFilterSelector = document.getElementById("scopeFilter");
     resultFilterSelector = document.getElementById("resultFilter");
 
-    await addOptionsToSelect(ticksFilterSelector, ["Align Y-Axis Ticks", "Don't align Y-Axis Ticks"]);
+    await addOptionsToSelect(ticksFilterSelector, [{
+        text: "Align Y-Axis Ticks",
+        value: "true"
+    }, {text: "Don't align Y-Axis Ticks", value: "false"}]);
     await addOptionsToSelect(scopeFilterSelector, ["Pipelines", "Stages", "Jobs"]);
     await addOptionsToSelect(resultFilterSelector, ["Passed", "Failed", "Cancelled"]);
 
-    return {ticksFilterSelector: ticksFilterSelector, scopeFilterSelector: scopeFilterSelector, resultFilterSelector: resultFilterSelector};
+    return {
+        ticksFilterSelector: ticksFilterSelector,
+        scopeFilterSelector: scopeFilterSelector,
+        resultFilterSelector: resultFilterSelector
+    };
 }
 
 async function addOptionHeader(settingsDOM) {

@@ -26,7 +26,7 @@ class JobPriority {
     }
 
     draw(data) {
-        console.log("JobPriority draw with data ", data);
+        // console.log("JobPriority draw with data ", data);
 
         this.data = data;
 
@@ -175,7 +175,7 @@ class JobPriority {
 
     prepareData(data) {
 
-        console.log('🙋 priority')
+        // console.log('🙋 priority')
 
         const categories = ['Pass count', 'Fail count', 'Cancel count'];
 

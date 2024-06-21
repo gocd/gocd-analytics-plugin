@@ -27,7 +27,7 @@ class JobPriorityDetails {
     }
 
     draw(data) {
-        console.log("JobPriorityDetails draw with data ", data);
+        // console.log("JobPriorityDetails draw with data ", data);
 
         this.data = data;
 

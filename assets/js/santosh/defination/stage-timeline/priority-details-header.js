@@ -11,7 +11,10 @@ async function priorityDetailsHeader(selectedOptions, settingsDOM) {
 
     ticksFilterSelector = document.getElementById("ticksFilter");
 
-    await addOptionsToSelect(ticksFilterSelector, ["Align Y-Axis Ticks", "Don't align Y-Axis Ticks"]);
+    await addOptionsToSelect(ticksFilterSelector, [{
+        text: "Align Y-Axis Ticks",
+        value: "true"
+    }, {text: "Don't align Y-Axis Ticks", value: "false"}]);
 
     return {ticksFilterSelector: ticksFilterSelector};
 }
