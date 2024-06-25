@@ -5,6 +5,12 @@ import priorityDetailsHeader from "./priority-details-header";
 import stageRerunsHeader from "./stage-reruns-header";
 import stageStartupHeader from "./stage-startup-header";
 import longestWaitingPipelinesHeader from "./longest-waiting-pipelines-header";
+import {
+    convertDateObjectToDBDateFormat, formatDatePicker,
+    getDateFromTimestampString, getHumanReadableDateFromDBFormatDate,
+    getPreviousMonthDateInDBFormat,
+    getTodaysDateInDBFormat
+} from "../../utils";
 
 class Header {
 
@@ -50,16 +56,29 @@ class Header {
         let settings = {
             scope: 'Pipelines',
             alignTicks: true,
-            result: selectedResult
+            result: selectedResult,
+            startDate: getPreviousMonthDateInDBFormat(),
+            endDate: getTodaysDateInDBFormat()
         };
 
-        const selectors = await pipelinePriorityHeader(this.#dom);
+        const selectors = await pipelinePriorityHeader(this.#dom, handleDateSelect);
 
         selectors.resultFilterSelector.value = selectedResult;
+        selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(settings.startDate)} - ${getHumanReadableDateFromDBFormatDate(settings.endDate)}`
 
         handleTicksSelect(selectors.ticksFilterSelector);
         handleScopeSelect(selectors.scopeFilterSelector);
         handleResultSelect(selectors.resultFilterSelector);
+
+        function handleDateSelect(date1, date2) {
+            console.log("handleDateSelect from header.js date1, date2 = ", date1, date2);
+
+
+            settings.startDate = convertDateObjectToDBDateFormat(date1);
+            settings.endDate = convertDateObjectToDBDateFormat(date2);
+
+            changeHandler(settings);
+        }
 
         function setSelectedTicks(result) {
             console.log("setting tick selector value = ", result);

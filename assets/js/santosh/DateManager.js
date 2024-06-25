@@ -1,32 +1,36 @@
 import {Litepicker} from 'litepicker';
+
 export class DateManager {
 
-    #chartDom
-    #datepicker
-
-    constructor(chartDom) {
-        this.#chartDom = chartDom;
-        this.addDatelitePickerDiv();
+    constructor() {
     }
 
-    addDatelitePickerDiv() {
-        let newDiv = document.createElement("div");
+    async addDatelitePickerDiv(selector, callback) {
+        console.log("passed selector", selector);
+
+        let newDiv = document.createElement("input");
         newDiv.setAttribute("id", "litepicker");
 
-        this.#chartDom.prepend(newDiv);
+        const today = new Date();
 
         const picker = new Litepicker({
-            element: document.getElementById('litepicker'),
+            // element: document.getElementById('litepicker'),
+            element: newDiv,
             singleMode: false,
+            // autoRefresh: true,
+            // startDate: new Date(today.getFullYear(), today.getMonth(), 1),
+            // maxDate: today,
+            setup: (picker) => {
+                picker.on("selected", (date1, date2) => {
+                    console.log("setup selected");
+                    callback(date1, date2);
+                });
+            },
         });
 
-        this.#datepicker = picker;
-        console.log('datelite added ', this.#datepicker);
+        selector.innerHTML = newDiv;
+
+        return picker;
     }
 
-    showDatelitePicker() {
-        console.log("showDatelitePicker() clicked");
-        console.log('datelite is ', this.#datepicker);
-        this.#datepicker.show();
-    }
 }

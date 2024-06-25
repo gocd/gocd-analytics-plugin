@@ -17,13 +17,13 @@ class Priority {
     data = null;
 
     draw(data) {
-        console.log("draw with data ", data);
+        // console.log("draw with data ", data);
 
         this.data = data;
 
         const info = this.prepareData(this.data);
 
-        console.log("info is ", info);
+        // console.log("info is ", info);
 
         // option.tooltip.formatter = this.tooltipFormatter();
 
@@ -64,7 +64,7 @@ class Priority {
 
     prepareData(data) {
 
-        console.log('🙋 priority')
+        // console.log('🙋 priority')
 
         const categories = ['Pass count', 'Fail count', 'Cancel count'];
 

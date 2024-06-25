@@ -194,10 +194,12 @@ public interface PipelineMapper {
         + "       SUM(CASE WHEN result = #{result} THEN total_time_secs ELSE 0 END) AS sum_total_time_secs,\n"
         + "       SUM(CASE WHEN result = #{result} THEN time_waiting_secs ELSE 0 END) AS sum_time_waiting_secs\n"
         + "FROM pipelines p \n"
+        + "WHERE created_at BETWEEN #{startDate} AND #{endDate} \n"
         + "GROUP BY name\n"
         + "HAVING SUM(CASE WHEN result = #{result} THEN 1 ELSE 0 END) > 0\n"
         + "order by times desc;")
-    List<PipelineTimeSummaryTwo> pipelineSummaryTwo(@Param("result") String result);
+    List<PipelineTimeSummaryTwo> pipelineSummaryTwo(@Param("startDate") String startDate,
+        @Param("endDate") String endDate, @Param("result") String result);
 
     //    @Results(id="pipeline_summary_details", value = {
 //        @Result(property = "name", column = "name"),
@@ -215,5 +217,6 @@ public interface PipelineMapper {
     @Select(
         "SELECT * FROM pipelines p WHERE p.name = #{pipeline_name} AND p.result = #{result} "
             + "ORDER BY p.created_at ")
-    List<PipelineInstance> pipelineSummaryDetails(@Param("pipeline_name") String pipelineName, @Param("result") String result);
+    List<PipelineInstance> pipelineSummaryDetails(@Param("pipeline_name") String pipelineName,
+        @Param("result") String result);
 }

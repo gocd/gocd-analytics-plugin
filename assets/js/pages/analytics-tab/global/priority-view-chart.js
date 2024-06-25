@@ -98,7 +98,7 @@ async function doJob(settings) {
 
     switch (settings.scope) {
         case 'Pipelines':
-            const pp = await requestMaster.getPriorityPipeline(settings.result);
+            const pp = await requestMaster.getPriorityPipeline(settings);
             graphManager.initSeries("PipelinePriority", pp, settings);
             break;
         case 'Stages':

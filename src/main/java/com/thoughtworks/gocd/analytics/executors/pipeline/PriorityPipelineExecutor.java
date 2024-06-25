@@ -31,7 +31,8 @@ public class PriorityPipelineExecutor extends AbstractSessionFactoryAwareExecuto
 
     private PipelineDAO pipelineDAO;
 
-    public PriorityPipelineExecutor(AnalyticsRequest analyticsRequest, SessionFactory sessionFactory) {
+    public PriorityPipelineExecutor(AnalyticsRequest analyticsRequest,
+        SessionFactory sessionFactory) {
         this(analyticsRequest, new PipelineDAO(), sessionFactory);
     }
 
@@ -45,9 +46,12 @@ public class PriorityPipelineExecutor extends AbstractSessionFactoryAwareExecuto
     protected GoPluginApiResponse doExecute() {
 
         final String result = param(PARAM_RESULT);
+        final String startDate = param(PARAM_START_DATE);
+        final String endDate = param(PARAM_END_DATE);
 
         List<PipelineTimeSummaryTwo> summary =
-            doInTransaction(sqlSession -> pipelineDAO.pipelineSummaryTwo(sqlSession, result));
+            doInTransaction(sqlSession -> pipelineDAO.pipelineSummaryTwo(sqlSession, startDate,
+                endDate, result));
 
         AnalyticsResponseBody responseBody = new AnalyticsResponseBody(summary,
             ".html");

@@ -44,8 +44,9 @@ public class PipelineDAO {
         return mapper(sqlSession).pipelineSummary();
     }
 
-    public List<PipelineTimeSummaryTwo> pipelineSummaryTwo(SqlSession sqlSession, String result) {
-        return mapper(sqlSession).pipelineSummaryTwo(result);
+    public List<PipelineTimeSummaryTwo> pipelineSummaryTwo(SqlSession sqlSession,
+        String startDate, String endDate, String result) {
+        return mapper(sqlSession).pipelineSummaryTwo(startDate, endDate, result);
     }
 
     public List<PipelineStateSummary> pipelineStateSummary(SqlSession sqlSession) {
