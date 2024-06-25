@@ -19,7 +19,7 @@ export class DateManager {
             singleMode: false,
             // autoRefresh: true,
             // startDate: new Date(today.getFullYear(), today.getMonth(), 1),
-            // maxDate: today,
+            maxDate: today,
             setup: (picker) => {
                 picker.on("selected", (date1, date2) => {
                     console.log("setup selected");
