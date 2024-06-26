@@ -138,6 +138,8 @@ class Header {
             setSelectedResult(savedSettings.result);
             setSelectedTicks(savedSettings.alignTicks);
 
+            selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(savedSettings.startDate)} - ${getHumanReadableDateFromDBFormatDate(savedSettings.endDate)}`
+
             console.log("savedSettings returning = ", savedSettings);
 
             return savedSettings;
@@ -349,7 +351,7 @@ class Header {
         function handleVisualizeVariationSelect(selector) {
             selector.addEventListener("change", () => {
 
-                if(selector.checked) {
+                if (selector.checked) {
                     setSelectedVisualizeVariation(true);
                 } else {
                     setSelectedVisualizeVariation(false);
