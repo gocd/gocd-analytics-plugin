@@ -204,10 +204,12 @@ public interface StageMapper {
         + "       SUM(CASE WHEN result = #{result} THEN duration_secs ELSE 0 END) AS sum_total_time_secs,\n"
         + "       SUM(CASE WHEN result = #{result} THEN time_waiting_secs ELSE 0 END) AS sum_time_waiting_secs\n"
         + "FROM stages\n"
+        + "WHERE scheduled_at BETWEEN #{startDate} AND #{endDate} \n"
         + "GROUP BY pipeline_name, stage_name\n"
         + "HAVING SUM(CASE WHEN result = #{result} THEN 1 ELSE 0 END) > 0\n"
         + "order by times desc;")
-    List<StageTimeSummary> stageSummary(@Param("result") String result);
+    List<StageTimeSummary> stageSummary(@Param("startDate") String startDate,
+        @Param("endDate") String endDate, @Param("result") String result);
 
     @ResultMap("Stage")
     @Select("SELECT * FROM stages s WHERE s.stage_name = #{stageName} and s.result = #{result} "

@@ -97,8 +97,9 @@ public class StageDAO {
         return mapper(sqlSession).stageStartupTimeCompare(pipelineName, pipelineCounter);
     }
 
-    public List<StageTimeSummary> stageSummary(SqlSession sqlSession, String result) {
-        return mapper(sqlSession).stageSummary(result);
+    public List<StageTimeSummary> stageSummary(SqlSession sqlSession,
+        String startDate, String endDate, String result) {
+        return mapper(sqlSession).stageSummary(startDate, endDate, result);
     }
 
     public List<Stage> stageSummaryDetails(SqlSession sqlSession, String stageName, String result) {

@@ -47,6 +47,9 @@ public class PriorityStageExecutor extends AbstractSessionFactoryAwareExecutor {
     protected GoPluginApiResponse doExecute() {
 
         final String result = param(PARAM_RESULT);
+        final String startDate = param(PARAM_START_DATE);
+        final String endDate = param(PARAM_END_DATE);
+
         List<StageTimeSummary> stages = doInTransaction(new Operation<List<StageTimeSummary>>() {
             @Override
             public List<StageTimeSummary> execute(SqlSession sqlSession) {
@@ -54,7 +57,7 @@ public class PriorityStageExecutor extends AbstractSessionFactoryAwareExecutor {
 //                    return new ArrayList<>();
 //                }
 //                return stageDAO.getAllStagesByPipelineNameAndCounter(sqlSession, pipelineName);
-                return stageDAO.stageSummary(sqlSession, result);
+                return stageDAO.stageSummary(sqlSession, startDate, endDate, result);
             }
         });
 

@@ -46,6 +46,9 @@ public class PriorityJobExecutor extends AbstractSessionFactoryAwareExecutor {
     protected GoPluginApiResponse doExecute() {
 
         final String result = param(PARAM_RESULT);
+        final String startDate = param(PARAM_START_DATE);
+        final String endDate = param(PARAM_END_DATE);
+
 //        final int pipelineCounterStart = Integer.parseInt(param(PARAM_PIPELINE_COUNTER_START));
 //        final int pipelineCounterEnd = Integer.parseInt(param(PARAM_PIPELINE_COUNTER_END));
 
@@ -54,7 +57,7 @@ public class PriorityJobExecutor extends AbstractSessionFactoryAwareExecutor {
 //                return new ArrayList<>();
 //            }
 //            return jobDAO.getAllJobsByStageName(sqlSession, stageName, pipelineCounterStart, pipelineCounterEnd);
-            return jobDAO.jobSummary(sqlSession, result);
+            return jobDAO.jobSummary(sqlSession, startDate, endDate, result);
         });
 
         AnalyticsResponseBody responseBody = new AnalyticsResponseBody(jobs,

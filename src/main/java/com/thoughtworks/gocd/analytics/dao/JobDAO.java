@@ -74,8 +74,9 @@ public class JobDAO {
         return mapper(sqlSession).allJobsOfStage(stageName, pipelineCounterStart, pipelineCounterEnd);
     }
 
-    public List<JobTimeSummary> jobSummary(SqlSession sqlSession, String result) {
-        return mapper(sqlSession).jobSummary(result);
+    public List<JobTimeSummary> jobSummary(SqlSession sqlSession, String startDate,
+     String endDate,   String result) {
+        return mapper(sqlSession).jobSummary(startDate, endDate,result);
     }
 
     public List<Job> jobSummaryDetails(SqlSession sqlSession, String jobName, String result) {

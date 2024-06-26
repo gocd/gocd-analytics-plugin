@@ -25,54 +25,57 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 public interface JobMapper {
+
     @Insert("INSERT INTO jobs(pipeline_name," +
-            "pipeline_counter," +
-            "stage_name," +
-            "stage_counter," +
-            "job_name," +
-            "result," +
-            "scheduled_at," +
-            "completed_at," +
-            "assigned_at," +
-            "time_waiting_secs," +
-            "time_building_secs," +
-            "duration_secs, " +
-            "agent_uuid) values " +
-            "(#{pipelineName}," +
-            "#{pipelineCounter}," +
-            "#{stageName}," +
-            "#{stageCounter}," +
-            "#{jobName}," +
-            "#{result}," +
-            "#{scheduledAt}," +
-            "#{completedAt}," +
-            "#{assignedAt}," +
-            "#{timeWaitingSecs}," +
-            "#{timeBuildingSecs}," +
-            "#{durationSecs}," +
-            "#{agentUuid})")
+        "pipeline_counter," +
+        "stage_name," +
+        "stage_counter," +
+        "job_name," +
+        "result," +
+        "scheduled_at," +
+        "completed_at," +
+        "assigned_at," +
+        "time_waiting_secs," +
+        "time_building_secs," +
+        "duration_secs, " +
+        "agent_uuid) values " +
+        "(#{pipelineName}," +
+        "#{pipelineCounter}," +
+        "#{stageName}," +
+        "#{stageCounter}," +
+        "#{jobName}," +
+        "#{result}," +
+        "#{scheduledAt}," +
+        "#{completedAt}," +
+        "#{assignedAt}," +
+        "#{timeWaitingSecs}," +
+        "#{timeBuildingSecs}," +
+        "#{durationSecs}," +
+        "#{agentUuid})")
     void insert(Job job);
 
     @Select("SELECT * FROM jobs where pipeline_name = #{pipelineName}")
 
     @Results(id = "Job", value = {
-            @Result(property = "pipelineName", column = "pipeline_name"),
-            @Result(property = "pipelineCounter", column = "pipeline_counter"),
-            @Result(property = "stageName", column = "stage_name"),
-            @Result(property = "stageCounter", column = "stage_counter"),
-            @Result(property = "jobName", column = "job_name"),
-            @Result(property = "result", column = "result"),
-            @Result(property = "scheduledAt", column = "scheduled_at"),
-            @Result(property = "completedAt", column = "completed_at"),
-            @Result(property = "assignedAt", column = "assigned_at"),
-            @Result(property = "timeWaitingSecs", column = "time_waiting_secs"),
-            @Result(property = "timeBuildingSecs", column = "time_building_secs"),
-            @Result(property = "durationSecs", column = "duration_secs"),
-            @Result(property = "agentUuid", column = "agent_uuid")
+        @Result(property = "pipelineName", column = "pipeline_name"),
+        @Result(property = "pipelineCounter", column = "pipeline_counter"),
+        @Result(property = "stageName", column = "stage_name"),
+        @Result(property = "stageCounter", column = "stage_counter"),
+        @Result(property = "jobName", column = "job_name"),
+        @Result(property = "result", column = "result"),
+        @Result(property = "scheduledAt", column = "scheduled_at"),
+        @Result(property = "completedAt", column = "completed_at"),
+        @Result(property = "assignedAt", column = "assigned_at"),
+        @Result(property = "timeWaitingSecs", column = "time_waiting_secs"),
+        @Result(property = "timeBuildingSecs", column = "time_building_secs"),
+        @Result(property = "durationSecs", column = "duration_secs"),
+        @Result(property = "agentUuid", column = "agent_uuid")
     })
     List<Job> allJobs(String pipelineName);
 
-    @Select("  SELECT pipeline_name, stage_name, job_name, AVG(time_waiting_secs) as avg_time_waiting_secs, AVG(time_building_secs) as avg_time_building_secs\n" +
+    @Select(
+        "  SELECT pipeline_name, stage_name, job_name, AVG(time_waiting_secs) as avg_time_waiting_secs, AVG(time_building_secs) as avg_time_building_secs\n"
+            +
             "    FROM jobs\n" +
             "   WHERE agent_uuid = #{agentUUID}\n" +
             "     AND DATE(scheduled_at) >= DATE(#{startDate})\n" +
@@ -81,18 +84,20 @@ public interface JobMapper {
             "ORDER BY avg_time_waiting_secs DESC\n" +
             "   LIMIT #{limit};")
     @Results({
-            @Result(property = "pipelineName", column = "pipeline_name"),
-            @Result(property = "stageName", column = "stage_name"),
-            @Result(property = "jobName", column = "job_name"),
-            @Result(property = "timeWaitingSecs", column = "avg_time_waiting_secs"),
-            @Result(property = "timeBuildingSecs", column = "avg_time_building_secs")
+        @Result(property = "pipelineName", column = "pipeline_name"),
+        @Result(property = "stageName", column = "stage_name"),
+        @Result(property = "jobName", column = "job_name"),
+        @Result(property = "timeWaitingSecs", column = "avg_time_waiting_secs"),
+        @Result(property = "timeBuildingSecs", column = "avg_time_building_secs")
     })
     List<Job> longestWaitingJobsForAgent(@Param("agentUUID") String agentUUID,
-                                         @Param("startDate") ZonedDateTime scheduledBefore,
-                                         @Param("endDate") ZonedDateTime scheduledAfter,
-                                         @Param("limit") int limit);
+        @Param("startDate") ZonedDateTime scheduledBefore,
+        @Param("endDate") ZonedDateTime scheduledAfter,
+        @Param("limit") int limit);
 
-    @Select("  SELECT pipeline_name, stage_name, job_name, AVG(time_waiting_secs) as avg_time_waiting_secs, AVG(time_building_secs) as avg_build_time_secs FROM jobs\n" +
+    @Select(
+        "  SELECT pipeline_name, stage_name, job_name, AVG(time_waiting_secs) as avg_time_waiting_secs, AVG(time_building_secs) as avg_build_time_secs FROM jobs\n"
+            +
             "   WHERE pipeline_name = #{pipelineName}\n" +
             "     AND DATE(scheduled_at) <= DATE(#{endDate})\n" +
             "     AND DATE(scheduled_at) >= DATE(#{startDate})\n" +
@@ -102,18 +107,20 @@ public interface JobMapper {
             "   LIMIT #{limit}")
 
     @Results({
-            @Result(property = "pipelineName", column = "pipeline_name"),
-            @Result(property = "stageName", column = "stage_name"),
-            @Result(property = "jobName", column = "job_name"),
-            @Result(property = "timeWaitingSecs", column = "avg_time_waiting_secs"),
-            @Result(property = "timeBuildingSecs", column = "avg_build_time_secs")
+        @Result(property = "pipelineName", column = "pipeline_name"),
+        @Result(property = "stageName", column = "stage_name"),
+        @Result(property = "jobName", column = "job_name"),
+        @Result(property = "timeWaitingSecs", column = "avg_time_waiting_secs"),
+        @Result(property = "timeBuildingSecs", column = "avg_build_time_secs")
     })
     List<Job> longestWaitingFor(@Param("pipelineName") String pipelineName,
-                                @Param("startDate") ZonedDateTime startDate,
-                                @Param("endDate") ZonedDateTime endDate,
-                                @Param("limit") int limit);
+        @Param("startDate") ZonedDateTime startDate,
+        @Param("endDate") ZonedDateTime endDate,
+        @Param("limit") int limit);
 
-    @Select("  SELECT pipeline_name, stage_name, job_name, pipeline_counter, stage_counter, time_waiting_secs, time_building_secs, result, scheduled_at\n" +
+    @Select(
+        "  SELECT pipeline_name, stage_name, job_name, pipeline_counter, stage_counter, time_waiting_secs, time_building_secs, result, scheduled_at\n"
+            +
             "    FROM jobs\n" +
             "   WHERE pipeline_name = #{pipelineName}\n" +
             "     AND stage_name = #{stageName}\n" +
@@ -121,21 +128,23 @@ public interface JobMapper {
             "     AND result != 'Cancelled'\n" +
             "ORDER BY scheduled_at ASC")
     @Results({
-            @Result(property = "pipelineName", column = "pipeline_name"),
-            @Result(property = "pipelineCounter", column = "pipeline_counter"),
-            @Result(property = "stageName", column = "stage_name"),
-            @Result(property = "stageCounter", column = "stage_counter"),
-            @Result(property = "jobName", column = "job_name"),
-            @Result(property = "timeWaitingSecs", column = "time_waiting_secs"),
-            @Result(property = "timeBuildingSecs", column = "time_building_secs"),
-            @Result(property = "result", column = "result"),
-            @Result(property = "scheduledAt", column = "scheduled_at"),
+        @Result(property = "pipelineName", column = "pipeline_name"),
+        @Result(property = "pipelineCounter", column = "pipeline_counter"),
+        @Result(property = "stageName", column = "stage_name"),
+        @Result(property = "stageCounter", column = "stage_counter"),
+        @Result(property = "jobName", column = "job_name"),
+        @Result(property = "timeWaitingSecs", column = "time_waiting_secs"),
+        @Result(property = "timeBuildingSecs", column = "time_building_secs"),
+        @Result(property = "result", column = "result"),
+        @Result(property = "scheduledAt", column = "scheduled_at"),
     })
     List<Job> jobHistory(@Param("pipelineName") String pipelineName,
-                         @Param("stageName") String stageName,
-                         @Param("jobName") String jobName);
+        @Param("stageName") String stageName,
+        @Param("jobName") String jobName);
 
-    @Select("  SELECT pipeline_name, stage_name, job_name, pipeline_counter, stage_counter, time_waiting_secs, time_building_secs, result, scheduled_at\n" +
+    @Select(
+        "  SELECT pipeline_name, stage_name, job_name, pipeline_counter, stage_counter, time_waiting_secs, time_building_secs, result, scheduled_at\n"
+            +
             "    FROM jobs\n" +
             "   WHERE agent_uuid = #{agentUUID}\n" +
             "     AND pipeline_name = #{pipelineName}\n" +
@@ -143,20 +152,20 @@ public interface JobMapper {
             "     AND job_name = #{jobName}\n" +
             "ORDER BY scheduled_at ASC")
     @Results({
-            @Result(property = "pipelineName", column = "pipeline_name"),
-            @Result(property = "pipelineCounter", column = "pipeline_counter"),
-            @Result(property = "stageName", column = "stage_name"),
-            @Result(property = "stageCounter", column = "stage_counter"),
-            @Result(property = "jobName", column = "job_name"),
-            @Result(property = "timeWaitingSecs", column = "time_waiting_secs"),
-            @Result(property = "timeBuildingSecs", column = "time_building_secs"),
-            @Result(property = "result", column = "result"),
-            @Result(property = "scheduledAt", column = "scheduled_at"),
+        @Result(property = "pipelineName", column = "pipeline_name"),
+        @Result(property = "pipelineCounter", column = "pipeline_counter"),
+        @Result(property = "stageName", column = "stage_name"),
+        @Result(property = "stageCounter", column = "stage_counter"),
+        @Result(property = "jobName", column = "job_name"),
+        @Result(property = "timeWaitingSecs", column = "time_waiting_secs"),
+        @Result(property = "timeBuildingSecs", column = "time_building_secs"),
+        @Result(property = "result", column = "result"),
+        @Result(property = "scheduledAt", column = "scheduled_at"),
     })
     List<Job> jobDurationForAgent(@Param("agentUUID") String agentUUID,
-                                  @Param("pipelineName") String pipelineName,
-                                  @Param("stageName") String stageName,
-                                  @Param("jobName") String jobName);
+        @Param("pipelineName") String pipelineName,
+        @Param("stageName") String stageName,
+        @Param("jobName") String jobName);
 
     @Delete("DELETE FROM jobs where scheduled_at AT TIME ZONE 'UTC' < #{scheduled_date} AT TIME ZONE 'UTC';")
     void deleteJobRunsPriorTo(@Param("scheduled_date") ZonedDateTime scheduledDate);
@@ -184,7 +193,7 @@ public interface JobMapper {
         @Param("pipelineCounterEnd") int pipelineCounterEnd);
 
 
-    @Results(id="job_summary", value = {
+    @Results(id = "job_summary", value = {
         @Result(property = "jobName", column = "job_name"),
         @Result(property = "pipelineName", column = "pipeline_name"),
         @Result(property = "stageName", column = "stage_name"),
@@ -199,10 +208,12 @@ public interface JobMapper {
         + "       SUM(CASE WHEN result = #{result} THEN time_waiting_secs ELSE 0 END) AS sum_time_waiting_secs,\n"
         + "       SUM(CASE WHEN result = #{result} THEN time_building_secs ELSE 0 END) AS sum_time_building_secs\n"
         + "FROM jobs\n"
+        + "WHERE assigned_at BETWEEN #{startDate} AND #{endDate} \n"
         + "GROUP BY pipeline_name, stage_name, job_name\n"
         + "HAVING SUM(CASE WHEN result = #{result} THEN 1 ELSE 0 END) > 0\n"
         + "order by times desc;")
-    List<JobTimeSummary> jobSummary(@Param("result") String result);
+    List<JobTimeSummary> jobSummary(@Param("startDate") String startDate,
+        @Param("endDate") String endDate, @Param("result") String result);
 
     @ResultMap("Job")
     @Select("SELECT * FROM jobs j WHERE j.job_name = #{jobName} AND j.result = #{result} ORDER BY"
