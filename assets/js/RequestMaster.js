@@ -1,6 +1,6 @@
 import Console from "./santosh/Console";
 
-const c = new Console('RequestMaster.js', 'dev');
+const c = new Console('RequestMaster.js', 'prod');
 
 class RequestMaster {
     constructor(transport) {
@@ -52,31 +52,38 @@ class RequestMaster {
         return jobTimelines;
     }
 
-    async getPriorityPipeline(result) {
+    async getPriorityPipeline(settings) {
+        console.log("RequestMaster getPriorityPipeline() called ", settings);
         const requestParams = {
             "type": "drilldown",
             metric: "priority_pipeline",
-            result: result
+            result: settings.result,
+            start: settings.startDate,
+            end: settings.endDate
         };
         const priorityPipeline = await this.asyncRequest(requestParams);
         return priorityPipeline;
     }
 
-    async getPriorityStage(result) {
+    async getPriorityStage(settings) {
         const requestParams = {
             "type": "drilldown",
             metric: "priority_stage",
-            result: result
+            result: settings.result,
+            start: settings.startDate,
+            end: settings.endDate
         };
         const priorityStage = await this.asyncRequest(requestParams);
         return priorityStage;
     }
 
-    async getPriorityJob(result) {
+    async getPriorityJob(settings) {
         const requestParams = {
             "type": "drilldown",
             metric: "priority_job",
-            result: result
+            result: settings.result,
+            start: settings.startDate,
+            end: settings.endDate
         };
         const priorityJob = await this.asyncRequest(requestParams);
         return priorityJob;
