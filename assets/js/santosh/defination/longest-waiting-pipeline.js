@@ -13,12 +13,19 @@ class LongestWaitingPipeline {
     c = null;
 
     constructor(settings) {
+
+        console.log("longestWaitingPipeline");
+
+        console.log("settings = ", settings);
+
         this.settings = settings;
 
         // console.log('settings = ', settings);
     }
 
     draw(data, c) {
+
+        console.log("data ", data);
 
         this.data = data;
         this.c = c;
@@ -77,7 +84,10 @@ class LongestWaitingPipeline {
 
     get_requestParamsPoint(index) {
         return {
-            "name": this.data[index].name
+            "name": this.data[index].name,
+            "startDate": this.settings.startDate,
+            "endDate": this.settings.endDate,
+            "limit": this.settings.limit
         }
     }
 

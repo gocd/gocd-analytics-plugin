@@ -7,7 +7,7 @@ import stageStartupHeader from "./stage-startup-header";
 import longestWaitingPipelinesHeader from "./longest-waiting-pipelines-header";
 import {
     convertDateObjectToDBDateFormat, formatDatePicker,
-    getDateFromTimestampString, getHumanReadableDateFromDBFormatDate,
+    getDateFromTimestampString, getFirstDayOfTheCurrentMonth, getHumanReadableDateFromDBFormatDate,
     getPreviousMonthDateInDBFormat,
     getTodaysDateInDBFormat
 } from "../../utils";
@@ -595,15 +595,27 @@ class Header {
 
     async getLongestWaitingPipelinesHeader(changeHandler, savedSettings) {
 
-        console.log("getLongestWaitingPipelinesHeader savedSettings = ", savedSettings);
+        console.log("Santosh getLongestWaitingPipelinesHeader savedSettings = ", savedSettings);
 
         let settings = {
-            truncateOrder: 'Last'
+            truncateOrder: 'Last',
+            startDate: getFirstDayOfTheCurrentMonth(),
+            endDate: getTodaysDateInDBFormat(),
+            limit: 10
         };
 
-        const selectors = await longestWaitingPipelinesHeader(this.#dom);
+        const selectors = await longestWaitingPipelinesHeader(this.#dom, handleDateSelect);
 
         handleTruncateOrderSelect(selectors.truncateOrderSelector);
+
+        function handleDateSelect(date1, date2) {
+            console.log("handleDateSelect from header.js date1, date2 = ", date1, date2);
+
+            settings.startDate = convertDateObjectToDBDateFormat(date1);
+            settings.endDate = convertDateObjectToDBDateFormat(date2);
+
+            changeHandler(settings);
+        }
 
         function handleTruncateOrderSelect(selector) {
             selector.addEventListener("change", () => {
@@ -618,9 +630,18 @@ class Header {
         }
 
         if (savedSettings != undefined) {
+            console.log("Santosh savedSettings check");
+
             console.log('savedSettings = ', savedSettings);
             selectors.truncateOrderSelector.value = savedSettings.truncateOrder;
+
+            selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(savedSettings.startDate)} - ${getHumanReadableDateFromDBFormatDate(savedSettings.endDate)}`;
+
             return savedSettings;
+        } else {
+            console.log("Santosh savedSettings check is undefined");
+            console.log("getting start date and end date from settings = ", settings.startDate, settings.endDate);
+            selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(settings.startDate)} - ${getHumanReadableDateFromDBFormatDate(settings.endDate)}`;
         }
 
         return settings;

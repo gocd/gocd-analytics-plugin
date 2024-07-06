@@ -17,6 +17,30 @@ class RequestMaster {
         return pipelines;
     }
 
+    async getLongestWaitingPipelines(startDate, endDate, limit) {
+        const requestParams = {
+            metric: "pipelines_with_the_highest_wait_time",
+            start: startDate,
+            end: endDate,
+            limit: limit
+        };
+        const pipelines = await this.asyncRequest(requestParams);
+        console.log("pipelines = ", pipelines);
+        return pipelines;
+    }
+
+    async getAgentMostUtilized(startDate, endDate, limit) {
+        const requestParams = {
+            metric: "agents_with_the_highest_utilization",
+            start: startDate,
+            end: endDate,
+            limit: limit
+        };
+        const agents = await this.asyncRequest(requestParams);
+        console.log("agents = ", agents);
+        return agents;
+    }
+
     async getStageTimeline(pipelineName, requestResult, requestOrder, requestLimit) {
         const requestParams = {
             metric: "stage_timeline",

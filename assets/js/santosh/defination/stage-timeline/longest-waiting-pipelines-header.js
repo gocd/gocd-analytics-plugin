@@ -1,11 +1,25 @@
-import {addOptionsToSelect} from "../../utils";
+import {addOptionsToSelect, formatDatePicker} from "../../utils";
+import {DateManager} from "../../DateManager";
 
+let dateFilterSelector = undefined;
 let truncateOrderSelector = undefined;
 
-async function longestWaitingPipelinesHeader(settingsDOM) {
+async function longestWaitingPipelinesHeader(settingsDOM, dateSelectedEvent) {
 
     await addOptionHeader(settingsDOM);
+
+    dateFilterSelector = document.getElementById("dateFilter");
     truncateOrderSelector = document.getElementById("truncateOrder");
+
+    const dm = new DateManager();
+    const datePicker = await dm.addDatelitePickerDiv(dateFilterSelector, dateSelectedEvent);
+    datePicker.hide();
+
+    dateFilterSelector.addEventListener("click", onDatePickerClick);
+
+    function onDatePickerClick() {
+        datePicker.show();
+    }
 
     await addOptionsToSelect(truncateOrder, [{text: "Last", value: "Last"}, {
         text: "Middle",
@@ -13,7 +27,8 @@ async function longestWaitingPipelinesHeader(settingsDOM) {
     }, {text: "None", value: "None"}]);
 
     return {
-        truncateOrderSelector
+        truncateOrderSelector,
+        dateFilterSelector,
     };
 }
 
@@ -23,8 +38,11 @@ async function addOptionHeader(settingsDOM) {
     
     <div id="setting-1" style="display: flex; flex-direction: row">
     
-    <div style="font-size:18px; flex-grow: 1"><b>Settings</b></div>
-
+    <div style="font-size:18px; flex-grow: 1">
+    <b>Settings</b>
+    <span id="dateFilter"></span>
+    </div>
+    
     <div style="display: flex; flex-direction: row; flex-grow: 1">
     Truncate Order: <select id="truncateOrder"></select>
 </div>

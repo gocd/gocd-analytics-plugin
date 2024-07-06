@@ -21,15 +21,34 @@ import GraphManager from "../../../santosh/GraphManager";
 import Console from "../../../santosh/Console";
 import RequestMaster from "../../../RequestMaster";
 import Header from "../../../santosh/defination/stage-timeline/header";
+import {
+    getFirstDayOfTheCurrentMonth,
+    getPreviousMonthDateInDBFormat,
+    getTodaysDateInDBFormat
+} from "../../../santosh/utils";
+import Footer from "../../../santosh/defination/stage-timeline/footer";
 
 let graphManager = null;
 let requestMaster = null;
 
 let header = null;
+let footer = null;
 
 const c = new Console('longest-waiting-pipelines-chart.js', 'dev');
 
-const settings = {"LongestWaitingPipelines": null, "LongestWaitingJobs": null, "JobBuildTime": null};
+const settings = {
+    "LongestWaitingPipelines": {
+        truncateOrder: 'Last',
+        startDate: getFirstDayOfTheCurrentMonth(),
+        endDate: getTodaysDateInDBFormat(),
+        limit: 10
+    }, "LongestWaitingJobs": {
+        truncateOrder: 'Last',
+        startDate: getFirstDayOfTheCurrentMonth(),
+        endDate: getTodaysDateInDBFormat(),
+        limit: 10
+    }, "JobBuildTime": null
+};
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
     const data = JSON.parse(initialData);
@@ -38,12 +57,17 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
 
     requestMaster = new RequestMaster(transport);
     header = new Header(requestMaster);
+    footer = new Footer();
 
-    graphManager = new GraphManager('series', transport, informSeriesMovement, null);
+    graphManager = new GraphManager('series', transport, informSeriesMovement, footer);
 
-    init(data);
-
+    if (data.length === 0) {
+        footer.showMessage("No data to display", "INFO", true);
+    } else {
+        init(data);
+    }
     c.log("*********** graph loaded");
+
 });
 
 async function init(data) {
@@ -54,8 +78,8 @@ async function init(data) {
 }
 
 async function informSeriesMovement(graphName, requestParams) {
-    console.log('📞 I am informed of graphName ', graphName, ' changing the header now.');
-    console.log('requestParams', requestParams);
+    console.log('📞 Santosh I am informed of graphName ', graphName, ' changing the header now.');
+    console.log('Santosh requestParams', requestParams);
     // return header.switchHeader(graphName);
     header.clear();
 
@@ -71,6 +95,14 @@ async function informSeriesMovement(graphName, requestParams) {
             //     settings["LongestWaitingJobs"] = await header.getLongestWaitingPipelinesHeader(graphTwoHeaderChangeHandler);
             //     headerSettings = settings["LongestWaitingJobs"];
             // } else {
+            console.log("longest waiting pipelines settings ", settings["LongestWaitingPipelines"]);
+            console.log("longest waiting jobs settings before ", settings["LongestWaitingJobs"]);
+
+            settings["LongestWaitingJobs"]["startDate"] = settings["LongestWaitingPipelines"]["startDate"];
+            settings["LongestWaitingJobs"]["endDate"] = settings["LongestWaitingPipelines"]["endDate"];
+
+            console.log("longest waiting jobs settings after ", settings["LongestWaitingJobs"]);
+
             headerSettings = await header.getLongestWaitingPipelinesHeader(graphTwoHeaderChangeHandler, settings["LongestWaitingJobs"]);
             // }
             break;
@@ -82,11 +114,25 @@ async function informSeriesMovement(graphName, requestParams) {
     return headerSettings;
 }
 
-function graphOneHeaderChangeHandler(changedSettings) {
+async function graphOneHeaderChangeHandler(changedSettings) {
     c.log("graphOneHeaderChangeHandler", changedSettings);
 
+    const previousTruncateOrder = settings["LongestWaitingPipelines"].truncateOrder;
+
     settings["LongestWaitingPipelines"] = changedSettings;
-    graphManager.call_initSeriesWithNewSettings(changedSettings);
+
+    if (previousTruncateOrder === changedSettings.truncateOrder) {
+        const pipelines = await requestMaster.getLongestWaitingPipelines(changedSettings.startDate, changedSettings.endDate, changedSettings.limit);
+        graphManager.clear();
+        if (pipelines.length === 0) {
+            footer.showMessage("No data to display", "Error", true);
+        } else {
+            graphManager.call_initSeriesWithNewData(pipelines);
+            footer.clear()
+        }
+    } else {
+        graphManager.call_initSeriesWithNewSettings(changedSettings);
+    }
 }
 
 function graphTwoHeaderChangeHandler(changedSettings) {

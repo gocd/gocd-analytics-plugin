@@ -21,15 +21,28 @@ import GraphManager from "../../../santosh/GraphManager";
 import Console from "../../../santosh/Console";
 import RequestMaster from "../../../RequestMaster";
 import Header from "../../../santosh/defination/stage-timeline/header";
+import {getFirstDayOfTheCurrentMonth, getTodaysDateInDBFormat} from "../../../santosh/utils";
+import Footer from "../../../santosh/defination/stage-timeline/footer";
 
 let graphManager = null;
 let requestMaster = null;
 
 let header = null;
+let footer = null;
 
 const c = new Console('agents-with-highest-utilization-chart.js', 'dev');
 
-const settings = {"AgentsMostUtilized": null, "LongestWaitingJobsOnAgent": null, "JobBuildTimeOnAgent": null};
+const settings = {"AgentsMostUtilized": {
+        truncateOrder: 'Last',
+        startDate: getFirstDayOfTheCurrentMonth(),
+        endDate: getTodaysDateInDBFormat(),
+        limit: 10
+    }, "LongestWaitingJobsOnAgent": {
+        truncateOrder: 'Last',
+        startDate: getFirstDayOfTheCurrentMonth(),
+        endDate: getTodaysDateInDBFormat(),
+        limit: 10
+    }, "JobBuildTimeOnAgent": null};
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
     const agents = JSON.parse(initialData);
@@ -38,10 +51,15 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
 
     requestMaster = new RequestMaster(transport);
     header = new Header(requestMaster);
+    footer = new Footer();
 
-    graphManager = new GraphManager('series', transport, informSeriesMovement, null);
+    graphManager = new GraphManager('series', transport, informSeriesMovement, footer);
 
-    init(agents);
+    if(agents.length === 0) {
+        footer.showMessage("No data to display", "INFO", true);
+    } else {
+        init(agents);
+    }
 
 
 });
@@ -70,6 +88,9 @@ async function informSeriesMovement(graphName, requestParams) {
             //     settings["LongestWaitingJobs"] = await header.getLongestWaitingPipelinesHeader(graphTwoHeaderChangeHandler);
             //     headerSettings = settings["LongestWaitingJobs"];
             // } else {
+            settings["LongestWaitingJobsOnAgent"]["startDate"] = settings["AgentsMostUtilized"]["startDate"];
+            settings["LongestWaitingJobsOnAgent"]["endDate"] = settings["AgentsMostUtilized"]["endDate"];
+
             headerSettings = await header.getLongestWaitingPipelinesHeader(graphTwoHeaderChangeHandler, settings["LongestWaitingJobsOnAgent"]);
             // }
             break;
@@ -81,11 +102,25 @@ async function informSeriesMovement(graphName, requestParams) {
     return headerSettings;
 }
 
-function graphOneHeaderChangeHandler(changedSettings) {
+async function graphOneHeaderChangeHandler(changedSettings) {
     c.log("graphOneHeaderChangeHandler", changedSettings);
 
+    const previousTruncateOrder = settings["AgentsMostUtilized"].truncateOrder;
+
     settings["AgentsMostUtilized"] = changedSettings;
-    graphManager.call_initSeriesWithNewSettings(changedSettings);
+
+    if(previousTruncateOrder === changedSettings.truncateOrder) {
+        const agents = await requestMaster.getAgentMostUtilized(changedSettings.startDate, changedSettings.endDate, changedSettings.limit);
+        graphManager.clear();
+        if(agents.length === 0) {
+            footer.showMessage("No data to display", "Error", true);
+        } else {
+            graphManager.call_initSeriesWithNewData(agents);
+            footer.clear();
+        }
+    } else {
+        graphManager.call_initSeriesWithNewSettings(changedSettings);
+    }
 }
 
 function graphTwoHeaderChangeHandler(changedSettings) {
