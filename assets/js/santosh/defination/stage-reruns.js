@@ -1,6 +1,7 @@
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import {getBarSeries} from "../template";
 import {getDateFromTimestampString, secondsToHms} from "../utils";
+import TooltipManager from "../TooltipManager";
 
 /**
  * @class
@@ -65,29 +66,28 @@ class StageReruns {
             ]
         };
 
-        // option.tooltip.formatter = this.tooltipFormatter();
+        option.tooltip.formatter = this.tooltipFormatter();
         // option.tooltip.valueFormatter = (value) => secondsToHms(value);
 
         return option;
     }
 
     tooltipFormatter() {
-        return function (params) {
-            this.c.log(params);
+        return  (params) => {
 
-            let result = null;
+            console.log("params = ", params);
 
-            if (params.length > 0) {
-                result = params[0].name + '<br>';
-            }
+            const info = this.data[params.dataIndex];
 
-            params.forEach(param => {
-                result += param.marker + param.seriesName + ': ' + param.data + '<br>';
-            });
+            const tooltip = new TooltipManager();
+            tooltip.addTitle(info.stage_name);
 
-            result += '<hr style="border-top: dotted 1px;">Click on the bar for more info';
+            tooltip.addItem(params.marker, "Pipeline name", info.pipeline_name);
+            tooltip.addItem(params.marker, "Pipeline counter", info.pipeline_counter);
 
-            return result;
+            tooltip.addFooter("Click to see specific details");
+
+            return tooltip.getStandard();
         };
     }
 
