@@ -49,21 +49,21 @@ public class JobsHighestWaitTimeExecutor extends AbstractSessionFactoryAwareExec
     @Override
     protected GoPluginApiResponse doExecute() {
         final String pipelineName = param(PARAM_PIPELINE_NAME);
-        final ZonedDateTime start = startDate();
-        final ZonedDateTime end = endDate();
+        final String startDate = param(PARAM_START_DATE);
+        final String endDate = param(PARAM_END_DATE);
         final int limit = 10;
 
         List<Job> jobs = doInTransaction(new Operation<List<Job>>() {
             @Override
             public List<Job> execute(SqlSession sqlSession) {
-                return jobDao.longestWaitingFor(sqlSession, pipelineName, start, end, limit);
+                return jobDao.longestWaitingFor(sqlSession, pipelineName, startDate, endDate, limit);
             }
         });
 
         Map<String, Object> data = new HashMap<>();
         data.put(PARAM_PIPELINE_NAME, pipelineName);
-        data.put(PARAM_START_DATE, start);
-        data.put(PARAM_END_DATE, end);
+        data.put(PARAM_START_DATE, startDate);
+        data.put(PARAM_END_DATE, endDate);
         data.put("jobs", jobs);
 
 

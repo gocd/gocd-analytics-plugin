@@ -56,7 +56,8 @@ public class PipelinesHighestWaitTimeExecutorTest {
         params.put(PARAM_START_DATE, "2018-03-15");
         params.put(PARAM_END_DATE, "2018-03-22");
         AnalyticsRequest request = new AnalyticsRequest(PIPELINES_WITH_THE_HIGHEST_WAIT_TIME.getType(), PIPELINES_WITH_THE_HIGHEST_WAIT_TIME.getId(), params);
-        when(pipelineDAO.longestWaiting(eq(session), any(ZonedDateTime.class), any(ZonedDateTime.class), eq(10))).thenReturn(pipelines);
+        when(pipelineDAO.longestWaiting(eq(session), any(String.class), any(String.class),
+            eq(10))).thenReturn(pipelines);
 
         PipelinesHighestWaitTimeExecutor executor = new PipelinesHighestWaitTimeExecutor(request, pipelineDAO, sessionFactory);
         GoPluginApiResponse response = executor.execute();

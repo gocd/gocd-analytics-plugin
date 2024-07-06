@@ -56,10 +56,11 @@ public class AgentUtilizationDAO {
         return mapper.allAgentUtilization(uuid);
     }
 
-    public List<AgentUtilization> highestUtilization(SqlSession sqlSession, ZonedDateTime start, ZonedDateTime end, int limit) {
+    public List<AgentUtilization> highestUtilization(SqlSession sqlSession, String startDate,
+        String endDate, int limit) {
         AgentUtilizationMapper mapper = mapper(sqlSession);
 
-        return mapper.highestUtilization(start, end, limit);
+        return mapper.highestUtilization(startDate, endDate, limit);
     }
 
     public void deleteUtilizationPriorTo(SqlSession sqlSession, ZonedDateTime utilizationDate) {

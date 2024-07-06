@@ -24,6 +24,7 @@ import com.thoughtworks.gocd.analytics.executors.AbstractSessionFactoryAwareExec
 import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
 import com.thoughtworks.gocd.analytics.models.AnalyticsResponseBody;
 import com.thoughtworks.gocd.analytics.models.Pipeline;
+import com.thoughtworks.gocd.analytics.utils.DbDateFormat;
 import org.apache.ibatis.session.SqlSession;
 
 import java.util.List;
@@ -34,27 +35,40 @@ public class PipelinesHighestWaitTimeExecutor extends AbstractSessionFactoryAwar
 
     private final PipelineDAO pipelineDAO;
 
-    public PipelinesHighestWaitTimeExecutor(AnalyticsRequest analyticsRequest, SessionFactory sessionFactory) {
+    public PipelinesHighestWaitTimeExecutor(AnalyticsRequest analyticsRequest,
+        SessionFactory sessionFactory) {
         this(analyticsRequest, new PipelineDAO(), sessionFactory);
     }
 
-    PipelinesHighestWaitTimeExecutor(AnalyticsRequest analyticsRequest, PipelineDAO pipelineDAO, SessionFactory sessionFactory) {
+    PipelinesHighestWaitTimeExecutor(AnalyticsRequest analyticsRequest, PipelineDAO pipelineDAO,
+        SessionFactory sessionFactory) {
         super(analyticsRequest, sessionFactory);
         this.pipelineDAO = pipelineDAO;
     }
 
     @Override
     protected GoPluginApiResponse doExecute() {
+        DbDateFormat dateFormat = new DbDateFormat();
+
         List<Pipeline> pipelines = doInTransaction(new Operation<List<Pipeline>>() {
             final int limit = 10;
+            final String startDate = param(PARAM_START_DATE);
+            final String endDate = param(PARAM_END_DATE);
+
+            final String start =
+                (startDate == null || startDate.isEmpty()) ? dateFormat.getMonthStart() :
+                    startDate;
+            final String end = (endDate == null || endDate.isEmpty()) ? dateFormat.getTodaysDate() :
+                endDate;
 
             @Override
             public List<Pipeline> execute(SqlSession sqlSession) {
-                return pipelineDAO.longestWaiting(sqlSession, startDate(), endDate(), limit);
+                return pipelineDAO.longestWaiting(sqlSession, start, end, limit);
             }
         });
 
-        AnalyticsResponseBody responseBody = new AnalyticsResponseBody(pipelines, "longest-waiting-pipelines-chart.html");
+        AnalyticsResponseBody responseBody = new AnalyticsResponseBody(pipelines,
+            "longest-waiting-pipelines-chart.html");
 
         return new DefaultGoPluginApiResponse(SUCCESS_RESPONSE_CODE, responseBody.toJson());
     }

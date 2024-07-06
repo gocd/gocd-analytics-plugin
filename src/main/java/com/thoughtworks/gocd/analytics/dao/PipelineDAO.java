@@ -64,7 +64,8 @@ public class PipelineDAO {
         }
     }
 
-    public List<Pipeline> longestWaiting(SqlSession sqlSession, ZonedDateTime start, ZonedDateTime end, int limit) {
+    public List<Pipeline> longestWaiting(SqlSession sqlSession, String start, String end,
+        int limit) {
         return mapper(sqlSession).longestWaiting(start, end, limit);
     }
 

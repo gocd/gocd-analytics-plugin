@@ -98,8 +98,8 @@ public interface PipelineMapper {
         @Result(property = "avgWaitTimeSecs", column = "avg_time_waiting_secs"),
         @Result(property = "avgBuildTimeSecs", column = "avg_time_building_secs")
     })
-    List<Pipeline> longestWaiting(@Param("startDate") ZonedDateTime startDate,
-        @Param("endDate") ZonedDateTime endDate,
+    List<Pipeline> longestWaiting(@Param("startDate") String startDate,
+        @Param("endDate") String endDate,
         @Param("limit") int limit);
 
     @ResultMap("PipelineInstance")

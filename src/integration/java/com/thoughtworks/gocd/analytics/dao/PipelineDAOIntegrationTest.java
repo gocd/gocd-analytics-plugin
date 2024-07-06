@@ -115,7 +115,8 @@ public class PipelineDAOIntegrationTest implements DAOIntegrationTest {
 
         pipelineDAO.insertEach(sqlSession, instances);
 
-        List<Pipeline> pipelines = pipelineDAO.longestWaiting(sqlSession, TEST_TS.minusDays(1), TEST_TS.plusDays(1), 10);
+        List<Pipeline> pipelines = pipelineDAO.longestWaiting(sqlSession, TEST_TS.minusDays(1).toString(),
+            TEST_TS.plusDays(1).toString(), 10);
 
         assertEquals(3, pipelines.size());
         assertEquals("pip3", pipelines.get(0).getName());

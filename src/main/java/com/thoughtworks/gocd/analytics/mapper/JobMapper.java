@@ -114,8 +114,8 @@ public interface JobMapper {
         @Result(property = "timeBuildingSecs", column = "avg_build_time_secs")
     })
     List<Job> longestWaitingFor(@Param("pipelineName") String pipelineName,
-        @Param("startDate") ZonedDateTime startDate,
-        @Param("endDate") ZonedDateTime endDate,
+        @Param("startDate") String startDate,
+        @Param("endDate") String endDate,
         @Param("limit") int limit);
 
     @Select(

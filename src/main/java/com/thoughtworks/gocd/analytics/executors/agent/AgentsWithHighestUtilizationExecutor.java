@@ -25,6 +25,7 @@ import com.thoughtworks.gocd.analytics.executors.AbstractSessionFactoryAwareExec
 import com.thoughtworks.gocd.analytics.models.AgentUtilization;
 import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
 import com.thoughtworks.gocd.analytics.models.AnalyticsResponseBody;
+import com.thoughtworks.gocd.analytics.utils.DbDateFormat;
 import org.apache.ibatis.session.SqlSession;
 
 import java.util.List;
@@ -46,12 +47,22 @@ public class AgentsWithHighestUtilizationExecutor extends AbstractSessionFactory
 
     @Override
     protected GoPluginApiResponse doExecute() {
+        DbDateFormat dateFormat = new DbDateFormat();
+
         List<AgentUtilization> agentUtilizations = doInTransaction(new Operation<List<AgentUtilization>>() {
             final int limit = 10;
+            final String startDate = param(PARAM_START_DATE);
+            final String endDate = param(PARAM_END_DATE);
+
+            final String start =
+                (startDate == null || startDate.isEmpty()) ? dateFormat.getMonthStart() :
+                    startDate;
+            final String end = (endDate == null || endDate.isEmpty()) ? dateFormat.getTodaysDate() :
+                endDate;
 
             @Override
             public List<AgentUtilization> execute(SqlSession sqlSession) {
-                return agentUtilizationDAO.highestUtilization(sqlSession, startDate(), endDate(), limit);
+                return agentUtilizationDAO.highestUtilization(sqlSession, start, end, limit);
             }
         });
 

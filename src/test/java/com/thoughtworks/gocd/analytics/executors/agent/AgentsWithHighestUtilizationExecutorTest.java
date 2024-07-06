@@ -58,7 +58,8 @@ public class AgentsWithHighestUtilizationExecutorTest {
         params.put(PARAM_END_DATE, "2018-03-22");
         AnalyticsRequest request = new AnalyticsRequest(AGENTS_WITH_THE_HIGHEST_UTILIZATION.getType(), AGENTS_WITH_THE_HIGHEST_UTILIZATION.getId(), params);
 
-        when(agentUtilizationDAO.highestUtilization(eq(session), any(ZonedDateTime.class), any(ZonedDateTime.class), eq(10))).thenReturn(utilizations);
+        when(agentUtilizationDAO.highestUtilization(eq(session), any(String.class),
+            any(String.class), eq(10))).thenReturn(utilizations);
 
         AgentsWithHighestUtilizationExecutor executor = new AgentsWithHighestUtilizationExecutor(request, agentUtilizationDAO, sessionFactory);
         GoPluginApiResponse response = executor.execute();

@@ -96,7 +96,8 @@ public class JobDAOIntegrationTest implements DAOIntegrationTest {
 
         dao.insertJobs(sqlSession, jobs);
 
-        List<Job> result = dao.longestWaitingFor(sqlSession, "p1", TEST_TS.minusDays(1), TEST_TS.plusDays(1), 10);
+        List<Job> result = dao.longestWaitingFor(sqlSession, "p1", TEST_TS.minusDays(1).toString(),
+            TEST_TS.plusDays(1).toString(), 10);
         assertEquals(10, result.size());
         assertEquals(50, result.get(0).getTimeWaitingSecs());
         for (int i = 1; i < result.size(); i++) {

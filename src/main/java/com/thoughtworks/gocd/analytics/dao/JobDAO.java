@@ -26,6 +26,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 public class JobDAO {
+
     public static final Logger LOG = Logger.getLoggerFor(JobDAO.class);
 
     protected static JobMapper mapper(SqlSession sqlSession) {
@@ -45,11 +46,13 @@ public class JobDAO {
         return mapper(sqlSession).allJobs(pipelineName);
     }
 
-    public List<Job> longestWaitingFor(SqlSession sqlSession, String pipelineName, ZonedDateTime start, ZonedDateTime end, int limit) {
-        return mapper(sqlSession).longestWaitingFor(pipelineName, start, end, limit);
+    public List<Job> longestWaitingFor(SqlSession sqlSession, String pipelineName, String startDate,
+        String endDate, int limit) {
+        return mapper(sqlSession).longestWaitingFor(pipelineName, startDate, endDate, limit);
     }
 
-    public List<Job> longestWaitingJobsForAgent(SqlSession sqlSession, String agentUUID, ZonedDateTime start, ZonedDateTime end, int limit) {
+    public List<Job> longestWaitingJobsForAgent(SqlSession sqlSession, String agentUUID,
+        ZonedDateTime start, ZonedDateTime end, int limit) {
         return mapper(sqlSession).longestWaitingJobsForAgent(agentUUID, start, end, limit);
     }
 
@@ -57,7 +60,8 @@ public class JobDAO {
         return mapper(sqlSession).jobHistory(pipeline, stage, job);
     }
 
-    public List<Job> jobDurationForAgent(SqlSession sqlSession, String agentUUID, String pipeline, String stage, String job) {
+    public List<Job> jobDurationForAgent(SqlSession sqlSession, String agentUUID, String pipeline,
+        String stage, String job) {
         return mapper(sqlSession).jobDurationForAgent(agentUUID, pipeline, stage, job);
     }
 
@@ -70,16 +74,17 @@ public class JobDAO {
     }
 
     public List<Job> getAllJobsByStageName(SqlSession sqlSession, String stageName,
-            int pipelineCounterStart, int pipelineCounterEnd) {
-        return mapper(sqlSession).allJobsOfStage(stageName, pipelineCounterStart, pipelineCounterEnd);
+        int pipelineCounterStart, int pipelineCounterEnd) {
+        return mapper(sqlSession).allJobsOfStage(stageName, pipelineCounterStart,
+            pipelineCounterEnd);
     }
 
     public List<JobTimeSummary> jobSummary(SqlSession sqlSession, String startDate,
-     String endDate,   String result) {
-        return mapper(sqlSession).jobSummary(startDate, endDate,result);
+        String endDate, String result) {
+        return mapper(sqlSession).jobSummary(startDate, endDate, result);
     }
 
     public List<Job> jobSummaryDetails(SqlSession sqlSession, String jobName, String result) {
-        return mapper(sqlSession).jobSummaryDetails(jobName,result);
+        return mapper(sqlSession).jobSummaryDetails(jobName, result);
     }
 }

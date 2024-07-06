@@ -120,8 +120,8 @@ public interface AgentUtilizationMapper {
             @Result(property = "idleDurationSecs", column = "idle_duration_secs"),
             @Result(property = "buildingDurationSecs", column = "building_duration_secs"),
     })
-    List<AgentUtilization> highestUtilization(@Param("startDate") ZonedDateTime startDate,
-                                              @Param("endDate") ZonedDateTime endDate,
+    List<AgentUtilization> highestUtilization(@Param("startDate") String startDate,
+                                              @Param("endDate") String endDate,
                                               @Param("limit") int limit);
 
 

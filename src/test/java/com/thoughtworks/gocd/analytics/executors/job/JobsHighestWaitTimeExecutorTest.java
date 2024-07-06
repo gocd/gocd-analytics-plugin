@@ -57,8 +57,8 @@ public class JobsHighestWaitTimeExecutorTest {
         when(jobDAO.longestWaitingFor(
                 session,
                 "pip",
-                DateUtils.parseDate(startDate),
-                DateUtils.parseDate(endDate),
+                DateUtils.parseDate(startDate).toString(),
+                DateUtils.parseDate(endDate).toString(),
                 10
         )).thenReturn(jobs);
 
