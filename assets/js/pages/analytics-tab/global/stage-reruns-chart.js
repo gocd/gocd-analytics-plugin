@@ -31,12 +31,12 @@ let requestMaster = null;
 let header = null;
 let footer = null;
 
-const c = new Console('stage-reruns-chart.js', 'dev');
+const c = new Console('stage-reruns-chart.js', 'prod');
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
 
     const data = JSON.parse(initialData);
-    console.log('stage-reruns data', data);
+    // console.log('stage-reruns data', data);
 
 
     requestMaster = new RequestMaster(transport);

@@ -14,12 +14,12 @@ class StageReruns {
     constructor(settings) {
         this.settings = settings;
 
-        console.log('stage-reruns.js settings', settings);
+        // console.log('stage-reruns.js settings', settings);
     }
 
     isPipelineSelected() {
-        console.log('this.settings.selectedPipeline = ', this.settings.selectedPipeline);
-        console.log('isPipelineSelected = ', this.settings.selectedPipeline !== '' || this.settings.selectedPipeline !== '*** All ***');
+        // console.log('this.settings.selectedPipeline = ', this.settings.selectedPipeline);
+        // console.log('isPipelineSelected = ', this.settings.selectedPipeline !== '' || this.settings.selectedPipeline !== '*** All ***');
         return this.settings.selectedPipeline !== '*** All ***';
     }
 
@@ -28,7 +28,7 @@ class StageReruns {
         this.data = data;
         this.c = c;
 
-        console.log('stage-reruns.js this.data = ', this.data);
+        // console.log('stage-reruns.js this.data = ', this.data);
 
         const info = this.prepareData(this.data);
 
@@ -46,8 +46,7 @@ class StageReruns {
             tooltip: {},
             xAxis: {
                 type: 'category',
-                // data: this.data.map(d => d.stage_name + (this.isPipelineSelected() ? d.pipeline_counter : '')),
-                data: this.data.map(d => d.stage_name.concat(this.isPipelineSelected() === true ? ' / ' + d.pipeline_counter : '')),
+                data: this.data.map(d => d.stage_name.concat(' / ' + d.pipeline_counter)),
             },
             yAxis: {
                 name: 'Times',
@@ -112,30 +111,32 @@ class StageReruns {
 
 
     get_requestParamsPoint(index) {
-        console.log('stage-reruns.js get_requestParamsPoint ', this.data[index]);
+        // console.log('stage-reruns.js get_requestParamsPoint ', this.data[index]);
         const selectedStage = this.data[index];
+
+        console.log("selectedStage", selectedStage);
 
         let ret = {
             "pipeline_name": selectedStage.pipeline_name,
             // "stage_name": selectedStage.stage_name
         };
 
-        if (this.isPipelineSelected()) {
-            ret.stage_name = selectedStage.stage_name;
-            ret.pipeline_counter = selectedStage.pipeline_counter;
-        }
+        // if (this.isPipelineSelected()) {
+        ret.stage_name = selectedStage.stage_name;
+        ret.pipeline_counter = selectedStage.pipeline_counter;
+        // }
 
-        console.log('ret = ', ret);
+        // console.log('ret = ', ret);
 
         return ret;
     }
 
     getNextGraphName() {
-        if (this.isPipelineSelected()) {
-            return "StageRerunsInstances";
-        } else {
-            return "StageReruns";
-        }
+        // if (this.isPipelineSelected()) {
+        return "StageRerunsInstances";
+        // } else {
+        //     return "StageReruns";
+        // }
     }
 
     insertBreadcrumb() {
