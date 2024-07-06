@@ -132,9 +132,10 @@ public interface StageMapper {
 
     @ResultMap("Stage")
     @Select("<script>"
-        + "SELECT pipeline_name, stage_name, MAX(stage_counter) AS stage_counter\n"
+        + "SELECT pipeline_name, stage_name, pipeline_counter, MAX(stage_counter) AS "
+        + "stage_counter\n"
         + "FROM stages s \n"
-        + "GROUP BY pipeline_name, stage_name\n"
+        + "GROUP BY pipeline_name, stage_name, pipeline_counter \n"
         + "HAVING MAX(stage_counter) > 1\n"
         + "order by stage_counter ${order} limit #{limit} ;"
         + "</script>"
