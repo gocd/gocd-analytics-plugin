@@ -131,16 +131,16 @@ public interface StageMapper {
         "result") String result, @Param("order") String order, @Param("limit") int limit);
 
     @ResultMap("Stage")
-    @Select("<script>"
-        + "SELECT pipeline_name, stage_name, pipeline_counter, MAX(stage_counter) AS "
+    @Select("SELECT pipeline_name, stage_name, pipeline_counter, MAX(stage_counter) AS "
         + "stage_counter\n"
         + "FROM stages s \n"
+        + "where scheduled_at between #{startDate} and #{endDate} \n"
         + "GROUP BY pipeline_name, stage_name, pipeline_counter \n"
         + "HAVING MAX(stage_counter) > 1\n"
         + "order by stage_counter ${order} limit #{limit} ;"
-        + "</script>"
     )
     List<Stage> stageRerunsForAllPipelines(@Param("result") String result,
+        @Param("startDate") String startDate, @Param("endDate") String endDate,
         @Param("order") String order, @Param("limit") int limit);
 
     @ResultMap("Stage")

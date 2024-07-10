@@ -24,7 +24,7 @@ import com.thoughtworks.gocd.analytics.executors.AbstractSessionFactoryAwareExec
 import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
 import com.thoughtworks.gocd.analytics.models.AnalyticsResponseBody;
 import com.thoughtworks.gocd.analytics.models.Stage;
-import java.util.ArrayList;
+import com.thoughtworks.gocd.analytics.utils.DbDateFormat;
 import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 
@@ -45,12 +45,17 @@ public class StageRerunsExecutor extends AbstractSessionFactoryAwareExecutor {
     @Override
     protected GoPluginApiResponse doExecute() {
 
+        DbDateFormat dateFormat = new DbDateFormat();
+
         final String pipelineName = param(PARAM_PIPELINE_NAME);
         final String stageName = param(PARAM_STAGE_NAME);
         final String pipelineCounter = param(PARAM_PIPELINE_COUNTER);
 //        final String requestResult = param(PARAM_RESULT);
         final String requestOrder = param(PARAM_ORDER);
         final String requestLimit = param(PARAM_LIMIT);
+
+        final String startDate = param(PARAM_START_DATE);
+        final String endDate = param(PARAM_END_DATE);
 
 //        final String result = new String("Any").equals(requestResult) ? null : requestResult;
 
@@ -60,12 +65,19 @@ public class StageRerunsExecutor extends AbstractSessionFactoryAwareExecutor {
 
         final int limit = requestLimit == null ? 10 : Integer.parseInt(requestLimit);
 
+        final String start =
+            (startDate == null || startDate.isEmpty()) ? dateFormat.getMonthStart() :
+                startDate;
+        final String end = (endDate == null || endDate.isEmpty()) ? dateFormat.getTodaysDate() :
+            endDate;
+
         List<Stage> stages = doInTransaction(new Operation<List<Stage>>() {
             @Override
             public List<Stage> execute(SqlSession sqlSession) {
                 if (pipelineName == null || pipelineName.isEmpty() || pipelineName.isBlank()
                     || pipelineName.equalsIgnoreCase("*** All ***")) {
-                    return stageDAO.getStageRerunsForAllPipelines(sqlSession, order, limit);
+                    return stageDAO.getStageRerunsForAllPipelines(sqlSession, start, end,
+                        order, limit);
                 } else if ((stageName == null || stageName.isEmpty() || stageName.isBlank()) && (
                     pipelineCounter == null || pipelineCounter.isEmpty()
                         || pipelineCounter.isBlank())) {
