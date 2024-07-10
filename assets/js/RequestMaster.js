@@ -119,7 +119,9 @@ class RequestMaster {
             "metric": "stage_reruns",
             "pipeline_name": settings.selectedPipeline,
             "order": settings.requestOrder,
-            "limit": settings.requestLimit
+            "limit": settings.requestLimit,
+            "start": settings.startDate,
+            "end": settings.endDate
         }
         const stageReruns = await this.asyncRequest(requestParams);
         return stageReruns;
