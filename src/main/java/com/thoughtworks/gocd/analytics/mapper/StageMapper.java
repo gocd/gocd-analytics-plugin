@@ -120,15 +120,18 @@ public interface StageMapper {
         + "result = #{result} and "
         + "</if>"
         + "id in (select stage_id from pipeline_workflows pw where "
-        + "pipeline_id in (select id from pipelines p where name = #{pipelineName} order by id "
+        + "pipeline_id in (select id from pipelines p where name = #{pipelineName} "
+        + "and created_at between #{startDate} and #{endDate} "
+        + "order by id "
         + "<if test='order != null'>"
         + "desc "
         + "</if>"
         + "limit #{limit})) "
         + "</script>"
     )
-    List<Stage> stageByPipelineNameAndCounter(@Param("pipelineName") String pipelineName, @Param(
-        "result") String result, @Param("order") String order, @Param("limit") int limit);
+    List<Stage> stageByPipelineNameAndCounter(@Param("startDate") String startDate,
+        @Param("endDate") String endDate, @Param("pipelineName") String pipelineName,
+        @Param("result") String result, @Param("order") String order, @Param("limit") int limit);
 
     @ResultMap("Stage")
     @Select("SELECT pipeline_name, stage_name, pipeline_counter, MAX(stage_counter) AS "

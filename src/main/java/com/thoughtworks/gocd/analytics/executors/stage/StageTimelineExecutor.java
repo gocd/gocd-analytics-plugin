@@ -24,10 +24,10 @@ import com.thoughtworks.gocd.analytics.executors.AbstractSessionFactoryAwareExec
 import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
 import com.thoughtworks.gocd.analytics.models.AnalyticsResponseBody;
 import com.thoughtworks.gocd.analytics.models.Stage;
+import com.thoughtworks.gocd.analytics.utils.DbDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.ibatis.session.SqlSession;
-import org.flywaydb.core.internal.util.StringUtils;
 
 public class StageTimelineExecutor extends AbstractSessionFactoryAwareExecutor {
 
@@ -46,10 +46,21 @@ public class StageTimelineExecutor extends AbstractSessionFactoryAwareExecutor {
     @Override
     protected GoPluginApiResponse doExecute() {
 
+        DbDateFormat dateFormat = new DbDateFormat();
+
         final String pipelineName = param(PARAM_PIPELINE_NAME);
         final String requestResult = param(PARAM_RESULT);
         final String requestOrder = param(PARAM_ORDER);
         final String requestLimit = param(PARAM_LIMIT);
+
+        final String startDate = param(PARAM_START_DATE);
+        final String endDate = param(PARAM_END_DATE);
+
+        final String start =
+            (startDate == null || startDate.isEmpty()) ? dateFormat.getMonthStart() :
+                startDate;
+        final String end = (endDate == null || endDate.isEmpty()) ? dateFormat.getTodaysDate() :
+            endDate;
 
         final String result = new String("Any").equals(requestResult) ? null : requestResult;
         final String order = new String("ASC").equals(requestOrder) ? null : "DESC";
@@ -61,8 +72,8 @@ public class StageTimelineExecutor extends AbstractSessionFactoryAwareExecutor {
                 if (pipelineName == null || pipelineName.isEmpty() || pipelineName.isBlank()) {
                     return new ArrayList<>();
                 }
-                return stageDAO.getAllStagesByPipelineNameAndCounter(sqlSession, pipelineName,
-                    result, order, limit);
+                return stageDAO.getAllStagesByPipelineNameAndCounter(sqlSession, start, end,
+                    pipelineName, result, order, limit);
             }
         });
 
