@@ -24,6 +24,7 @@ import Header from "../../../santosh/defination/stage-timeline/header";
 import RequestMaster from "../../../RequestMaster";
 import Footer from "../../../santosh/defination/stage-timeline/footer";
 import Console from "../../../santosh/Console";
+import {getFirstDayOfTheCurrentMonth, getTodaysDateInDBFormat} from "../../../santosh/utils";
 
 let graphManager = null;
 let requestMaster = null;
@@ -31,7 +32,11 @@ let requestMaster = null;
 let header = null;
 let footer = null;
 
-const c = new Console('stage-timeline-chart.js', 'dev');
+const c = new Console('stage-timeline-chart.js', 'prod');
+
+const settings = {
+    "stage-timeline": null, "JobsTimeline": null
+};
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
 
@@ -45,6 +50,8 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
     (async () => {
         const defaultSettings = await header.getStageTimelineHeader(changeHandler);
 
+        settings["stage-timeline"] = defaultSettings;
+
         await doStage(defaultSettings);
     })();
 
@@ -55,14 +62,23 @@ async function informSeriesMovement(graphName) {
 
     // return header.switchHeader(graphName);
 
+    let headerSettings = null;
+
     if (graphName === 'JobsTimeline') {
-        return await header.getJobsTimelineHeader(jobChangeHandler);
+        console.log("going to get jobs timeline");
+        headerSettings = await header.getJobsTimelineHeader(jobChangeHandler, settings["JobsTimeline"]);
+        console.log("settings = ", settings);
     } else if (graphName === 'stage-timeline') {
-        c.logs("I have to send stage-timeline header");
+        console.log("inform series movement, passing stage-timeline settings ", settings["stage-timeline"]);
+        headerSettings = await header.getStageTimelineHeader(changeHandler, settings["stage-timeline"]);
     }
+
+    // settings[graphName] = ret;
 
     footer.clear();
 
+    console.log("returning settings");
+    return headerSettings;
 }
 
 async function doStage(settings) {
@@ -70,7 +86,7 @@ async function doStage(settings) {
     console.log('🛜 requesting stage timeline with the settings', settings);
     footer.clear();
 
-    const stageTimeline = await requestMaster.getStageTimeline(settings.selectedPipeline, settings.requestResult, settings.requestOrder, settings.requestLimit);
+    const stageTimeline = await requestMaster.getStageTimeline(settings.startDate, settings.endDate, settings.selectedPipeline, settings.requestResult, settings.requestOrder, settings.requestLimit);
 
     if (stageTimeline.length === 0) {
         footer.showMessage("No data for selected option, can't draw a graph.", "Error", true, 10);
@@ -81,13 +97,17 @@ async function doStage(settings) {
     graphManager.initSeries("stage-timeline", stageTimeline, settings);
 }
 
-function changeHandler(settings) {
+function changeHandler(changedSettings) {
+    console.log("changeHandler settings ", changedSettings);
     c.logs('settings', settings);
-    doStage(settings);
+    settings["stage-timeline"] = changedSettings;
+    doStage(changedSettings);
+    c.log('stage timeline returned the graph and all set');
 }
 
-function jobChangeHandler(settings) {
-    doJob(settings);
+function jobChangeHandler(changedSettings) {
+    settings["JobsTimeline"] = changedSettings;
+    doJob(changedSettings);
 }
 
 async function doJob(settings) {

@@ -1,34 +1,56 @@
 import {addOptionsToSelect} from "../../utils";
 import SlimSelect from 'slim-select';
+import {DateManager} from "../../DateManager";
 
 // const chartMeta = document.getElementById("chart-container-meta");
+let dateFilterSelector = undefined;
 let pipelineSelector = undefined;
-let dateSelector = undefined;
 let requestResultSelector = undefined;
 let requestOrderSelector = undefined;
 let requestLimitInput = undefined;
 let resultFilterSelector = undefined;
 let dataFilterSelector = undefined;
 let legendVisibilityFilterSelector = undefined;
+let visualizeVariationSelector = undefined;
 
-async function stageTimelineHeader(pipelines, settingsDOM) {
+async function stageTimelineHeader(pipelines, settingsDOM, dateSelectedEvent, pipelineSelectedEvent) {
 
     console.log('✅ 11 stage-timeline-header now I will add pipelines to select ', pipelines);
 
     await addOptionHeader(settingsDOM);
-    pipelineSelector = document.getElementById("pipeline");
+
+    dateFilterSelector = document.getElementById("dateFilter");
     requestResultSelector = document.getElementById("requestResult");
     requestOrderSelector = document.getElementById("requestOrder");
     requestLimitInput = document.getElementById("requestLimit");
     resultFilterSelector = document.getElementById("resultFilter");
     dataFilterSelector = document.getElementById("dataFilter");
     legendVisibilityFilterSelector = document.getElementById("legendVisibilityFilter");
+    visualizeVariationSelector = document.getElementById("visualizeVariation");
 
-    await addOptionsToSelect(pipelineSelector, pipelines);
+    const dm = new DateManager();
+    const datePicker = await dm.addDatelitePickerDiv(dateFilterSelector, dateSelectedEvent);
+    datePicker.hide();
 
-    new SlimSelect({
-        select: '#pipeline'
-    })
+    dateFilterSelector.addEventListener("click", onDatePickerClick);
+
+    function onDatePickerClick() {
+        datePicker.show();
+    }
+
+    const actualPipelineSelector = document.getElementById("pipeline");
+    await addOptionsToSelect(actualPipelineSelector, pipelines);
+
+    const slimSelect = new SlimSelect({
+        select: '#pipeline',
+        events: {
+            afterChange: (newVal) => {
+                console.log("afterChange ", newVal);
+                pipelineSelectedEvent(newVal[0].value);
+            }
+        }
+    });
+    pipelineSelector = slimSelect;
 
     await addOptionsToSelect(requestResultSelector, [{text: "Passed", value: "Passed"}, {
         text: "Failed",
@@ -40,10 +62,12 @@ async function stageTimelineHeader(pipelines, settingsDOM) {
         value: "DESC"
     }]);
 
-    await addOptionsToSelect(resultFilterSelector, [{text: "Only Passed", value: "Only Passed"}, {
-        text: "Only Failed",
-        value: "Only Failed"
-    }, {text: "Only Cancelled", value: "Only Cancelled"}, {text: "Show both", value: "Show both"}]);
+    await addOptionsToSelect(resultFilterSelector, [{text: "Only Passed", value: "Only Passed"},
+        {text: "Any Passed", value: "Any Passed"},
+        {
+            text: "Only Failed",
+            value: "Only Failed"
+        }, {text: "Only Cancelled", value: "Only Cancelled"}, {text: "Show both", value: "Show both"}]);
 
     // new SlimSelect({
     //     select: '#resultFilter'
@@ -65,13 +89,15 @@ async function stageTimelineHeader(pipelines, settingsDOM) {
 
 
     return {
+        dateFilterSelector,
         pipelineSelector,
         requestResultSelector,
         resultFilterSelector,
         requestOrderSelector,
         requestLimitInput,
         dataFilterSelector,
-        legendVisibilityFilterSelector
+        legendVisibilityFilterSelector,
+        visualizeVariationSelector
     };
 }
 
@@ -81,13 +107,15 @@ async function addOptionHeader(settingsDOM) {
     
     <div id="setting-1" style="display: flex; flex-direction: row">
     
-    <div style="font-size:18px; flex-grow: 1"><b>Settings</b></div>
+    <div style="font-size:18px; flex-grow: 1">
+        <b>Settings</b>
+        <span id="dateFilter"></span>
+    </div>
 
 <!--    <div style="flex-grow: 1">-->
 <!--    <input type="checkbox" id="weird" name="weird" value="weird">-->
 <!--    <label for="weird"> Show only if data have delta</label>-->
 <!--    </div>-->
-    Request ->
     <div style="display: flex; flex-direction: row; flex-grow: 1">
     Result: <select id="requestResult"></select>
 </div>
@@ -121,6 +149,11 @@ Metric: <select id="dataFilter">
 
 <div>
 Show legend: <select id="legendVisibilityFilter"></select>
+</div>
+
+<div>
+<input type="checkbox" id="visualizeVariation" />
+    <label for="visualizeVariation">Visualize Variation</label>
 </div>
 
 </div>
