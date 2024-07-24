@@ -18,11 +18,13 @@ import "css/global";
 
 import AnalyticsEndpoint from "gocd-server-comms";
 import {updateChartSize} from "../../../santosh/utils";
+import SlimSelect from 'slim-select';
 import * as echarts from "echarts";
 
 import GraphManager from "../../../santosh/GraphManager";
 import Console from "../../../santosh/Console";
 
+let graphManager = null;
 const c = new Console('pipeline-timeline-chart.js', 'prod');
 
 function addPipelineNamesToSelect(data) {
@@ -35,7 +37,41 @@ function addPipelineNamesToSelect(data) {
 
         pipelineSelector.appendChild(selectOption);
     });
+
+    console.log("names added to select");
 }
+
+function setupSlimSelect(transport) {
+    const slimSelect = new SlimSelect({
+        select: '#pipeline',
+        events: {
+            afterChange: (newVal) => {
+                console.log("afterChange ", newVal);
+                pipelineSelectedEvent(transport, newVal[0].value);
+            }
+        }
+    });
+}
+
+function pipelineSelectedEvent(transport, selectedPipeline) {
+
+    transport
+        .request("fetch-analytics", {
+            metric: "pipeline_timeline",
+            pipeline_name: selectedPipeline,
+        })
+        .done((data) => {
+            // console.log("fetch-analytics ", data);
+            // this.initSeries(this.child.getNextGraphName(), JSON.parse(data));
+
+            // option = null;
+            // option = stageTimeline(JSON.parse(data), myChart);
+            // option && myChart.setOption(option);
+
+            graphManager.initStandalone("pipeline-timeline", JSON.parse(data));
+        })
+        .fail(console.error.toString());
+};
 
 function requestPipelineList(transport) {
     transport
@@ -43,9 +79,10 @@ function requestPipelineList(transport) {
             metric: "pipeline_list",
         })
         .done((data) => {
-            console.log("fetch-analytics ", data);
+            // console.log("fetch-analytics ", data);
             // this.initSeries(this.child.getNextGraphName(), JSON.parse(data));
             addPipelineNamesToSelect(JSON.parse(data));
+            setupSlimSelect(transport);
             return JSON.parse(data);
         })
         .fail(console.error.toString());
@@ -55,7 +92,7 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
 
     const data = JSON.parse(initialData);
 
-    c.log("data = " + data);
+    c.log("pipeline timeline chart data = " + data);
 
     requestPipelineList(transport);
 
@@ -76,34 +113,16 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
 <hr>
     `;
 
-    const pipelineSelector = document.getElementById("pipeline");
+    // const main = document.getElementById("pipeline-timeline-chart");
+    // main.onload = function() {
 
-    let selectedPipeline = pipelineSelector.value;
-    pipelineSelector.addEventListener("change", function () {
-        selectedPipeline = pipelineSelector.value;
 
-        transport
-            .request("fetch-analytics", {
-                metric: "pipeline_timeline",
-                pipeline_name: selectedPipeline,
-            })
-            .done((data) => {
-                console.log("fetch-analytics ", data);
-                // this.initSeries(this.child.getNextGraphName(), JSON.parse(data));
-
-                // option = null;
-                // option = stageTimeline(JSON.parse(data), myChart);
-                // option && myChart.setOption(option);
-
-                graphManager.initStandalone("pipeline-timeline", JSON.parse(data));
-            })
-            .fail(console.error.toString());
-    });
+    // }
 
     // option = pipelineTimeline();
     // option && myChart.setOption(option);
 
-    const graphManager = new GraphManager("standalone", null, null, null);
+    graphManager = new GraphManager("standalone", null, null, null);
     graphManager.initStandalone("pipeline-timeline", data);
 
     c.log("*********** pipeline-timeline graph loaded");
