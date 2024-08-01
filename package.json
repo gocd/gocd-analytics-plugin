@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
-    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "crel": "^4.2.1",
     "d3": "^6.7.0",
     "highcharts": "^6.2.0",
