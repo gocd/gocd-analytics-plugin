@@ -22,6 +22,7 @@ import RequestMaster from "../../../RequestMaster";
 import Header from "../../../santosh/defination/stage-timeline/header";
 import Console from "../../../santosh/Console";
 import PipelinePriority from "../../../santosh/defination/pipeline-priority";
+import {getPreviousMonthDateInDBFormat, getTodaysDateInDBFormat} from "../../../santosh/utils";
 
 let graphManager = null;
 let requestMaster = null;
@@ -32,7 +33,7 @@ let currentPrioritySettings;
 
 const c = new Console('priority-view-chart.js');
 
-const settings = {"Priority": {scope: "Pipelines", result: "", alignTicks: true}, "PriorityDetails": {alignTicks: true}};
+const settings = {"Priority": {scope: "Pipelines", result: "", alignTicks: true, startDate: getPreviousMonthDateInDBFormat(), endDate: getTodaysDateInDBFormat()}, "PriorityDetails": {alignTicks: true}};
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
 
@@ -42,7 +43,7 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
     header = new Header(requestMaster);
 
     graphManager = new GraphManager("series", transport, informSeriesMovement, null);
-    graphManager.initSeries("priority", data);
+    graphManager.initSeries("priority", data, settings.Priority);
 
     console.log("*********** priority graph loaded");
 });
@@ -102,11 +103,11 @@ async function doJob(settings) {
             graphManager.initSeries("PipelinePriority", pp, settings);
             break;
         case 'Stages':
-            const ps = await requestMaster.getPriorityStage(settings.result);
+            const ps = await requestMaster.getPriorityStage(settings);
             graphManager.initSeries("StagePriority", ps, settings);
             break;
         case 'Jobs':
-            const pj = await requestMaster.getPriorityJob(settings.result);
+            const pj = await requestMaster.getPriorityJob(settings);
             graphManager.initSeries("JobPriority", pj, settings);
             break;
     }

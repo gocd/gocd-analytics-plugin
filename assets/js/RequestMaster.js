@@ -41,22 +41,27 @@ class RequestMaster {
         return agents;
     }
 
-    async getStageTimeline(pipelineName, requestResult, requestOrder, requestLimit) {
+    async getStageTimeline(startDate, endDate, pipelineName, requestResult, requestOrder, requestLimit) {
         const requestParams = {
             metric: "stage_timeline",
             pipeline_name: pipelineName,
             result: requestResult,
             order: requestOrder,
-            limit: requestLimit
+            limit: requestLimit,
+            start: startDate,
+            end: endDate
         };
         const stageTimelines = await this.asyncRequest(requestParams);
         return stageTimelines;
     }
 
-    async getStageStartupTime(pipelineName, requestOrder, requestLimit) {
+    async getStageStartupTime(startDate, endDate, pipelineName, requestResult, requestOrder, requestLimit) {
         const requestParams = {
             metric: "stage_startup_time",
+            start: startDate,
+            end: endDate,
             pipeline_name: pipelineName,
+            result: requestResult,
             order: requestOrder,
             limit: requestLimit
         };

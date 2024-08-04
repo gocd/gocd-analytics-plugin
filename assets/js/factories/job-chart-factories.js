@@ -78,8 +78,9 @@ export default new ChartFactories({
             console.log('point is ', point);
             return {
                 "pipeline_name": point.name,
-                "start": ONE_WEEK_AGO,
-                "end": TODAY,
+                "start": point.startDate,
+                "end": point.endDate,
+                "limit": point.limit,
                 "type": "job",
                 "metric": this.id
             };
@@ -124,10 +125,14 @@ export default new ChartFactories({
         id: "priority_pipeline",
 
         params: function (point) {
+            console.log("Chart factories called with point ", point);
+
             return {
                 "type": "drilldown",
                 "metric": this.id,
                 "result": point.result,
+                "start": point.startDate,
+                "end": point.endDate,
             }
         },
     },

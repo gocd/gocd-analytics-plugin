@@ -213,7 +213,12 @@ class PipelinePriority {
 
     get_requestParamsPoint(index) {
         console.log('get_requestParamsPoint this.data, index', this.data, index);
-        return {pipeline_name: this.data[index].name, result: this.settings.result};
+        return {
+            pipeline_name: this.data[index].name,
+            result: this.settings.result,
+            startDate: this.settings.startDate,
+            endDate: this.settings.endDate
+        };
     }
 
     getNextGraphName() {

@@ -230,8 +230,10 @@ class Header {
         return settings;
     }
 
-    async getStageTimelineHeader(changeHandler) {
+    async getStageTimelineHeader(changeHandler, savedSettings) {
         let settings = {
+            startDate: getFirstDayOfTheCurrentMonth(),
+            endDate: getTodaysDateInDBFormat(),
             selectedPipeline: undefined,
             requestResult: 'Passed',
             requestOrder: 'DESC',
@@ -245,20 +247,26 @@ class Header {
         const pipelines = await this.requestMaster.getPipelineList();
         // await console.log('pipelines = ', pipelines);
 
-        const selectors = await stageTimelineHeader(pipelines.map(p => p.name), this.#dom);
+        const selectors = await stageTimelineHeader(pipelines.map(p => p.name), this.#dom, handleDateSelect, handlePipelineSelect);
 
         setSelectedPipeline(selectors.pipelineSelector.value);
-        selectors.requestOrderSelector.value = settings.requestOrder;
-        selectors.visualizeVariationSelector.checked = settings.visualizeVariation;
 
-        handlePipelineSelect(selectors.pipelineSelector);
         handleRequestResultSelect(selectors.requestResultSelector);
         handleRequestOrderSelect(selectors.requestOrderSelector);
         handleRequestLimitInput(selectors.requestLimitInput);
         handleResultSelect(selectors.resultFilterSelector);
         handleDataSelect(selectors.dataFilterSelector);
         handleLegendSelect(selectors.legendVisibilityFilterSelector);
-        handleVisualizeVariationSelect(selectors.visualizeVariationSelector)
+        handleVisualizeVariationSelect(selectors.visualizeVariationSelector);
+
+        function handleDateSelect(date1, date2) {
+            console.log("handleDateSelect from header.js date1, date2 = ", date1, date2);
+
+            settings.startDate = convertDateObjectToDBDateFormat(date1);
+            settings.endDate = convertDateObjectToDBDateFormat(date2);
+
+            changeHandler(settings);
+        }
 
         function setSelectedPipeline(pipeline_name) {
             settings.selectedPipeline = pipeline_name;
@@ -292,12 +300,11 @@ class Header {
             settings.visualizeVariation = checked;
         }
 
-        function handlePipelineSelect(selector) {
-            selector.addEventListener("change", () => {
-                setSelectedPipeline(selector.value);
+        function handlePipelineSelect(newValue) {
+            console.log("handle pipeline select with value as ", newValue);
+            setSelectedPipeline(newValue);
 
-                changeHandler(settings);
-            });
+            changeHandler(settings);
         }
 
         function handleRequestResultSelect(selector) {
@@ -361,11 +368,35 @@ class Header {
             });
         }
 
+        if (savedSettings != undefined) {
+            selectors.requestOrderSelector.value = savedSettings.requestOrder;
+            selectors.visualizeVariationSelector.value = savedSettings.visualizeVariation;
+
+            selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(savedSettings.startDate)} - ${getHumanReadableDateFromDBFormatDate(savedSettings.endDate)}`;
+
+            selectors.pipelineSelector.setSelected(savedSettings.selectedPipeline, false);
+            selectors.requestLimitInput.value = savedSettings.requestLimit;
+            selectors.resultFilterSelector.value = savedSettings.showPipelineCounterResult;
+            selectors.legendVisibilityFilterSelector.value = savedSettings.showLegend;
+            selectors.dataFilterSelector.value = savedSettings.showData;
+
+            settings.startDate = savedSettings.startDate;
+            settings.endDate = savedSettings.endDate;
+
+        } else {
+            selectors.requestOrderSelector.value = settings.requestOrder;
+            selectors.visualizeVariationSelector.checked = settings.visualizeVariation;
+
+            selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(settings.startDate)} - ${getHumanReadableDateFromDBFormatDate(settings.endDate)}`;
+        }
+
         return settings;
     }
 
     async getStageStartupHeader(changeHandler) {
         let settings = {
+            startDate: getFirstDayOfTheCurrentMonth(),
+            endDate: getTodaysDateInDBFormat(),
             selectedPipeline: undefined,
             // requestResult: 'Passed',
             requestOrder: 'DESC',
@@ -378,17 +409,15 @@ class Header {
         const pipelines = await this.requestMaster.getPipelineList();
         // await console.log('pipelines = ', pipelines);
 
-        const selectors = await stageStartupHeader(pipelines.map(p => p.name), this.#dom);
+        const selectors = await stageStartupHeader(pipelines.map(p => p.name), this.#dom, handleDateSelect, handlePipelineSelect);
+
+        selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(settings.startDate)} - ${getHumanReadableDateFromDBFormatDate(settings.endDate)}`;
 
         setSelectedPipeline(selectors.pipelineSelector.value);
 
-        handlePipelineSelect(selectors.pipelineSelector);
-        // handleRequestResultSelect(selectors.requestResultSelector);
+        handleRequestResultSelect(selectors.requestResultSelector);
         handleRequestOrderSelect(selectors.requestOrderSelector);
         handleRequestLimitInput(selectors.requestLimitInput);
-        // handleResultSelect(selectors.resultFilterSelector);
-        // handleDataSelect(selectors.dataFilterSelector);
-        handleLegendSelect(selectors.legendVisibilityFilterSelector);
 
         function setSelectedPipeline(pipeline_name) {
             settings.selectedPipeline = pipeline_name;
@@ -410,20 +439,20 @@ class Header {
             settings.showPipelineCounterResult = result;
         }
 
-        function setSelectedData(data) {
-            settings.showData = data;
+        function handleDateSelect(date1, date2) {
+            console.log("handleDateSelect from header.js date1, date2 = ", date1, date2);
+
+            settings.startDate = convertDateObjectToDBDateFormat(date1);
+            settings.endDate = convertDateObjectToDBDateFormat(date2);
+
+            changeHandler(settings);
         }
 
-        function setSelectedLegendFilter(data) {
-            settings.showLegend = data;
-        }
+        function handlePipelineSelect(newValue) {
+            console.log("handle pipeline select with value as ", newValue);
+            setSelectedPipeline(newValue);
 
-        function handlePipelineSelect(selector) {
-            selector.addEventListener("change", () => {
-                setSelectedPipeline(selector.value);
-
-                changeHandler(settings);
-            });
+            changeHandler(settings);
         }
 
         function handleRequestResultSelect(selector) {
@@ -450,51 +479,26 @@ class Header {
             });
         }
 
-        function handleResultSelect(selector) {
-            selector.addEventListener("change", () => {
-                setSelectedResult(selector.value);
-
-                changeHandler(settings);
-            });
-        }
-
-        function handleDataSelect(selector) {
-            selector.addEventListener("change", () => {
-                setSelectedData(selector.value);
-
-                changeHandler(settings);
-            });
-        }
-
-        function handleLegendSelect(selector) {
-            selector.addEventListener("change", () => {
-                setSelectedLegendFilter(selector.value);
-
-                changeHandler(settings);
-            });
-        }
-
         return settings;
     }
 
     async getStageRerunsHeader(changeHandler) {
         let settings = {
             selectedPipeline: '',
-            // requestResult: 'Passed',
             requestOrder: 'DESC',
             requestLimit: 10,
             requestMinimumStageCounter: 2,
-            // showPipelineCounterResult: 'Only Passed',
-            // showData: 'time_waiting_secs',
-            // showLegend: 'Show'
+            startDate: getFirstDayOfTheCurrentMonth(),
+            endDate: getTodaysDateInDBFormat(),
         };
 
         const pipelines = await this.requestMaster.getPipelineList();
         // await console.log('pipelines = ', pipelines);
 
-        const selectors = await stageRerunsHeader(pipelines.map(p => p.name), this.#dom);
+        const selectors = await stageRerunsHeader(pipelines.map(p => p.name), this.#dom, handleDateSelect);
 
         selectors.requestOrderSelector.value = settings.requestOrder;
+        selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(settings.startDate)} - ${getHumanReadableDateFromDBFormatDate(settings.endDate)}`;
 
         setSelectedPipeline(selectors.pipelineSelector.value);
 
@@ -505,6 +509,15 @@ class Header {
         // handleResultSelect(selectors.resultFilterSelector);
         // handleDataSelect(selectors.dataFilterSelector);
         // handleLegendSelect(selectors.legendVisibilityFilterSelector);
+
+        function handleDateSelect(date1, date2) {
+            console.log("handleDateSelect from header.js date1, date2 = ", date1, date2);
+
+            settings.startDate = convertDateObjectToDBDateFormat(date1);
+            settings.endDate = convertDateObjectToDBDateFormat(date2);
+
+            changeHandler(settings);
+        }
 
         function setSelectedPipeline(pipeline_name) {
             settings.selectedPipeline = pipeline_name;

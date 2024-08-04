@@ -16,6 +16,14 @@ import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 class Priority {
     data = null;
 
+    constructor(settings) {
+        this.settings = settings;
+
+        console.log('priority.js settings', settings);
+
+        console.log('pipeline-priority constructor settings', settings);
+    }
+
     draw(data) {
         // console.log("draw with data ", data);
 
@@ -75,6 +83,8 @@ class Priority {
     }
 
     get_requestParamsPoint(index) {
+        console.log("priority.js get_requestParamsPoint called");
+
         let result;
         switch (index) {
             case 0:
@@ -88,7 +98,9 @@ class Priority {
                 break;
         }
         return {
-            "result": result
+            "result": result,
+            "startDate": this.settings.startDate,
+            "endDate": this.settings.endDate
         };
     }
 
