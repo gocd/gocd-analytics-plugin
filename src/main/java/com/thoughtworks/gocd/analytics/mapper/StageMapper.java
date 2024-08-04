@@ -179,12 +179,21 @@ public interface StageMapper {
         + "  SELECT *, ROW_NUMBER() OVER (PARTITION BY pipeline_counter ORDER BY id ASC) AS row_num\n"
         + "  FROM stages\n"
         + "  WHERE pipeline_name = #{pipelineName}\n"
+        + "  AND scheduled_at between #{startDate} AND #{endDate} \n"
+        + "  <if test='result != null'>"
+        + "  AND result = #{result} \n"
+        + "  </if>"
         + ") AS ranked_data\n"
-        + "WHERE row_num = 1;"
+        + "WHERE row_num = 1 \n"
+        + "ORDER BY id ${order} LIMIT #{limit} ;"
         + "</script>"
     )
-    List<Stage> stageStartupTime(@Param("pipelineName") String pipelineName, @Param(
-        "result") String result, @Param("order") String order, @Param("limit") int limit);
+    List<Stage> stageStartupTime(@Param("startDate") String startDate,
+        @Param("endDate") String endDate,
+        @Param("pipelineName") String pipelineName,
+        @Param("result") String result,
+        @Param("order") String order,
+        @Param("limit") int limit);
 
     @ResultMap("Stage")
     @Select("<script>"

@@ -92,8 +92,11 @@ public class StageDAO {
             pipelineCounter, null, order, limit);
     }
 
-    public List<Stage> getStageStartupTime(SqlSession sqlSession, String pipelineName) {
-        return mapper(sqlSession).stageStartupTime(pipelineName, null, null, 0);
+    public List<Stage> getStageStartupTime(SqlSession sqlSession,
+        String startDate, String endDate, String pipelineName, String result, String order,
+        int limit) {
+        return mapper(sqlSession).stageStartupTime(startDate, endDate, pipelineName, result,
+            order, limit);
     }
 
     public List<Stage> getStageStartupTimeCompare(SqlSession sqlSession, String pipelineName,

@@ -24,6 +24,7 @@ import com.thoughtworks.gocd.analytics.executors.AbstractSessionFactoryAwareExec
 import com.thoughtworks.gocd.analytics.models.AnalyticsRequest;
 import com.thoughtworks.gocd.analytics.models.AnalyticsResponseBody;
 import com.thoughtworks.gocd.analytics.models.Stage;
+import com.thoughtworks.gocd.analytics.utils.DbDateFormat;
 import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 
@@ -44,16 +45,29 @@ public class StageStartupTimeExecutor extends AbstractSessionFactoryAwareExecuto
     @Override
     protected GoPluginApiResponse doExecute() {
 
+        DbDateFormat dateFormat = new DbDateFormat();
+
         final String pipelineName = param(PARAM_PIPELINE_NAME);
         final String pipelineCounter = param(PARAM_PIPELINE_COUNTER);
 
-//        final String requestResult = param(PARAM_RESULT);
-//        final String requestOrder = param(PARAM_ORDER);
-//        final String requestLimit = param(PARAM_LIMIT);
-//
-//        final String result = new String("Any").equals(requestResult) ? null : requestResult;
-//        final String order = new String("ASC").equals(requestOrder) ? null : "DESC";
-//        final int limit = requestLimit == null ? 1 : Integer.parseInt(requestLimit);
+        final String startDate = param(PARAM_START_DATE);
+        final String endDate = param(PARAM_END_DATE);
+
+
+        final String requestResult = param(PARAM_RESULT);
+        final String requestOrder = param(PARAM_ORDER);
+        final String requestLimit = param(PARAM_LIMIT);
+
+        final String result = new String("Any").equals(requestResult) ? null : requestResult;
+        final String order = new String("ASC").equals(requestOrder) ? null : "DESC";
+        final int limit = requestLimit == null ? 1 : Integer.parseInt(requestLimit);
+
+
+        final String start =
+            (startDate == null || startDate.isEmpty()) ? dateFormat.getMonthStart() :
+                startDate;
+        final String end = (endDate == null || endDate.isEmpty()) ? dateFormat.getTodaysDate() :
+            endDate;
 
         final int counter = pipelineCounter == null ? 0 : Integer.parseInt(pipelineCounter);
 
@@ -61,7 +75,8 @@ public class StageStartupTimeExecutor extends AbstractSessionFactoryAwareExecuto
             @Override
             public List<Stage> execute(SqlSession sqlSession) {
                 if (counter == 0) {
-                    return stageDAO.getStageStartupTime(sqlSession, pipelineName);
+                    return stageDAO.getStageStartupTime(sqlSession, start, end, pipelineName,
+                            result, order, limit);
                 }
                 return stageDAO.getStageStartupTimeCompare(sqlSession, pipelineName, counter);
             }
