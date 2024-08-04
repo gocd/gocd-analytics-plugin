@@ -174,6 +174,62 @@ function truncateString(text, truncateOrder, maxLength = 10) {
 
 }
 
+function formatDatePicker(date) {
+    const month = date.toLocaleString('default', {month: 'long'}); // Get full month name
+    const day = date.getDate().toString().padStart(2, '0'); // Get day with leading zero
+
+    return `${month} ${day}`;
+}
+
+function getPreviousMonthDateInDBFormat() {
+    const today = new Date();
+    const date = new Date(today.getFullYear(), today.getMonth(), 1);
+    console.log("date = ", date);
+    const formattedDate = date.toISOString().split('T')[0];
+    console.log("formattedDate = ", formattedDate);
+    return formattedDate;
+}
+
+function getFirstDayOfTheCurrentMonth() {
+    const today = new Date();
+    today.setDate(1);
+    return today.toISOString().slice(0, 10);
+}
+
+function getTodaysDateInDBFormat() {
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0];
+    return formattedDate;
+}
+
+function convertDateObjectToDBDateFormat(date) {
+    console.log("convertDateObjectToDBDateFormat()", date);
+    const dateObj = new Date(date.dateInstance);
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Pad month for single digits
+    const day = String(dateObj.getDate()).padStart(2, '0'); // Pad day for single digits
+
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+}
+
+function getHumanReadableDateFromDBFormatDate(dateString) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+        return "Invalid date format. Please use YYYY-MM-DD.";
+    }
+
+    const dateParts = dateString.split('-');
+    const year = parseInt(dateParts[0], 10);
+    const month = parseInt(dateParts[1], 10) - 1; // Months are 0-indexed in JavaScript
+    const day = parseInt(dateParts[2], 10);
+
+    // Create a Date object and format it with the desired locale
+    const date = new Date(year, month, day);
+    const options = {month: 'long', day: 'numeric'};
+    return date.toLocaleDateString('en-US', options); // Adjust 'en-US' for your locale if needed
+
+}
+
 
 export {
     secondsToHms,
@@ -189,5 +245,11 @@ export {
     addOptionsToSelect,
     getDateFromTimestampString,
     getTimeFromTimestampString,
-    truncateString
+    truncateString,
+    formatDatePicker,
+    getPreviousMonthDateInDBFormat,
+    getTodaysDateInDBFormat,
+    convertDateObjectToDBDateFormat,
+    getHumanReadableDateFromDBFormatDate,
+    getFirstDayOfTheCurrentMonth
 }

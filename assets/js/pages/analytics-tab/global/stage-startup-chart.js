@@ -31,12 +31,12 @@ let requestMaster = null;
 let header = null;
 let footer = null;
 
-const c = new Console('stage-startup-chart.js', 'dev');
+const c = new Console('stage-startup-chart.js', 'prod');
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
 
     const data = JSON.parse(initialData);
-    console.log('stage-startup data', data);
+    // console.log('stage-startup data', data);
 
 
     requestMaster = new RequestMaster(transport);
@@ -47,6 +47,8 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
 
     (async () => {
         const defaultSettings = await header.getStageStartupHeader(changeHandler);
+
+        await console.log("startup header");
 
         await doStageStartup(defaultSettings);
     })();
@@ -72,13 +74,19 @@ async function doStageStartup(settings) {
     c.log('🛜 requesting stage startup with the settings', settings);
     footer.clear();
 
-    const stageStartupTime = await requestMaster.getStageStartupTime(settings.selectedPipeline, settings.requestOrder, settings.requestLimit);
+    console.log("getting startup time");
+
+    const stageStartupTime = await requestMaster.getStageStartupTime(settings.startDate, settings.endDate, settings.selectedPipeline, settings.requestResult, settings.requestOrder, settings.requestLimit);
+
+    console.log("startup time fetched");
 
     if (stageStartupTime.length === 0) {
         footer.showMessage("No data for selected option, can't draw a graph.", "Error", true, 10);
         graphManager.clear();
         return;
     }
+
+    console.log("stage start up some data is present", stageStartupTime);
 
     graphManager.initSeries("stage-startup-time", stageStartupTime, settings);
 }

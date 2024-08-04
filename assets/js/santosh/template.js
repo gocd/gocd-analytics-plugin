@@ -60,7 +60,7 @@ function getPlainBarSeries(name, data, colorData = undefined) {
   let s = structuredClone(PAIN_BAR_SERIES);
   s.name = name;
   s.data = data;
-  console.log("s.data = ", s.data);
+  // console.log("s.data = ", s.data);
   if (colorData === undefined) {
     s.showSymbol = false;
   } else {
@@ -94,7 +94,7 @@ function getAreaSeries(name, data, colorData = undefined) {
   let s = structuredClone(AREA_SERIES);
   s.name = name;
   s.data = data;
-  console.log("s.data = ", s.data);
+  // console.log("s.data = ", s.data);
   if (colorData === undefined) {
     s.showSymbol = false;
     s.areaStyle = {

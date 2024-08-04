@@ -95,6 +95,9 @@ class StageTimelineModern {
                             keys.some(key => parseInt(key) === parseInt(d.pipeline_counter)
                             ));
 
+                    const allFilteredStage = data.filter(
+                        d => d.stage_name === stage_name
+                    );
 
                     // console.log('allFilteredObjects', allFilteredObjects);
 
@@ -115,13 +118,13 @@ class StageTimelineModern {
                     // c.log('latestObject = ', latestObject);
 
                     return `
-${params.marker} ${latestObject.stage_name} ${filteredObjects.length > 1 ? ` 🙈 +${filteredObjects.length - 1}` : ``}
+${params.marker} ${latestObject.stage_name} ${filteredObjects.length > 1 ? ` 🙈 + ${filteredObjects.length - 1}` : ``}
 <br>
-🕰 Waiting time:️ ${secondsToHms(latestObject.time_waiting_secs)}
+🕰 Waiting time:️ ${secondsToHms(latestObject.time_waiting_secs)} ${filteredObjects.length > 1 ? ` 🙈 + ${secondsToHms(filteredObjects.reduce((acc, item) => acc + item.time_waiting_secs, 0) - latestObject.time_waiting_secs)}` : ``}
 <br>
-🔨 Building time: ${secondsToHms(latestObject.total_time_secs - latestObject.time_waiting_secs)}
+🔨 Building time: ${secondsToHms(latestObject.total_time_secs - latestObject.time_waiting_secs)} ${filteredObjects.length > 1 ? ` 🙈 + ${secondsToHms(filteredObjects.reduce((acc, item) => acc + item.total_time_secs - item.time_waiting_secs, 0) - (latestObject.total_time_secs - latestObject.time_waiting_secs))}` : ``}
 <br>
-⬆ Total time:️ ${secondsToHms(latestObject.total_time_secs)}
+⬆ Total time:️ ${secondsToHms(latestObject.total_time_secs)} ${filteredObjects.length > 1 ? ` 🙈 + ${secondsToHms(filteredObjects.reduce((acc, item) => acc + item.total_time_secs, 0) - latestObject.total_time_secs)}` : ``}
 <br>
 🗳️Result: ${latestObject.result}
 <hr>
@@ -131,11 +134,11 @@ Scheduled at: ${latestObject.scheduled_at}
 <br>
 Completed at: ${latestObject.completed_at}
 <hr>
-🛤️ 🕰 Series Waiting time:️ ${secondsToHms(filteredObjects.reduce((acc, item) => acc + item.time_waiting_secs, 0))}
+🛤️ 🕰 Series Waiting time:️ ${secondsToHms(allFilteredStage.reduce((acc, item) => acc + item.time_waiting_secs, 0))}
 <br>
-🛤️ 🔨 Series Building time:️ ${secondsToHms(filteredObjects.reduce((acc, item) => acc + (item.total_time_secs - item.time_waiting_secs), 0))}
+🛤️ 🔨 Series Building time:️ ${secondsToHms(allFilteredStage.reduce((acc, item) => acc + (item.total_time_secs - item.time_waiting_secs), 0))}
 <br>
-🛤️ ⬆ Series Total time:️ ${secondsToHms(filteredObjects.reduce((acc, item) => acc + item.total_time_secs, 0))}
+🛤️ ⬆ Series Total time:️ ${secondsToHms(allFilteredStage.reduce((acc, item) => acc + item.total_time_secs, 0))}
 `;
                 }
             },
@@ -152,7 +155,7 @@ Completed at: ${latestObject.completed_at}
             // },
         };
 
-        if (this.settings.showPipelineCounterResult === 'Only Passed') {
+        if (this.settings.visualizeVariation === true) {
             option.graphic = {
                 elements,
             }
@@ -215,8 +218,8 @@ Completed at: ${latestObject.completed_at}
 
     filterDataBySettingsResultVisibility(unique_sorted_pipeline_counter_group) {
         let array = _.cloneDeep(unique_sorted_pipeline_counter_group);
-        console.log('array before filter', array);
-        console.log('array length', array.length);
+        // console.log('array before filter', array);
+        // console.log('array length', array.length);
         switch (this.settings.showPipelineCounterResult) {
             case 'Only Passed':
                 console.log('Only Passed');
@@ -239,8 +242,8 @@ Completed at: ${latestObject.completed_at}
                 break;
         }
 
-        console.log('array after filter', array);
-        console.log('array length', array.length);
+        // console.log('array after filter', array);
+        // console.log('array length', array.length);
 
         return array;
     }
@@ -295,11 +298,11 @@ Completed at: ${latestObject.completed_at}
         for (const key in final_data) {
 
             const pipeline_counter_array = final_data[key];
-            console.log('pipeline_counter_array', pipeline_counter_array);
+            // console.log('pipeline_counter_array', pipeline_counter_array);
 
             stage_names.forEach((stage, index) => {
                 // const pipeline = pipeline_counter_data.filter((entry) => {
-                console.log('Searching for stage_name ', stage);
+                // console.log('Searching for stage_name ', stage);
 
                 const pipeline = pipeline_counter_array.find(pipeline =>
                     pipeline.stage_name.toString() === stage.toString()
@@ -328,11 +331,11 @@ Completed at: ${latestObject.completed_at}
                 }
             });
 
-            console.log('rdata = ', rdata);
+            // console.log('rdata = ', rdata);
 
         }
 
-        console.log('final rdata = ', rdata);
+        // console.log('final rdata = ', rdata);
 
         return rdata;
 
