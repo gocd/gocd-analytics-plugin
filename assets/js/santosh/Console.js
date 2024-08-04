@@ -27,7 +27,8 @@ class Console {
 
             if (data != null) {
                 if (typeof data === 'object') {
-                    messageToLog += ` ${JSON.stringify(data)}`;
+                    // messageToLog += ` ${JSON.stringify(data)}`;
+                    messageToLog += ` ${data}`;
                 } else {
                     messageToLog += ` ${data}`;
                 }

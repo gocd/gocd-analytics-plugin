@@ -1,4 +1,5 @@
 import {Litepicker} from 'litepicker';
+import {formatDatePicker} from "./utils";
 
 export class DateManager {
 
@@ -10,6 +11,9 @@ export class DateManager {
 
         let newDiv = document.createElement("input");
         newDiv.setAttribute("id", "litepicker");
+
+        selector.style.color = "blue";
+        selector.style.cursor = "pointer";
 
         const today = new Date();
 
@@ -23,6 +27,8 @@ export class DateManager {
             setup: (picker) => {
                 picker.on("selected", (date1, date2) => {
                     console.log("setup selected");
+                    const formattedDate = `${formatDatePicker(date1)} - ${formatDatePicker(date2)}`
+                    selector.textContent = formattedDate;
                     callback(date1, date2);
                 });
             },

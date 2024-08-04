@@ -1,6 +1,6 @@
 import Console from "./Console";
 
-const c = new Console('breadcrumb.js');
+const c = new Console('breadcrumb.js', 'prod');
 
 class Breadcrumb {
 
@@ -24,14 +24,25 @@ class Breadcrumb {
     draw(till) {
         this.#dom.innerHTML = "";
 
+        console.log('breadcrumb debug till = ', till);
+
         const totalNames = this.names.length;
 
+        console.log('breadcrumb debug totalNames = ', totalNames);
+
         for (let i = 0; i < totalNames; i++) {
+
+            console.log('breadcrumb debug i = ', i);
+
             const name = this.names[i];
 
-            c.log('draw name, till ', name.name, till);
+            console.log('breadcrumb debug name = ', name);
 
-            if (name.name === till) {
+            // c.log('draw name, till ', name.name, till);
+
+            // if (name.name === till) {
+            if (i === till) {
+                console.log('breadcrumb debug i===till ', i,till);
                 const span = document.createElement("span");
                 span.textContent = name.caption;
                 span.style.color = 'black';
@@ -89,34 +100,50 @@ class Breadcrumb {
         // }));
     }
 
-    add(name, caption) {
+    add(seriesIndex, name, caption) {
 
-        c.log('breadcrumb add with name, caption', name, caption);
+        // c.log('breadcrumb add with name, caption', name, caption);
+        //
+        // let found = false;
+        // for (let i = 0; i < this.names.length; i++) {
+        //     if (this.names[i].name === name) {
+        //         this.names[i].caption = caption;
+        //         found = true;
+        //         break;
+        //     }
+        // }
+        // if (!found) {
+        //     this.names.push({name: name, caption: caption});
+        // }
+        //
+        // c.log('breadcrumb names ', this.names);
+        //
 
-        let found = false;
-        for (let i = 0; i < this.names.length; i++) {
-            if (this.names[i].name === name) {
-                this.names[i].caption = caption;
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            this.names.push({name: name, caption: caption});
-        }
-
-        c.log('breadcrumb names ', this.names);
+        this.names[seriesIndex] = {name: name, caption: caption};
 
         if (this.names.length === 1 || this.names[0].name === name) {
             c.log('breadcrumb only one item, not displaying breadcrumb. returning.');
             this.#dom.innerHTML = "";
             return;
         }
+        //
+        // c.log('now I can show breadcrumb');
+        //
+        // this.draw(name);
 
-        c.log('now I can show breadcrumb');
 
-        this.draw(name);
 
+
+
+
+        // this.names[seriesIndex] = {name: name, caption: caption};
+        this.draw(seriesIndex);
+
+    }
+
+    santosh(seriesIndex, name, caption) {
+        this.names[seriesIndex] = {name: name, caption: caption};
+        this.draw(seriesIndex);
     }
 
 }

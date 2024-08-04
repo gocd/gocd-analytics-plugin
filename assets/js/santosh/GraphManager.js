@@ -97,11 +97,11 @@ class GraphManager {
         var dynamicWidth = window.innerWidth * 0.9; // Adjust the multiplier as needed
         var dynamicHeight = window.innerHeight * 0.8; // Adjust the multiplier as needed
 
-        c.logs(
-            "updating chart size with w, h = ",
-            dynamicWidth,
-            dynamicHeight
-        );
+        // c.logs(
+        //     "updating chart size with w, h = ",
+        //     dynamicWidth,
+        //     dynamicHeight
+        // );
 
         this.chart.resize({
             width: dynamicWidth,
@@ -114,28 +114,36 @@ class GraphManager {
         this.initSeries(params.name, params.data, settings);
     }
 
+    call_initSeriesWithNewData(data) {
+        const params = this.current_initSeriesParams;
+        console.log("params = ", params);
+        this.initSeries(params.name, data, params.settings);
+    }
+
     initSeries(name, data, settings) {
         // c.log("initSeries with name, data, settings", name, data, settings);
 
         this.current_initSeriesParams = {name: name, data: data, settings: settings};
         this.settings = settings;
 
+        console.log('initSeries settings = ', settings);
+
         switch (name) {
             case "LongestWaitingPipelines":
-                this.child = new LongestWaitingPipeline();
+                this.child = new LongestWaitingPipeline(settings);
                 break;
             case "LongestWaitingJobs":
-                this.child = new JobsHighestWaitTime();
+                this.child = new JobsHighestWaitTime(settings);
                 break;
             case "JobBuildTime":
                 this.child = new JobBuildTime();
                 break;
 
             case "AgentsMostUtilized":
-                this.child = new AgentsMostUtilized();
+                this.child = new AgentsMostUtilized(settings);
                 break;
             case "LongestWaitingJobsOnAgent":
-                this.child = new LongestWaitingJobsOnAgent();
+                this.child = new LongestWaitingJobsOnAgent(settings);
                 break;
             case "JobBuildTimeOnAgent":
                 this.child = new JobBuildTimeOnAgent();
@@ -151,7 +159,7 @@ class GraphManager {
                 break;
 
             case "priority":
-                this.child = new Priority();
+                this.child = new Priority(settings);
                 break;
 
             case "PipelinePriority":
@@ -202,6 +210,8 @@ class GraphManager {
                 throw new Error("Invalid series graph request " + name);
         }
 
+        console.log('I am going to assign name');
+
         this.name = name;
         this.dataStack.length = 3;
 
@@ -248,10 +258,11 @@ class GraphManager {
         // this.dataStack.push({name: this.name, data: data});
 
         if (this.type === "series") {
-            this.setDataStack(data);
+            // this.setDataStack(data);
+            this.santoshSetDataStack(data);
 
-            console.log("dataStack = ", this.dataStack);
-            console.log("dataStack length = ", this.dataStack.length);
+            // console.log("dataStack = ", this.dataStack);
+            // console.log("dataStack length = ", this.dataStack.length);
 
             // if (this.child.getSeriesIndex() === 0) {
             //     this.base = option;
@@ -259,6 +270,7 @@ class GraphManager {
 
             this.insertBreadcrumb();
         }
+        console.log('draw completed');
     }
 
     setDataStack(data) {
@@ -267,6 +279,10 @@ class GraphManager {
             data: data,
             settings: this.current_initSeriesParams.settings
         };
+    }
+
+    santoshSetDataStack() {
+        this.dataStack[this.child.getSeriesIndex()] = this.current_initSeriesParams;
     }
 
     hasStackData(name) {
@@ -284,22 +300,24 @@ class GraphManager {
     }
 
     getStackData(name, completeData = false) {
-        c.logs("getStackData for name ", name);
-        c.logs("stackdata available for getStack ", JSON.stringify(this.dataStack));
+        c.log("getStackData for name ", name);
+        console.log("stackdata available for getStack ", this.dataStack);
         // console.log('returning ', this.dataStack[this.name.toString()]);
         let index = this.dataStack.findIndex((obj) => obj.name === name);
         if (index === -1) {
             throw new Error("no data at index " + index);
         } else {
-            c.logs("index is present, so I will return", this.dataStack[index]);
+            console.log("index is present, so I will return", this.dataStack[index]);
         }
 
         return completeData ? this.dataStack[index] : this.dataStack[index].data;
     }
 
     getStackNameByIndex(index) {
+        console.log("index = ", index);
+        console.log("this.dataStack = ", this.dataStack);
         console.log('console.log this.dataStack[index] = ', JSON.stringify(this.dataStack[index]));
-        return this.dataStack[index].name;
+        return this.dataStack.find(d => d.name === index);
     }
 
     setBreadcrumbOption(name) {
@@ -312,7 +330,7 @@ class GraphManager {
     }
 
     insertBreadcrumb() {
-        this.breadcrumb.add(this.name, this.child.breadcrumbCaption());
+        this.breadcrumb.add(this.child.getSeriesIndex(), this.name, this.child.breadcrumbCaption());
     }
 
     restoreGraph(index) {
@@ -322,19 +340,27 @@ class GraphManager {
 
         // const newOption = this.dataStack[index];
 
-        this.initSeries(index, this.getStackData(index), this.current_initSeriesParams.settings);
+        // this.initSeries(index, this.getStackData(index), this.current_initSeriesParams.settings);
 
-        this.informRoot(this.getStackNameByIndex(index));
+        const tmpData = this.getStackData(index, true);
+
+        this.initSeries(index, tmpData.data, tmpData.settings);
+
+        // this.informRoot(this.getStackNameByIndex(index), null);
+        this.informRoot(index, null);
 
         // console.log('newOption = ', newOption);
         // this.chart.setOption(newOption, true);
     }
 
     async informRoot(nextGraphName, requestParams) {
+        console.log('🌴 informRoot');
         if (this.informSeriesMovement !== null) {
             const settings = await this.informSeriesMovement(nextGraphName, requestParams);
             c.logs('settings = ', settings);
             return settings;
+        } else {
+            console.log('this.informSeriesMovement is null');
         }
     }
 
@@ -362,6 +388,8 @@ class GraphManager {
         // }
 
         this.chart.on("click", (params) => {
+
+            console.log('click detected');
 
             if (typeof this.child.nativeClickHandler === 'function') {
                 const result = this.child.nativeClickHandler(this.transport, params);
@@ -421,8 +449,10 @@ class GraphManager {
         this.transport
             .request("fetch-analytics", requestParams)
             .done(async (data) => {
+                console.log("Moving forward with request");
                 c.logs("fetch-analytics ", data);
                 const settings = await this.informRoot(nextGraphName, requestParams);
+                console.log("settings = ", settings);
                 // if (this.informSeriesMovement !== null) {
                 //     settings = await this.informSeriesMovement(nextGraphName, requestParams);
                 //     c.log('settings = ', settings);
