@@ -54,15 +54,12 @@
     "webpack-merge": "^4.2.2"
   },
   "overrides": {
-    "chokidar": {
-      "glob-parent": "^5.1.2",
-      "braces": "^3.0.3"
-    },
     "webpack": {
+      "micromatch": "^4.0.8",
       "terser-webpack-plugin": "^4.2.3"
     },
-    "micromatch": {
-      "braces": "^3.0.3"
+    "watchpack-chokidar2": {
+      "chokidar": "^3.6.0"
     },
     "tap-diff": {
       "diff": "^5.2.0"
