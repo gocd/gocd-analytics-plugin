@@ -15,6 +15,29 @@ function secondsToHms(d) {
     return hDisplay + mDisplay;
 }
 
+function millisecondsToHoursMinutes(milliseconds) {
+    const seconds = milliseconds / 1000;
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes
+        % 60;
+
+    let result = "";
+
+    if (hours > 0) {
+        result += `${hours}h `;
+    }
+
+    if (minutes > 0) {
+        result += `${minutes}m `;
+    }
+
+    result += `${remainingSeconds}s`;
+
+    return result;
+}
+
 function timestampToWords(ts) {
     const options = {weekday: 'short', day: 'numeric', month: 'short'};
     const formattedDate = new Date(ts);
@@ -202,6 +225,26 @@ function getTodaysDateInDBFormat() {
     return formattedDate;
 }
 
+function getLatestAndOldestDates(dates) {
+    if (!dates || dates.length === 0) {
+        return { latest: null, oldest: null };
+    }
+
+    let latest = dates[0];
+    let oldest = dates[0];
+
+    for (let i = 1; i < dates.length; i++) {
+        const date = dates[i];
+        if (date > latest) {
+            latest = date;
+        } else if (date < oldest) {
+            oldest = date;
+        }
+    }
+
+    return { latest, oldest };
+}
+
 function convertDateObjectToDBDateFormat(date) {
     console.log("convertDateObjectToDBDateFormat()", date);
     const dateObj = new Date(date.dateInstance);
@@ -233,6 +276,7 @@ function getHumanReadableDateFromDBFormatDate(dateString) {
 
 export {
     secondsToHms,
+    millisecondsToHoursMinutes,
     timestampToWords,
     getUniqueDatesFromArray,
     groupObjectsByDate,
@@ -251,5 +295,6 @@ export {
     getTodaysDateInDBFormat,
     convertDateObjectToDBDateFormat,
     getHumanReadableDateFromDBFormatDate,
-    getFirstDayOfTheCurrentMonth
+    getFirstDayOfTheCurrentMonth,
+    getLatestAndOldestDates
 }

@@ -1,4 +1,10 @@
-import {getUniqueDatesFromArray, groupObjectsByDate, secondsToHms, timestampToWords} from "./utils";
+import {
+    getLatestAndOldestDates,
+    getUniqueDatesFromArray,
+    groupObjectsByDate, millisecondsToHoursMinutes,
+    secondsToHms,
+    timestampToWords
+} from "./utils";
 import * as echarts from "echarts";
 
 console.log('santosh/simple-stacked-bar.js loaded');
@@ -13,6 +19,8 @@ class SimpleStackedBar {
         this.categoriesWithSameDates = [];
         this.series = [];
         this.data = [];
+
+        this.dataGroupForTooltip = null;
 
         this.constructGraphData();
         this.generate();
@@ -187,6 +195,7 @@ class SimpleStackedBar {
         const transitionTimes = this.getAllTransitionTime();
 
         const dateGroup = groupObjectsByDate(this.meta.transitions);
+        this.dateGroupForTooltip = dateGroup;
 
         console.log('dateGroup ', dateGroup);
 
@@ -264,19 +273,47 @@ class SimpleStackedBar {
         }
     }
 
-    test(params) {
-        console.log(params);
+    test(dateGroupForTooltip) {
+        return (params) => {
+            console.log(params);
 
         const duration = params.value[3];
 
-        let hours = Math.floor(duration / 100);
-        let minutes = duration % 100;
-        if (hours === 24) hours = 0;
+            let hours = Math.floor(duration / 100);
+            let minutes = duration % 100;
+            if (hours === 24) hours = 0;
 
-        const r = hours * 60 + minutes;
+            const r = hours * 60 + minutes;
 
-        return params.marker + params.name + ': ' + r + ' m' + '<hr> Total this day: ';
+            const getDetails = () => {
+                const key = Object.keys(dateGroupForTooltip)[params.seriesIndex];
+
+                const dateGroup = dateGroupForTooltip[key];
+                console.log("dataGroup = ", dateGroup);
+                const stateGroup = dateGroup.filter(d => d.agent_state === params.name);
+                console.log("stateGroup = ", stateGroup);
+
+                const totalStateGroups = stateGroup.length;
+
+                const {latest, oldest} = getLatestAndOldestDates(stateGroup.map(s => s.transition_time));
+                const durationInMs = new Date(latest) - new Date(oldest);
+                const duration = millisecondsToHoursMinutes(durationInMs);
+
+
+                console.log("latest = ", latest);
+                console.log("oldest = ", oldest);
+                console.log("duration = ", duration);
+
+                return {totalStateGroups, duration};
+            }
+
+            const details = getDetails();
+            console.log("details = ", details);
+
+            return params.marker + params.name + ': ' + r + ' m' + '<hr> <b>Total this day</b>: ' + '<br>' + 'Transition: ' + details.totalStateGroups + ' times' + '<br>' + 'Seconds: ' + details.duration;
+        }
     }
+
 
     generate() {
 
@@ -288,7 +325,7 @@ class SimpleStackedBar {
 
         option = {
             tooltip: {
-                formatter: this.test,
+                formatter: this.test(this.dateGroupForTooltip),
             },
             grid: {
                 height: 'auto',

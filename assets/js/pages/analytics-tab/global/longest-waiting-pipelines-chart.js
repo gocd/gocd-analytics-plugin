@@ -61,11 +61,11 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
 
     graphManager = new GraphManager('series', transport, informSeriesMovement, footer);
 
-    if (data.length === 0) {
-        footer.showMessage("No data to display", "INFO", true);
-    } else {
+    // if (data.length === 0) {
+    //     footer.showMessage("No data to display", "INFO", true);
+    // } else {
         init(data);
-    }
+    // }
     c.log("*********** graph loaded");
 
 });
