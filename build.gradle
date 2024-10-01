@@ -84,7 +84,7 @@ dependencies {
   runtimeOnly 'ch.qos.logback:logback-classic:1.5.8'
 
   testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.11.1'
-  testImplementation 'org.mockito:mockito-core:5.13.0'
+  testImplementation 'org.mockito:mockito-core:5.14.1'
   testImplementation 'org.skyscreamer:jsonassert:1.5.3'
   testImplementation 'org.jsoup:jsoup:1.18.1'
   testImplementation 'org.skyscreamer:jsonassert:1.5.3'
