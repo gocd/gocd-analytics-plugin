@@ -80,7 +80,7 @@ dependencies {
   }
   implementation 'org.apache.commons:commons-dbcp2:2.12.0'
   implementation 'org.mybatis:mybatis:3.4.6'
-  implementation 'org.flywaydb:flyway-core:4.2.0'
+  implementation 'org.flywaydb:flyway-core:10.18.2'
   runtimeOnly 'ch.qos.logback:logback-classic:1.5.8'
 
   testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.11.1'
