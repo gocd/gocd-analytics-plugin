@@ -29,7 +29,7 @@
     "babel-loader": "^8.3.0",
     "babel-plugin-lodash": "^3.3.4",
     "css-loader": "^5.2.7",
-    "eslint": "^8.57.0",
+    "eslint": "^9.13.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^4.5.2",
     "karma": "^6.4.4",
