@@ -34,7 +34,7 @@ let requestMaster = null;
 let header = null;
 let footer = null;
 
-const c = new Console('longest-waiting-pipelines-chart.js', 'dev');
+const c = new Console('longest-waiting-pipelines-chart.js', 'prod');
 
 const settings = {
     "LongestWaitingPipelines": {
@@ -61,12 +61,9 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
 
     graphManager = new GraphManager('series', transport, informSeriesMovement, footer);
 
-    // if (data.length === 0) {
-    //     footer.showMessage("No data to display", "INFO", true);
-    // } else {
-        init(data);
-    // }
-    c.log("*********** graph loaded");
+    init(data);
+
+    // c.log("*********** graph loaded");
 
 });
 
@@ -74,7 +71,12 @@ async function init(data) {
     settings["LongestWaitingPipelines"] = await header.getLongestWaitingPipelinesHeader(graphOneHeaderChangeHandler);
     // settings["LongestWaitingJobs"] = await header.getLongestWaitingPipelinesHeader(graphTwoHeaderChangeHandler);
 
-    graphManager.initSeries('LongestWaitingPipelines', data, settings["LongestWaitingPipelines"]);
+    if (data.length === 0) {
+        footer.showMessage("No data to display", "INFO", true);
+    } else {
+        graphManager.initSeries('LongestWaitingPipelines', data, settings["LongestWaitingPipelines"]);
+    }
+
 }
 
 async function informSeriesMovement(graphName, requestParams) {
