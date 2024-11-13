@@ -1,5 +1,5 @@
 import * as echarts from "echarts";
-import { updateChartSize } from "../utils";
+import {secondsToHms, updateChartSize} from "../utils";
 
 // import { getAreaSeries, getBarSeries } from "../template";
 import GET_STACKED_AREA_TEMPLATE from "./stacked-area";
@@ -154,18 +154,23 @@ class PipelineTimeline {
       const wt = getPlainBarSeries("Waiting Time", data1);
       wt.tooltip = {
         valueFormatter: function (value) {
-          return value + " s";
+          return secondsToHms(value);
         },
       };
 
       const bt = getPlainBarSeries("Building Time", data2, colorData);
       bt.tooltip = {
         valueFormatter: function (value) {
-          return value + " s";
+          return secondsToHms(value);
         },
       };
 
       const monitor = getLineSeries("Total Time", data3);
+      monitor.tooltip = {
+        valueFormatter: function (value) {
+          return secondsToHms(value);
+        }
+      }
 
       return [wt, bt, monitor];
     }
