@@ -32,7 +32,8 @@ let footer = null;
 
 const c = new Console('agents-with-highest-utilization-chart.js', 'dev');
 
-const settings = {"AgentsMostUtilized": {
+const settings = {
+    "AgentsMostUtilized": {
         truncateOrder: 'Last',
         startDate: getFirstDayOfTheCurrentMonth(),
         endDate: getTodaysDateInDBFormat(),
@@ -42,7 +43,8 @@ const settings = {"AgentsMostUtilized": {
         startDate: getFirstDayOfTheCurrentMonth(),
         endDate: getTodaysDateInDBFormat(),
         limit: 10
-    }, "JobBuildTimeOnAgent": null};
+    }, "JobBuildTimeOnAgent": null
+};
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
     const agents = JSON.parse(initialData);
@@ -55,19 +57,18 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
 
     graphManager = new GraphManager('series', transport, informSeriesMovement, footer);
 
-    if(agents.length === 0) {
-        footer.showMessage("No data to display", "INFO", true);
-    } else {
-        init(agents);
-    }
-
+    init(agents);
 
 });
 
 async function init(data) {
     settings["AgentsMostUtilized"] = await header.getLongestWaitingPipelinesHeader(graphOneHeaderChangeHandler);
 
-    graphManager.initSeries('AgentsMostUtilized', data, settings['AgentsMostUtilized']);
+    if (data.length === 0) {
+        footer.showMessage("No data to display", "INFO", true);
+    } else {
+        graphManager.initSeries('AgentsMostUtilized', data, settings['AgentsMostUtilized']);
+    }
 }
 
 async function informSeriesMovement(graphName, requestParams) {
@@ -109,10 +110,10 @@ async function graphOneHeaderChangeHandler(changedSettings) {
 
     settings["AgentsMostUtilized"] = changedSettings;
 
-    if(previousTruncateOrder === changedSettings.truncateOrder) {
+    if (previousTruncateOrder === changedSettings.truncateOrder) {
         const agents = await requestMaster.getAgentMostUtilized(changedSettings.startDate, changedSettings.endDate, changedSettings.limit);
         graphManager.clear();
-        if(agents.length === 0) {
+        if (agents.length === 0) {
             footer.showMessage("No data to display", "Error", true);
         } else {
             graphManager.call_initSeriesWithNewData(agents);
