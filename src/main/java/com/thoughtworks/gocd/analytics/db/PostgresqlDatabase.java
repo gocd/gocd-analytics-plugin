@@ -24,6 +24,7 @@ import org.flywaydb.core.Flyway;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.Duration;
 
 public class PostgresqlDatabase implements Database {
     private static final Logger LOG = Logger.getLoggerFor(PostgresqlDatabase.class);
@@ -142,7 +143,7 @@ public class PostgresqlDatabase implements Database {
             basicDataSource.setPassword(pluginSettings.getDbPassword());
             basicDataSource.setMaxTotal(pluginSettings.getMaxConnectionsActive());
             basicDataSource.setMaxIdle(pluginSettings.getMaxConnectionsIdle());
-            basicDataSource.setMaxWaitMillis(pluginSettings.getMaxConnectionWaitTime());
+            basicDataSource.setMaxWait(Duration.ofMillis(pluginSettings.getMaxConnectionWaitTime()));
             basicDataSource.setDefaultAutoCommit(false);
             basicDataSource.setConnectionProperties(String.format("stringtype=unspecified;%s", sslConfig()));
         }
