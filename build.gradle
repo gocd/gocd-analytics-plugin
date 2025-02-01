@@ -73,7 +73,7 @@ configurations {
 }
 
 dependencies {
-  compileOnly 'cd.go.plugin:go-plugin-api:24.4.0'
+  compileOnly 'cd.go.plugin:go-plugin-api:25.1.0'
   implementation 'com.google.code.gson:gson:2.11.0'
   implementation('org.postgresql:postgresql:42.7.4') {
     exclude(module: 'checker-qual')
@@ -88,7 +88,7 @@ dependencies {
   testImplementation 'org.skyscreamer:jsonassert:1.5.3'
   testImplementation 'org.jsoup:jsoup:1.18.3'
   testImplementation 'org.skyscreamer:jsonassert:1.5.3'
-  testImplementation 'cd.go.plugin:go-plugin-api:24.4.0'
+  testImplementation 'cd.go.plugin:go-plugin-api:25.1.0'
 
   integrationTestImplementation 'org.slf4j:slf4j-simple:2.0.16'
 }
