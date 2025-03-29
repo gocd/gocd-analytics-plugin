@@ -16,6 +16,8 @@
 
 package com.thoughtworks.gocd.analytics.mapper;
 
+import com.thoughtworks.gocd.analytics.models.AgentMetric;
+import com.thoughtworks.gocd.analytics.models.AgentResult;
 import com.thoughtworks.gocd.analytics.models.AgentUtilization;
 import org.apache.ibatis.annotations.*;
 
@@ -112,7 +114,7 @@ public interface AgentUtilizationMapper {
             "           AND DATE(utilization_date) <= DATE(#{endDate})\n" +
             "         GROUP BY u.uuid) AS utilization\n" +
             "  ON agent.uuid = utilization.uuid\n" +
-            "  ORDER BY utilization.building_duration_secs DESC\n" +
+            "  ORDER BY utilization.building_duration_secs ${order}\n" +
             " LIMIT #{limit}")
     @Results({
             @Result(property = "uuid", column = "uuid"),
@@ -122,8 +124,33 @@ public interface AgentUtilizationMapper {
     })
     List<AgentUtilization> highestUtilization(@Param("startDate") String startDate,
                                               @Param("endDate") String endDate,
-                                              @Param("limit") int limit);
+                                              @Param("limit") int limit,
+        @Param("order") String order);
 
+    @Select("SELECT\n"
+        + " jobs.result, jobs.agent_uuid, agents.host_name FROM jobs\n"
+        + " JOIN agents ON agents.uuid = jobs.agent_uuid\n"
+        + " WHERE DATE(jobs.assigned_at) >= DATE(#{startDate})\n"
+        + " AND DATE(jobs.assigned_at) <= DATE(#{endDate})")
+//    @Results({
+//        @Result(property = "result", column = "result"),
+//        @Result(property = "agent_uuid", column = "agent_uuid"),
+//        @Result(property = "host_name", column = "host_name")
+//    })
+    List<AgentResult> agentResults(@Param("startDate") String startDate,
+        @Param("endDate") String endDate, @Param("limit") int limit);
+
+    @Select("SELECT\n"
+        + " jobs.pipeline_name, jobs.stage_name, jobs.job_name\n"
+        + ", jobs.time_waiting_secs, jobs.time_building_secs, jobs.agent_uuid, agents.host_name\n"
+        + " FROM jobs\n"
+        + " JOIN agents on agents.uuid = jobs.agent_uuid")
+//    @Results({
+//        @Result(property = "result", column = "result"),
+//        @Result(property = "agent_uuid", column = "agent_uuid"),
+//        @Result(property = "host_name", column = "host_name")
+//    })
+    List<AgentMetric> agentMetrics();
 
     @Delete("DELETE FROM agent_utilization\n" +
             "  WHERE utilization_date AT TIME ZONE 'UTC' < #{utilization_date} AT TIME ZONE 'UTC';")

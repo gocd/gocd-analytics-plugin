@@ -43,6 +43,8 @@ public interface AnalyticTypes {
     String PARAM_ORDER = "order";
     String PARAM_LIMIT = "limit";
 
+    String PARAM_PERCENTAGE = "percentage";
+
     String PARAM_AGENT_UUID = "agent_uuid";
     String PARAM_AGENT_HOST_NAME = "agent_host_name";
 

@@ -18,7 +18,10 @@ package com.thoughtworks.gocd.analytics.dao;
 
 
 import com.thoughtworks.gocd.analytics.mapper.AgentUtilizationMapper;
+import com.thoughtworks.gocd.analytics.models.AgentMetric;
+import com.thoughtworks.gocd.analytics.models.AgentResult;
 import com.thoughtworks.gocd.analytics.models.AgentUtilization;
+import java.util.ArrayList;
 import org.apache.ibatis.session.SqlSession;
 
 import java.time.ZonedDateTime;
@@ -57,10 +60,30 @@ public class AgentUtilizationDAO {
     }
 
     public List<AgentUtilization> highestUtilization(SqlSession sqlSession, String startDate,
-        String endDate, int limit) {
+        String endDate, int limit, String order) {
         AgentUtilizationMapper mapper = mapper(sqlSession);
 
-        return mapper.highestUtilization(startDate, endDate, limit);
+        return mapper.highestUtilization(startDate, endDate, limit, order);
+    }
+
+    public List<AgentUtilization> lowestUtilization(SqlSession sqlSession, String startDate,
+        String endDate, int limit, String order) {
+        AgentUtilizationMapper mapper = mapper(sqlSession);
+
+        return mapper.highestUtilization(startDate, endDate, limit, order);
+    }
+
+    public List<AgentResult> agentResults(SqlSession sqlSession, String startDate, String endDate
+        , int limit) {
+        AgentUtilizationMapper mapper = mapper(sqlSession);
+
+        return mapper.agentResults(startDate, endDate, limit);
+    }
+
+    public List<AgentMetric> agentMetrics(SqlSession sqlSession) {
+        AgentUtilizationMapper mapper = mapper(sqlSession);
+
+        return mapper.agentMetrics();
     }
 
     public void deleteUtilizationPriorTo(SqlSession sqlSession, ZonedDateTime utilizationDate) {

@@ -42,6 +42,26 @@ public enum AvailableAnalytics {
             "agents_with_the_highest_utilization",
             "Agents with the Highest Utilization"),
 
+    AGENTS_WITH_THE_LOWEST_UTILIZATION(AnalyticTypes.TYPE_DASHBOARD,
+            "agents_with_the_lowest_utilization",
+            "Agents with the Lowest Utilization"),
+
+    AGENTS_WITH_RESULTS(AnalyticTypes.TYPE_DASHBOARD,
+            "agents_with_results",
+            "Agents with Results"),
+
+    WAIT_BUILD_RATIO(AnalyticTypes.TYPE_DASHBOARD,
+            "wait_build_ratio",
+            "Wait Build Ratio"),
+
+    AGENT_METRICS(AnalyticTypes.TYPE_DASHBOARD,
+            "agent_metrics",
+            "Agent Metrics"),
+
+    DORA_METRICS(AnalyticTypes.TYPE_DASHBOARD,
+            "dora_metrics",
+            "Dora Metrics"),
+
     // rename this later to a request type
     PIPELINES_RUNTIME_ACROSS_TIMELINE(AnalyticTypes.TYPE_JOB,
         "pipeline_list", "Helper to list pipelines"),

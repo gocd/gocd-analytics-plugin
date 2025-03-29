@@ -53,6 +53,7 @@ public class AgentsWithHighestUtilizationExecutor extends AbstractSessionFactory
             final int limit = 10;
             final String startDate = param(PARAM_START_DATE);
             final String endDate = param(PARAM_END_DATE);
+            final String order = "DESC";
 
             final String start =
                 (startDate == null || startDate.isEmpty()) ? dateFormat.getMonthStart() :
@@ -62,7 +63,7 @@ public class AgentsWithHighestUtilizationExecutor extends AbstractSessionFactory
 
             @Override
             public List<AgentUtilization> execute(SqlSession sqlSession) {
-                return agentUtilizationDAO.highestUtilization(sqlSession, start, end, limit);
+                return agentUtilizationDAO.highestUtilization(sqlSession, start, end, limit, order);
             }
         });
 

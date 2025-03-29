@@ -29,12 +29,17 @@ import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.thoughtworks.gocd.analytics.executors.*;
+import com.thoughtworks.gocd.analytics.executors.agent.AgentMetricsExecutor;
 import com.thoughtworks.gocd.analytics.executors.agent.AgentStateTransitionExecutor;
 import com.thoughtworks.gocd.analytics.executors.agent.AgentUtilizationExecutor;
 import com.thoughtworks.gocd.analytics.executors.agent.AgentsWithHighestUtilizationExecutor;
+import com.thoughtworks.gocd.analytics.executors.agent.AgentsWithLowestUtilizationExecutor;
+import com.thoughtworks.gocd.analytics.executors.agent.AgentsWithResultsExecutor;
 import com.thoughtworks.gocd.analytics.executors.job.JobBuildTimeExecutor;
 import com.thoughtworks.gocd.analytics.executors.job.JobBuildTimeOnAgentExecutor;
+import com.thoughtworks.gocd.analytics.executors.job.JobDoraMetricsExecutor;
 import com.thoughtworks.gocd.analytics.executors.job.JobTimelineExecutor;
+import com.thoughtworks.gocd.analytics.executors.job.JobWaitBuildTimeRatioExecutor;
 import com.thoughtworks.gocd.analytics.executors.job.JobsHighestWaitTimeExecutor;
 import com.thoughtworks.gocd.analytics.executors.job.JobsHighestWaitTimeOnAgentExecutor;
 import com.thoughtworks.gocd.analytics.executors.job.JobsWaitVsAgentsAvailableExecutor;
@@ -125,6 +130,13 @@ public class AnalyticsPlugin implements GoPlugin, Initializable {
             .registerExecutor(JOB_BUILD_TIME.getId(), JobBuildTimeExecutor.class)
             .registerExecutor(AGENTS_WITH_THE_HIGHEST_UTILIZATION.getId(),
                 AgentsWithHighestUtilizationExecutor.class)
+            .registerExecutor(AGENTS_WITH_THE_LOWEST_UTILIZATION.getId(),
+                AgentsWithLowestUtilizationExecutor.class)
+            .registerExecutor(AGENTS_WITH_RESULTS.getId(),
+                AgentsWithResultsExecutor.class)
+            .registerExecutor(WAIT_BUILD_RATIO.getId(), JobWaitBuildTimeRatioExecutor.class)
+            .registerExecutor(AGENT_METRICS.getId(), AgentMetricsExecutor.class)
+            .registerExecutor(DORA_METRICS.getId(), JobDoraMetricsExecutor.class)
             .registerExecutor(JOB_BUILD_TIME_ON_AGENT.getId(), JobBuildTimeOnAgentExecutor.class)
             .registerExecutor(STAGE_BUILD_TIME.getId(), StageBuildTimeExecutor.class)
             .registerExecutor(AGENT_STATE_TRANSITION.getId(), AgentStateTransitionExecutor.class)

@@ -166,7 +166,8 @@ public class AgentUtilizationDAOTest implements DAOIntegrationTest {
         dao.insert(sqlSession, agentUtilizationWith("agent-3", threeDaysAgo, "idle", threeDaysAgo, 100, 100, 0, ""));
         dao.insert(sqlSession, agentUtilizationWith("agent-3", tenDaysAgo, "idle", tenDaysAgo, 10, 1800, 0, ""));
 
-        List<AgentUtilization> agentUtilizations = dao.highestUtilization(sqlSession, now.minusDays(6), now.plusDays(1), 10);
+        List<AgentUtilization> agentUtilizations = dao.highestUtilization(sqlSession,
+            now.minusDays(6), now.plusDays(1), 10, "DESC");
 
         assertEquals(2, agentUtilizations.size());
         assertEquals(agentUtilizationWith("agent-1", null, null, null,
