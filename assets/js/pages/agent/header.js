@@ -1,4 +1,4 @@
-function drawChartStats(range, callback) {
+function drawChartStats(range, callback, data) {
     const myDiv = document.getElementById("chart-container-meta");
     myDiv.innerHTML = "";
 
@@ -44,7 +44,7 @@ function drawChartStats(range, callback) {
     });
 
     myDiv.appendChild(titleContainer);
-    myDiv.appendChild(subHeader());
+    myDiv.appendChild(subHeader(data));
 
 }
 
@@ -58,7 +58,38 @@ function handleButtonClick(id, range) {
     })
 }
 
-function subHeader() {
+function subHeaderStats(data, statuses) {
+
+    const timings = {"total": 0};
+
+    console.log("subHeaderStats data, statuses", data, statuses);
+
+    statuses.forEach(s => timings[s] = 0);
+
+    console.log("data transitions");
+
+    data.forEach((d) => {
+        console.log("d", d);
+
+        let timeSpentInAState = d.endDate - d.startDate;
+
+        console.log("timeSpentInAState", timeSpentInAState);
+
+        timings.total = timings.total + timeSpentInAState;
+        timings[d.status] = timings[d.status] + timeSpentInAState;
+    });
+
+    if(!timings.total) {
+        console.log("subHeaderStats timings total is zero");
+        return;
+    }
+
+    console.log("subHeaderStats timings", timings);
+
+    return timings;
+}
+
+function subHeader(data) {
     const subTitleContainer = document.createElement("div");
     subTitleContainer.classList.add("subtitle-container");
 
@@ -66,6 +97,8 @@ function subHeader() {
     stateMetrics.classList.add("state-metrics");
 
     const statuses = ['Idle', 'Building', 'Cancelled', 'Missing', 'LostContact', 'Unknown'];
+
+    const timings = subHeaderStats(data, statuses);
 
     statuses.forEach(status => {
         const dl = document.createElement("dl");
@@ -77,7 +110,8 @@ function subHeader() {
 
         const dd = document.createElement("dd");
         dd.classList.add("val");
-        dd.innerText = Math.floor(Math.random() * 11) + '%';
+        // dd.innerText = Math.floor(Math.random() * 11) + '%';
+        dd.innerText = ((timings[status] * 100) / timings.total).toFixed(1) + '%';
 
         dl.appendChild(dt);
         dl.appendChild(dd);
