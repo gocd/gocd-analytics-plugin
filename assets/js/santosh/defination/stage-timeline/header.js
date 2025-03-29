@@ -11,6 +11,9 @@ import {
     getPreviousMonthDateInDBFormat,
     getTodaysDateInDBFormat
 } from "../../utils";
+import waitBuildTimeRatioHeader from "./wait-build-time-ratio-header";
+import agentMetricsHeader from "./agent-metrics-header";
+import doraMetricsHeader from "./dora-metrics-header";
 
 class Header {
 
@@ -393,6 +396,56 @@ class Header {
         return settings;
     }
 
+    async getDoraMetricsHeader(changeHandler, savedSettings) {
+        let settings = {
+            startDate: getFirstDayOfTheCurrentMonth(),
+            endDate: getTodaysDateInDBFormat(),
+            selectedPipeline: undefined,
+        };
+
+        const pipelines = await this.requestMaster.getPipelineList();
+        // await console.log('pipelines = ', pipelines);
+
+        const selectors = await doraMetricsHeader(pipelines.map(p => p.name), this.#dom, handleDateSelect, handlePipelineSelect);
+
+        setSelectedPipeline(selectors.pipelineSelector.value);
+
+        function handleDateSelect(date1, date2) {
+            console.log("handleDateSelect from header.js date1, date2 = ", date1, date2);
+
+            settings.startDate = convertDateObjectToDBDateFormat(date1);
+            settings.endDate = convertDateObjectToDBDateFormat(date2);
+
+            changeHandler(settings);
+        }
+
+        function setSelectedPipeline(pipeline_name) {
+            settings.selectedPipeline = pipeline_name;
+        }
+
+        function handlePipelineSelect(newValue) {
+            console.log("handle pipeline select with value as ", newValue);
+            setSelectedPipeline(newValue);
+
+            changeHandler(settings);
+        }
+
+        if (savedSettings != undefined) {
+
+            selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(savedSettings.startDate)} - ${getHumanReadableDateFromDBFormatDate(savedSettings.endDate)}`;
+
+            selectors.pipelineSelector.setSelected(savedSettings.selectedPipeline, false);
+
+            settings.startDate = savedSettings.startDate;
+            settings.endDate = savedSettings.endDate;
+        } else {
+
+            selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(settings.startDate)} - ${getHumanReadableDateFromDBFormatDate(settings.endDate)}`;
+        }
+
+        return settings;
+    }
+
     async getStageStartupHeader(changeHandler) {
         let settings = {
             startDate: getFirstDayOfTheCurrentMonth(),
@@ -656,6 +709,171 @@ class Header {
             console.log("getting start date and end date from settings = ", settings.startDate, settings.endDate);
             selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(settings.startDate)} - ${getHumanReadableDateFromDBFormatDate(settings.endDate)}`;
         }
+
+        return settings;
+    }
+
+    async getWaitBuildTimeRatioHeader(changeHandler, savedSettings) {
+
+        console.log("Santosh getWaitBuildTimeRatioHeader savedSettings = ", savedSettings);
+
+        let settings = {
+            truncateOrder: 'Last',
+            startDate: getFirstDayOfTheCurrentMonth(),
+            endDate: getTodaysDateInDBFormat(),
+            percentage: 10,
+            limit: 10
+        };
+
+        const selectors = await waitBuildTimeRatioHeader(this.#dom, handleDateSelect);
+
+        console.log("Santosh getWaitBuildTimeRatioHeader selectors = ", selectors);
+
+        // handleTruncateOrderSelect(selectors.truncateOrderSelector);
+
+        handlePercentageChange(selectors.percentageSelector);
+
+        console.log("Santosh getWaitBuildTimeRatioHeader handle truncate order select done");
+
+        function handleDateSelect(date1, date2) {
+            console.log("handleDateSelect from header.js date1, date2 = ", date1, date2);
+
+            settings.startDate = convertDateObjectToDBDateFormat(date1);
+            settings.endDate = convertDateObjectToDBDateFormat(date2);
+
+            changeHandler(settings);
+        }
+
+        function handleTruncateOrderSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedTruncateOrder(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function setSelectedTruncateOrder(result) {
+            settings.truncateOrder = result;
+        }
+
+        function handlePercentageChange(selector) {
+            selector.addEventListener("change", () => {
+                setPercentage(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function setPercentage(percent) {
+            settings.percentage = percent;
+        }
+
+        if (savedSettings != undefined) {
+            console.log("Santosh savedSettings check");
+
+            console.log('savedSettings = ', savedSettings);
+            selectors.truncateOrderSelector.value = savedSettings.truncateOrder;
+
+            selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(savedSettings.startDate)} - ${getHumanReadableDateFromDBFormatDate(savedSettings.endDate)}`;
+
+            return savedSettings;
+        } else {
+            console.log("Santosh savedSettings check is undefined");
+            console.log("getting start date and end date from settings = ", settings.startDate, settings.endDate);
+            selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(settings.startDate)} - ${getHumanReadableDateFromDBFormatDate(settings.endDate)}`;
+        }
+
+        console.log("Santosh getWaitBuildTimeRatioHeader returning settings = ", settings);
+
+        return settings;
+    }
+
+    async getAgentMetricsHeader(changeHandler, savedSettings) {
+
+        console.log("Santosh getAgentMetricsHeader savedSettings = ", savedSettings);
+
+        let settings = {
+            truncateOrder: 'Last',
+            startDate: getFirstDayOfTheCurrentMonth(),
+            endDate: getTodaysDateInDBFormat(),
+            occurence: 'Most',
+            metric: 'Wanted',
+            limit: 10
+        };
+
+        const selectors = await agentMetricsHeader(this.#dom, handleDateSelect);
+
+        console.log("Santosh getAgentMetricsHeader selectors = ", selectors);
+
+        // handleTruncateOrderSelect(selectors.truncateOrderSelector);
+
+        handleOccurenceSelect(selectors.occurenceFilterSelector);
+
+        handleMetricSelect(selectors.metricFilterSelector);
+
+        function handleDateSelect(date1, date2) {
+            console.log("handleDateSelect from header.js date1, date2 = ", date1, date2);
+
+            settings.startDate = convertDateObjectToDBDateFormat(date1);
+            settings.endDate = convertDateObjectToDBDateFormat(date2);
+
+            changeHandler(settings);
+        }
+
+        function handleTruncateOrderSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedTruncateOrder(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function setSelectedTruncateOrder(result) {
+            settings.truncateOrder = result;
+        }
+
+        function handleOccurenceSelect(selector) {
+            selector.addEventListener("change", () => {
+                setSelectedOccurence(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function setSelectedOccurence(occurence) {
+            settings.occurence = occurence;
+        }
+
+        function handleMetricSelect(selector) {
+            selector.addEventListener("change", () => {
+                console.log("agent metric, metric option selected with value = ", selector.value);
+
+                setSelectedMetric(selector.value);
+
+                changeHandler(settings);
+            });
+        }
+
+        function setSelectedMetric(metric) {
+            settings.metric = metric;
+        }
+
+        if (savedSettings != undefined) {
+            console.log("Santosh savedSettings check");
+
+            console.log('savedSettings = ', savedSettings);
+            selectors.truncateOrderSelector.value = savedSettings.truncateOrder;
+
+            selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(savedSettings.startDate)} - ${getHumanReadableDateFromDBFormatDate(savedSettings.endDate)}`;
+
+            return savedSettings;
+        } else {
+            console.log("Santosh savedSettings check is undefined");
+            console.log("getting start date and end date from settings = ", settings.startDate, settings.endDate);
+            selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(settings.startDate)} - ${getHumanReadableDateFromDBFormatDate(settings.endDate)}`;
+        }
+
+        console.log("Santosh getWaitBuildTimeRatioHeader returning settings = ", settings);
 
         return settings;
     }
