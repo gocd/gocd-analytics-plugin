@@ -219,4 +219,15 @@ public interface JobMapper {
     @Select("SELECT * FROM jobs j WHERE j.job_name = #{jobName} AND j.result = #{result} ORDER BY"
         + " j.scheduled_at")
     List<Job> jobSummaryDetails(@Param("jobName") String jobName, @Param("result") String result);
+
+    @ResultMap("Job")
+    @Select("SELECT * FROM jobs WHERE time_waiting_secs = time_building_secs * #{percentage}")
+    List<Job> jobWaitBuildRatio(@Param("percentage") int percentage);
+
+    @ResultMap("Job")
+    @Select("SELECT * FROM jobs WHERE pipeline_name = #{pipeline}" +
+            " AND DATE(scheduled_at) <= DATE(#{endDate})\n" +
+            " AND DATE(scheduled_at) >= DATE(#{startDate})\n")
+    List<Job> jobDoraMetrics(@Param("pipeline") String pipeline,
+        @Param("startDate") String startDate, @Param("endDate") String endDate);
 }

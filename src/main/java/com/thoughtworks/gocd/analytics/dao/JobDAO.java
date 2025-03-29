@@ -60,6 +60,15 @@ public class JobDAO {
         return mapper(sqlSession).jobHistory(pipeline, stage, job);
     }
 
+    public List<Job> jobWaitBuildRatio(SqlSession sqlSession, int percentage) {
+        return mapper(sqlSession).jobWaitBuildRatio(percentage);
+    }
+
+    public List<Job> jobDoraMetric(SqlSession sqlSession, String pipeline, String startDate,
+        String endDate) {
+        return mapper(sqlSession).jobDoraMetrics(pipeline, startDate, endDate);
+    }
+
     public List<Job> jobDurationForAgent(SqlSession sqlSession, String agentUUID, String pipeline,
         String stage, String job) {
         return mapper(sqlSession).jobDurationForAgent(agentUUID, pipeline, stage, job);
