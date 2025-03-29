@@ -34,6 +34,11 @@ import StageRerunsInstances from "./defination/stage-reruns-instances";
 import StageStartupTime from "./defination/stage-startup-time";
 import StageStartupTimeCompare from "./defination/stage-startup-time-compare";
 import DBInfoSummary from "./defination/db-info";
+import AgentsLeastUtilized from "./defination/agents-least-utilized";
+import AgentWithResults from "./defination/agent-with-results";
+import JobWaitBuildTimeRatio from "./defination/job-wait-build-time-ratio";
+import AgentMetrics from "./defination/agent-metrics";
+import DoraMetrics from "./defination/dora-metrics";
 
 const c = new Console('GraphManager.js', 'dev');
 
@@ -142,11 +147,27 @@ class GraphManager {
             case "AgentsMostUtilized":
                 this.child = new AgentsMostUtilized(settings);
                 break;
+            case "AgentsLeastUtilized":
+                this.child = new AgentsLeastUtilized(settings);
+                break;
+            case "AgentWithResults":
+                this.child = new AgentWithResults(settings);
+                break;
+            case "AgentMetrics":
+                this.child = new AgentMetrics(settings);
+                break;
+            case "DoraMetrics":
+                this.child = new DoraMetrics(settings);
+                break;
             case "LongestWaitingJobsOnAgent":
                 this.child = new LongestWaitingJobsOnAgent(settings);
                 break;
             case "JobBuildTimeOnAgent":
                 this.child = new JobBuildTimeOnAgent();
+                break;
+            case "JobWaitBuildTimeRatio":
+                console.log("job wait build time ratio graph manager");
+                this.child = new JobWaitBuildTimeRatio(settings);
                 break;
 
             case "stage-timeline":
