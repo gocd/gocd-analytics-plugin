@@ -108,6 +108,30 @@ const pages = [
         based_on_template: 'basic-template.html.ejs'
     },
     {
+        name: 'agent-with-lowest-utilization',
+        entrypoint: 'analytics-tab/global/agent-with-lowest-utilization-chart.js',
+        output_filename: 'agent-with-lowest-utilization-chart.html',
+        based_on_template: 'basic-template.html.ejs'
+    },
+    {
+        name: 'agent-with-results',
+        entrypoint: 'analytics-tab/global/agent-with-results-chart.js',
+        output_filename: 'agent-with-results-chart.html',
+        based_on_template: 'basic-template.html.ejs'
+    },
+    {
+        name: 'wait-build-time-ratio',
+        entrypoint: 'analytics-tab/global/wait-build-ratio-chart.js',
+        output_filename: 'wait-build-ratio-chart.html',
+        based_on_template: 'basic-template.html.ejs'
+    },
+    {
+        name: 'agent-metrics',
+        entrypoint: 'analytics-tab/global/agent-metrics-chart.js',
+        output_filename: 'agent-metrics-chart.html',
+        based_on_template: 'basic-template.html.ejs'
+    },
+    {
         name: 'info-message',
         entrypoint: 'info-message.js',
         output_filename: 'info-message.html',

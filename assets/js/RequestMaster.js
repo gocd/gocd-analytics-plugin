@@ -41,6 +41,42 @@ class RequestMaster {
         return agents;
     }
 
+    async getAgentLeastUtilized(startDate, endDate, limit) {
+        const requestParams = {
+            metric: "agents_with_the_lowest_utilization",
+            start: startDate,
+            end: endDate,
+            limit: limit
+        };
+        const agents = await this.asyncRequest(requestParams);
+        console.log("agents = ", agents);
+        return agents;
+    }
+
+    async getJobWaitBuildTimeRatio(startDate, endDate, percentage, limit) {
+        const requestParams = {
+            metric: "wait_build_ratio",
+            start: startDate,
+            end: endDate,
+            percentage: percentage,
+            limit: limit
+        };
+        const wait_build_ratio = await this.asyncRequest(requestParams);
+        console.log("wait build ratio = ", wait_build_ratio);
+        return wait_build_ratio;
+    }
+
+    async getDoraMetrics(startDate, endDate, pipelineName) {
+        const requestParams = {
+            metric: "dora_metrics",
+            pipeline_name: pipelineName,
+            start: startDate,
+            end: endDate
+        };
+        const doraMetrics = await this.asyncRequest(requestParams);
+        return doraMetrics;
+    }
+
     async getStageTimeline(startDate, endDate, pipelineName, requestResult, requestOrder, requestLimit) {
         const requestParams = {
             metric: "stage_timeline",
