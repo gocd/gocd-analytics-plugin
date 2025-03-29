@@ -24,6 +24,7 @@ import Header from "../../../santosh/defination/stage-timeline/header";
 import RequestMaster from "../../../RequestMaster";
 import Footer from "../../../santosh/defination/stage-timeline/footer";
 import Console from "../../../santosh/Console";
+import {getFirstDayOfTheCurrentMonth, getTodaysDateInDBFormat} from "../../../santosh/utils";
 
 let graphManager = null;
 let requestMaster = null;
@@ -33,22 +34,169 @@ let footer = null;
 
 const c = new Console('dora-metrics-chart.js', 'dev');
 
+const settings = {
+    "DoraMetrics": {
+        truncateOrder: 'Last',
+        startDate: getFirstDayOfTheCurrentMonth(),
+        endDate: getTodaysDateInDBFormat(),
+        pipeline_name: ''
+    }
+};
+
 AnalyticsEndpoint.onInit(function (initialData, transport) {
 
-    const data = JSON.parse(initialData);
-    console.log('dora-metrics data', data);
+    const doraMetrics = JSON.parse(initialData);
 
+    c.log("dora metrics = ", doraMetrics);
 
-    // graphManager = new GraphManager("standalone", null, null, footer);
-    // graphManager.initStandalone("db-info", data);
+    requestMaster = new RequestMaster(transport);
+    header = new Header(requestMaster);
+    footer = new Footer();
     //
-    // (async () => {
-    //     const defaultSettings = await header.getStageStartupHeader(changeHandler);
+    graphManager = new GraphManager('series', transport, informSeriesMovement, footer);
     //
-    //     await doStageStartup(defaultSettings);
-    // })();
+
+    init(doraMetrics);
 
 });
+
+async function init(data) {
+    // settings.WaitBuildRatio = await header.getWaitBuildTimeRatioHeader(graphOneHeaderChangeHandler);
+    // await header.getAgentMetricsHeader(graphOneHeaderChangeHandler);
+
+    console.log("dora metrics settings = ", settings.DoraMetrics);
+
+    const newData = [{
+        "pipeline_name": "DB-Watchers",
+        "pipeline_counter": 1,
+        "stage_name": "Sprout",
+        "stage_counter": 1,
+        "job_name": "do",
+        "result": "Passed",
+        "scheduled_at": "2025-02-28T06:54:18.036+0000",
+        "completed_at": "2025-02-28T07:00:18.031+0000",
+        "time_waiting_secs": 359,
+        "time_building_secs": 0,
+        "duration_secs": 359,
+        "unique_name": "Sprout-do",
+        "agent_uuid": "1"
+    }, {
+        "pipeline_name": "DB-Watchers",
+        "pipeline_counter": 1,
+        "stage_name": "Sprout",
+        "stage_counter": 1,
+        "job_name": "do",
+        "result": "Passed",
+        "scheduled_at": "2025-02-28T06:54:18.036+0000",
+        "completed_at": "2025-02-28T07:00:18.031+0000",
+        "time_waiting_secs": 359,
+        "time_building_secs": 0,
+        "duration_secs": 359,
+        "unique_name": "Sprout-do",
+        "agent_uuid": "1"
+    }, {
+        "pipeline_name": "DB-Watchers",
+        "pipeline_counter": 1,
+        "stage_name": "Sprout",
+        "stage_counter": 1,
+        "job_name": "do",
+        "result": "Failed",
+        "scheduled_at": "2025-02-28T06:54:18.036+0000",
+        "completed_at": "2025-02-28T07:00:18.031+0000",
+        "time_waiting_secs": 359,
+        "time_building_secs": 0,
+        "duration_secs": 359,
+        "unique_name": "Sprout-do",
+        "agent_uuid": "1"
+    }, {
+        "pipeline_name": "DB-Watchers",
+        "pipeline_counter": 1,
+        "stage_name": "Sprout",
+        "stage_counter": 1,
+        "job_name": "do",
+        "result": "Passed",
+        "scheduled_at": "2025-02-28T06:54:18.036+0000",
+        "completed_at": "2025-02-28T07:00:18.031+0000",
+        "time_waiting_secs": 359,
+        "time_building_secs": 0,
+        "duration_secs": 359,
+        "unique_name": "Sprout-do",
+        "agent_uuid": "1"
+    }, {
+        "pipeline_name": "DB-Watchers",
+        "pipeline_counter": 1,
+        "stage_name": "Sprout",
+        "stage_counter": 1,
+        "job_name": "do",
+        "result": "Failed",
+        "scheduled_at": "2025-02-28T06:54:18.036+0000",
+        "completed_at": "2025-02-28T07:00:18.031+0000",
+        "time_waiting_secs": 359,
+        "time_building_secs": 0,
+        "duration_secs": 359,
+        "unique_name": "Sprout-do",
+        "agent_uuid": "1"
+    }, {
+        "pipeline_name": "DB-Watchers",
+        "pipeline_counter": 1,
+        "stage_name": "Sprout",
+        "stage_counter": 1,
+        "job_name": "do",
+        "result": "Failed",
+        "scheduled_at": "2025-02-28T06:54:18.036+0000",
+        "completed_at": "2025-02-28T07:00:18.031+0000",
+        "time_waiting_secs": 359,
+        "time_building_secs": 0,
+        "duration_secs": 359,
+        "unique_name": "Sprout-do",
+        "agent_uuid": "1"
+    }, {
+        "pipeline_name": "DB-Watchers",
+        "pipeline_counter": 1,
+        "stage_name": "Sprout",
+        "stage_counter": 1,
+        "job_name": "do",
+        "result": "Passed",
+        "scheduled_at": "2025-02-28T06:54:18.036+0000",
+        "completed_at": "2025-02-28T07:00:18.031+0000",
+        "time_waiting_secs": 359,
+        "time_building_secs": 0,
+        "duration_secs": 359,
+        "unique_name": "Sprout-do",
+        "agent_uuid": "1"
+    }];
+
+    if (data.length === 0) {
+        footer.showMessage("No data to display", "INFO", true);
+    }
+    // else {
+    graphManager.initSeries('DoraMetrics', data, settings.DoraMetrics);
+    // }
+
+    (async () => {
+        const defaultSettings = await header.getDoraMetricsHeader(changeHandler);
+
+        settings.DoraMetrics = defaultSettings;
+
+        await doraMetrics(defaultSettings);
+    })();
+}
+
+async function doraMetrics(settings) {
+    c.log('🛜 requesting dora metrics with the settings', settings);
+    console.log('🛜 requesting dora metrics with the settings', settings);
+    footer.clear();
+
+    const doraMetrics = await requestMaster.getDoraMetrics(settings.startDate, settings.endDate, settings.selectedPipeline);
+
+    if (doraMetrics.length === 0) {
+        footer.showMessage("No data for selected option, can't draw a graph.", "Error", true, 10);
+        graphManager.clear();
+        return;
+    }
+
+    graphManager.initSeries('DoraMetrics', doraMetrics, settings.DoraMetrics);
+}
 
 async function informSeriesMovement(graphName) {
     c.logs('📞 I am informed of graphName ', graphName, ' changing the header now.');
@@ -65,24 +213,33 @@ async function informSeriesMovement(graphName) {
 
 }
 
-async function doStageStartup(settings) {
+async function reloadDoraMetrics(settings) {
     c.log('🛜 requesting stage startup with the settings', settings);
     footer.clear();
 
-    const stageStartupTime = await requestMaster.getStageStartupTime(settings.selectedPipeline, settings.requestOrder, settings.requestLimit);
+    const dora_chart_container = document.getElementById("chart-container");
+    dora_chart_container.innerHTML = "";
+    dora_chart_container.classList.add("loader");
 
-    if (stageStartupTime.length === 0) {
+    const doraMetrics = await requestMaster.getDoraMetrics(settings.startDate, settings.endDate, settings.selectedPipeline);
+
+    if (doraMetrics.length === 0) {
         footer.showMessage("No data for selected option, can't draw a graph.", "Error", true, 10);
         graphManager.clear();
         return;
     }
 
-    graphManager.initSeries("stage-startup-time", stageStartupTime, settings);
+    graphManager.initSeries("DoraMetrics", doraMetrics, settings);
+
+    dora_chart_container.classList.remove("loader");
 }
 
 function changeHandler(settings) {
     c.log('settings', settings);
-    doStageStartup(settings);
+
+    console.log("dora metrics settings = ", settings);
+
+    reloadDoraMetrics(settings);
 }
 
 function jobChangeHandler(settings) {
