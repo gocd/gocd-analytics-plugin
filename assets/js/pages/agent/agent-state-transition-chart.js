@@ -63,7 +63,7 @@ function renderGanttChart(initialData, transport) {
 
     // document.getElementById("chart-container").style.height = "350px";
 
-    drawChartStats(range, fetchAndRedraw);
+    drawChartStats(range, fetchAndRedraw, config.data);
     new SimpleStackedBar("Agent State Transitions", parsedData);
     showLegend();
 }
