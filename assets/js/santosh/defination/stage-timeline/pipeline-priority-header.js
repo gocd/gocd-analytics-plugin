@@ -1,5 +1,6 @@
 import {addOptionsToSelect, formatDatePicker} from "../../utils";
 import {DateManager} from "../../DateManager";
+import {init} from "../../../../settings";
 
 // const chartMeta = document.getElementById("chart-container-meta");
 let dateFilterSelector = undefined;
@@ -10,6 +11,8 @@ let resultFilterSelector = undefined;
 async function pipelinePriorityHeader(settingsDOM, dateSelectedEvent) {
 
     await addOptionHeader(settingsDOM);
+    let is_settings_header_visible = true
+    await init(is_settings_header_visible);
 
     dateFilterSelector = document.getElementById("dateFilter");
     ticksFilterSelector = document.getElementById("ticksFilter");
@@ -58,7 +61,9 @@ async function pipelinePriorityHeader(settingsDOM, dateSelectedEvent) {
 
 async function addOptionHeader(settingsDOM) {
     settingsDOM.innerHTML = `
-    <div style="position:relative;"><span style="font-size:18px"><b>Settings</b></span>
+    <div style="position:relative;"><span id="settings-title" style="font-size:18px; font-weight: bold">Settings</span>
+
+    <div id="settings-content">
 
     <span id="dateFilter"></span>
 
@@ -72,6 +77,8 @@ async function addOptionHeader(settingsDOM) {
 <span style="float:right">Result <select id="resultFilter" >
 </select>
 </span>
+
+</div>
 
 </div>
 <hr>
