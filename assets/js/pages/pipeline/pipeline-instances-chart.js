@@ -29,6 +29,13 @@ console.log("#1 initialData");
 
 AnalyticsEndpoint.onInit(function (initialData, transport) {
     console.log('initialData = ', initialData);
+
+    renderChart(initialData, transport);
+});
+
+function renderChart(initialData, transport) {
+    console.log("callback()");
+
     const data = JSON.parse(initialData), factory = PipelineChartFactories.get("PipelineBuildTime"),
         config = factory.config(data, transport), container = document.getElementById("chart-container");
 
@@ -72,10 +79,9 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
     ];
 
     const am = auxiliaryMetrics(instances);
-    drawChartStats(range, null, am);
+    drawChartStats(range, renderChart, am);
     const graphManager = new GraphManager('standalone', transport);
     graphManager.initStandalone('pipeline-instances', data);
-
-});
+}
 
 AnalyticsEndpoint.ensure("v1");
