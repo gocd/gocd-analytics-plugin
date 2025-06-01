@@ -20,7 +20,4 @@ updates:
     directory: /
     schedule:
       interval: monthly
-    groups:
-      npm-deps:
-        patterns:
-          - "*"
+    open-pull-requests-limit: 99
