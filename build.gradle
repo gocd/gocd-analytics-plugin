@@ -83,7 +83,7 @@ dependencies {
   implementation 'org.flywaydb:flyway-core:4.2.0'
   runtimeOnly 'ch.qos.logback:logback-classic:1.5.18'
 
-  testImplementation platform('org.junit:junit-bom:5.12.2')
+  testImplementation platform('org.junit:junit-bom:5.13.0')
   testImplementation 'org.junit.jupiter:junit-jupiter-api'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
   testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
