@@ -20,7 +20,7 @@ import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.gocd.analytics.TestConnectionResult;
 import com.thoughtworks.gocd.analytics.models.PluginSettings;
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.configuration.FluentConfiguration;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -39,7 +39,7 @@ public class PostgresqlDatabase implements Database {
     }
 
     @Override
-    public void connect() throws InterruptedException, SQLException {
+    public void connect() throws SQLException {
         Connection connection = null;
         this.basicDataSource = dataSource();
 
@@ -73,50 +73,26 @@ public class PostgresqlDatabase implements Database {
     }
 
     @Override
-    public void migrate() throws InterruptedException {
-        // We're creating a new thread here because Flyway's gets its ClassLoader from the current thread
-        // which will end up being the go server's class loader. So, we're encapsulating Flyway in a new thread
-        // and setting the class loader to the plugin's class loader
-        // This is important because it allows Flyway to see the migrations within the plugin. Without the classloader
-        // being properly set, it'll look in go's configuration directory.
-        Thread thread = new Thread(() -> {
-            LOG.info("Applying migrations ...");
-            Flyway flyway = new Flyway();
-            flyway.setDataSource(basicDataSource);
-            flyway.migrate();
-            LOG.info("Done Applying migrations ...");
-        });
-        final Throwable[] migrationExceptions = {null};
-        thread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            public void uncaughtException(Thread th, Throwable ex) {
-                migrationExceptions[0] = ex;
-            }
-        });
-        thread.setContextClassLoader(this.getClass().getClassLoader());
-        thread.start();
-        thread.join();
-        if (migrationExceptions[0] != null) {
-            throw new RuntimeException(migrationExceptions[0]);
-        }
+    public void migrate() {
+        LOG.info("Applying migrations ...");
+        new FluentConfiguration(this.getClass().getClassLoader())
+                .dataSource(basicDataSource)
+                .load()
+                .migrate();
+        LOG.info("Done Applying migrations ...");
     }
 
     @Override
-    public void clean() throws InterruptedException {
-        // We're creating a new thread here because Flyway's gets its ClassLoader from the current thread
-        // which will end up being the go server's class loader. So, we're encapsulating Flyway in a new thread
-        // and setting the class loader to the plugin's class loader
-        // This is important because it allows Flyway to see the migrations within the plugin. Without the classloader
-        // being properly set, it'll look in go's configuration directory.
-        Thread thread = new Thread(() -> {
-            LOG.info("Applying migrations ...");
-            Flyway flyway = new Flyway();
-            flyway.setDataSource(basicDataSource);
-            flyway.clean();
-            LOG.info("Done Applying migrations ...");
-        });
-        thread.setContextClassLoader(this.getClass().getClassLoader());
-        thread.start();
-        thread.join();
+    public void tryClean() {
+        try {
+            new FluentConfiguration(this.getClass().getClassLoader())
+                    .dataSource(basicDataSource)
+                    .cleanDisabled(false)
+                    .load()
+                    .clean();
+        } catch (Exception e) {
+            LOG.warn("Database clean failed, continuing anyway.", e);
+        }
     }
 
     @Override

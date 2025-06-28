@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.thoughtworks.gocd.analytics.utils.DateUtils.UTC;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JobDAOIntegrationTest implements DAOIntegrationTest {
@@ -221,7 +222,7 @@ public class JobDAOIntegrationTest implements DAOIntegrationTest {
 
         dao.insertJobs(sqlSession, jobsWithDifferentIdentifier);
 
-        Job job1 = jobsFrom("pip", "stg", "job1", PASSED, asZonedDateTime("2018-01-10"));
+        Job job1 = jobsFrom("pip", "stg", "job1", PASSED, asZonedDateTime("2018-01-11"));
         Job job2 = jobsFrom("pip", "stg", "job1", FAILED, asZonedDateTime("2018-01-10"));
 
         dao.insertJobs(sqlSession, Arrays.asList(job1, job2));
@@ -248,9 +249,11 @@ public class JobDAOIntegrationTest implements DAOIntegrationTest {
 
         dao.deleteJobRunsPriorTo(sqlSession, dateTime);
 
-        assertEquals(2, dao.all(sqlSession, "pipeline_name").size());
-        assertEquals(dateTime.plusHours(1).toEpochSecond(), dao.all(sqlSession, "pipeline_name").get(0).getScheduledAt().toEpochSecond());
-        assertEquals(dateTime.toEpochSecond(), dao.all(sqlSession, "pipeline_name").get(1).getScheduledAt().toEpochSecond());
+        assertThat(dao.all(sqlSession, "pipeline_name"))
+                .hasSize(2)
+                .extracting(Job::getScheduledAt)
+                .extracting(ZonedDateTime::toEpochSecond)
+                .containsExactlyInAnyOrder(dateTime.plusHours(1).toEpochSecond(), dateTime.toEpochSecond());
     }
 
     private Object[] pluckSorted(List<Job> jobs, Function<Job, Object> getterRef) {

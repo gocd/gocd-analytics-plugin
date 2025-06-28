@@ -17,23 +17,10 @@ on:
 jobs:
   build_and_release:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:9.6
-        env:
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 20s
-          --health-retries 10
-        ports:
-          - 5432:5432
     env:
       GITHUB_USER:  "gocd"
       GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       PRERELEASE:   "${{ github.event.inputs.prerelease }}"
-      PGPASSWORD: postgres
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0

@@ -54,11 +54,11 @@ $ cd /var/lib/go-server/; tree .
 
 ### PostgreSQL
 
-- This plugin requires PostgreSQL `v9.6`.
+- This plugin requires PostgreSQL `v9.6`+.
 
 - This plugin requires an **empty** PostgreSQL database for its data. If you are using the GoCD PostgreSQL Addon, please note that the database schema that you use for analytics data should be separate from the schema used by GoCD.
 
-- The plugin requires the [citext module](https://www.postgresql.org/docs/9.6/static/citext.html) for creating the schema. Install the `postgresql-contrib` packages to include the citext module.
+- The plugin requires the [citext module](https://www.postgresql.org/docs/current/citext.html) for creating the schema. Install the `postgresql-contrib` packages to include the citext module.
 
 - **Creating the citext extension:**
 
