@@ -47,7 +47,7 @@ public class SessionFactoryIntegrationTest {
     @AfterEach
     public void after() throws SQLException, InterruptedException {
         sqlSession.close();
-        postgresqlDatabase.clean();
+        postgresqlDatabase.tryClean();
         postgresqlDatabase.close();
     }
 

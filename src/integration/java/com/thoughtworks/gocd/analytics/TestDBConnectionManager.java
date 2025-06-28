@@ -59,7 +59,7 @@ public class TestDBConnectionManager {
 
     public void shutdown() throws SQLException, InterruptedException {
         sqlSession.close();
-        db.database().clean();
+        db.database().tryClean();
         db.database().close();
     }
 }

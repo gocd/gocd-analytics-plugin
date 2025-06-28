@@ -38,7 +38,7 @@ public class DBAccessTest {
     @AfterEach
     public void after() throws SQLException, InterruptedException {
         if (db.database() != null) {
-            db.database().clean();
+            db.database().tryClean();
             db.database().close();
         }
     }

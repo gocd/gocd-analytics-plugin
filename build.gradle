@@ -72,15 +72,25 @@ configurations {
   integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
+ext {
+  deps = [
+          gocdPluginApi: 'cd.go.plugin:go-plugin-api:25.2.0',
+          flyway:        'org.flywaydb:flyway-core:11.10.0',
+  ]
+
+  versions = project.ext.deps.collectEntries { lib, libGav -> [lib, libGav.split(':').last()] }
+}
+
 dependencies {
-  compileOnly 'cd.go.plugin:go-plugin-api:25.2.0'
+  compileOnly project.deps.gocdPluginApi
   implementation 'com.google.code.gson:gson:2.13.1'
   implementation('org.postgresql:postgresql:42.7.6') {
     exclude(module: 'checker-qual')
   }
   implementation 'org.apache.commons:commons-dbcp2:2.13.0'
   implementation 'org.mybatis:mybatis:3.4.6'
-  implementation 'org.flywaydb:flyway-core:4.2.0'
+  implementation project.deps.flyway
+  runtimeOnly "org.flywaydb:flyway-database-postgresql:${project.versions.flyway}"
   runtimeOnly 'ch.qos.logback:logback-classic:1.5.18'
 
   testImplementation platform('org.junit:junit-bom:5.13.0')
@@ -90,8 +100,7 @@ dependencies {
   testImplementation 'org.mockito:mockito-core:5.18.0'
   testImplementation 'org.skyscreamer:jsonassert:1.5.3'
   testImplementation 'org.jsoup:jsoup:1.20.1'
-  testImplementation 'org.skyscreamer:jsonassert:1.5.3'
-  testImplementation 'cd.go.plugin:go-plugin-api:25.2.0'
+  testImplementation project.deps.gocdPluginApi
 
   integrationTestImplementation 'org.slf4j:slf4j-simple:2.0.17'
 }

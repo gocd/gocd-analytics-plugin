@@ -33,7 +33,7 @@ public interface Database {
 
     BasicDataSource dataSource();
 
-    void clean() throws InterruptedException;
+    void tryClean() throws InterruptedException;
 
     TestConnectionResult testConnection(PluginSettings pluginSettings);
 }

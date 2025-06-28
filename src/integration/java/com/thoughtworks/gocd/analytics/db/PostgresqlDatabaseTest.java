@@ -41,7 +41,7 @@ public class PostgresqlDatabaseTest {
 
     @AfterEach
     public void after() throws SQLException, InterruptedException {
-        psql.clean();
+        psql.tryClean();
         psql.close();
     }
 
