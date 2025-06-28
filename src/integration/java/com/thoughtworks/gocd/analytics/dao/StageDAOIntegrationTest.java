@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.thoughtworks.gocd.analytics.StageMother.stageWith;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StageDAOIntegrationTest implements DAOIntegrationTest {
@@ -86,9 +87,11 @@ public class StageDAOIntegrationTest implements DAOIntegrationTest {
 
         stageDAO.deleteStageRunsPriorTo(sqlSession, dateTime);
 
-        assertEquals(2, stageDAO.all(sqlSession, "pipeline_name").size());
-        assertEquals(dateTime.plusHours(1).toEpochSecond(), stageDAO.all(sqlSession, "pipeline_name").get(0).getScheduledAt().toEpochSecond());
-        assertEquals(dateTime.toEpochSecond(), stageDAO.all(sqlSession, "pipeline_name").get(1).getScheduledAt().toEpochSecond());
+        assertThat(stageDAO.all(sqlSession, "pipeline_name"))
+                .hasSize(2)
+                .extracting(Stage::getScheduledAt)
+                .extracting(ZonedDateTime::toEpochSecond)
+                .containsExactlyInAnyOrder(dateTime.plusHours(1).toEpochSecond(), dateTime.toEpochSecond());
     }
 
     @Test

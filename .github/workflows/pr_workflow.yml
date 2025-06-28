@@ -11,9 +11,15 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    name: test (postgres-${{ matrix.postgres-version }})
+    strategy:
+      matrix:
+        # See https://endoflife.date/postgresql
+        postgres-version: [ "13", "14", "15", "16", "17" ]
+      fail-fast: false
     services:
       postgres:
-        image: postgres:9.6
+        image: postgres:${{ matrix.postgres-version }}
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
