@@ -19,7 +19,6 @@ import _ from "lodash";
 const LINK_TO                    = "link_to";
 const JOB_DETAILS_LINK_KEY       = "job_details_page";
 const STAGE_DETAILS_LINK_KEY     = "stage_details_page";
-const PIPELINE_INSTANCE_LINK_KEY = "pipeline_instance_page";
 const VSM_LINK_KEY               = "vsm_page";
 
 const JOB_NAME_KEY         = "job_name";
@@ -71,16 +70,6 @@ const linkTo = {
     });
   },
 
-  pipelineInstance: (config, transport) => {
-    _.each(config.series, (s) => {
-      _.set(s, "point.events.click", (evt) => {
-        const params    = _.pick(evt.point, [PIPELINE_NAME_KEY, PIPELINE_COUNTER_KEY]);
-        params[LINK_TO] = PIPELINE_INSTANCE_LINK_KEY;
-        sendLinkRequest(transport, params);
-      });
-    });
-  },
-
   vsmPage: (config, transport) => {
     _.each(config.series, (s) => {
       _.set(s, "point.events.click", (evt) => {
@@ -100,10 +89,6 @@ function GoCDLinkSupport() {
 
   this.linkToStageDetailsPage = (config, transport) => {
     linkTo.stageDetailsPage(config, transport);
-  };
-
-  this.linkToPipelineInstance = (config, transport) => {
-    linkTo.pipelineInstance(config, transport);
   };
 
   this.linkToVSMPage = (config, transport) => {

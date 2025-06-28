@@ -36,7 +36,7 @@ export default new ChartFactories({
       const config = PipelineCharts.runs(data),
            factory = this;
 
-      GoCDLinkSupport.linkToPipelineInstance(config, transport);
+      GoCDLinkSupport.linkToVSMPage(config, transport);
 
       Utils.addOnLoad(config, function addBehaviors() {
         const chart = this;
