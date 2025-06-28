@@ -15,7 +15,7 @@
  */
 
 import ChartFactories from "./chart-factories";
-import PipelineCharts, { DataTransforms } from "js/charts/pipelines";
+import PipelineCharts, {DataTransforms} from "js/charts/pipelines";
 import GoCDLinkSupport from "js/lib/gocd-link-support";
 import Utils from "js/lib/utils.js";
 import RangeSelectorSupport from "js/lib/range-selector-support.js";
@@ -44,7 +44,7 @@ export default new ChartFactories({
         initMttrTooltip(transport);
 
         RangeSelectorSupport.inject(transport, chart, {
-          params: factory.params({pipeline_name: data.name}), // eslint-disable-line camelcase
+          params: factory.params({pipeline_name: data.name}),
           callback: initMttrTooltip,
           transforms: DataTransforms.runs
         });

@@ -15,7 +15,7 @@
  */
 
 import ChartFactories from "./chart-factories";
-import StageCharts, { DataTransforms } from "js/charts/stages";
+import StageCharts, {DataTransforms} from "js/charts/stages";
 import GoCDLinkSupport from "js/lib/gocd-link-support";
 import Utils from "js/lib/utils.js";
 import RangeSelectorSupport from "js/lib/range-selector-support.js";
@@ -33,7 +33,7 @@ export default new ChartFactories({
 
       Utils.addOnLoad(config, function addBehaviors() {
         RangeSelectorSupport.inject(transport, this, {
-          params: self.params({pipeline_name: parts[0], stage_name: parts[1]}), // eslint-disable-line camelcase
+          params: self.params({pipeline_name: parts[0], stage_name: parts[1]}),
           transforms: DataTransforms.runs
         });
       });
