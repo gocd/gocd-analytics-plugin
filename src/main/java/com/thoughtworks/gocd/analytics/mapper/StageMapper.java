@@ -137,7 +137,7 @@ public interface StageMapper {
     @Select("SELECT pipeline_name, stage_name, pipeline_counter, MAX(stage_counter) AS "
         + "stage_counter\n"
         + "FROM stages s \n"
-        + "where scheduled_at between #{startDate} and #{endDate} \n"
+        + "where scheduled_at >= date(#{startDate}) and scheduled_at <= date(#{endDate}) \n"
         + "GROUP BY pipeline_name, stage_name, pipeline_counter \n"
         + "HAVING MAX(stage_counter) > 1\n"
         + "order by stage_counter ${order} limit #{limit} ;"
