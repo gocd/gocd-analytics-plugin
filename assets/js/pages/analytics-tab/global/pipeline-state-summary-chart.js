@@ -79,6 +79,7 @@ async function graphOneHeaderChangeHandler(changedSettings) {
   if (pipelines.length === 0) {
     footer.showMessage("No data to display", "Error", true);
   } else {
+    graphManager.clear();
     graphManager.call_initStandaloneWithNewData(pipelines);
     footer.clear()
   }
