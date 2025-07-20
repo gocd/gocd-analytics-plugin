@@ -168,6 +168,18 @@ class RequestMaster {
         return stageReruns;
     }
 
+    async getPipelineStateSummary(settings) {
+        const requestParams = {
+            "type": "dashboard",
+            "metric": "pipeline_state_summary",
+            "start": settings.startDate,
+            "end": settings.endDate
+        }
+
+        const pipelineStateSummary = await this.asyncRequest(requestParams);
+        return pipelineStateSummary;
+    }
+
 
     async asyncRequest(requestParams) {
         c.log('3. RequestMaster asyncRequest');
