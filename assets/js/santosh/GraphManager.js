@@ -125,6 +125,13 @@ class GraphManager {
         this.initSeries(params.name, data, params.settings);
     }
 
+    call_initStandaloneWithNewData(data) {
+        console.log("DEBUG_MODE call_initStandaloneWithNewData data", data);
+        const params = this.current_initStandaloneParams;
+        console.log("params = ", params);
+        this.initStandalone(params.name, data);
+    }
+
     initSeries(name, data, settings) {
         // c.log("initSeries with name, data, settings", name, data, settings);
 
@@ -241,6 +248,8 @@ class GraphManager {
     }
 
     initStandalone(name, data) {
+        this.current_initStandaloneParams = {name: name, data: data};
+
         switch (name) {
             case "pipeline-instances":
                 this.child = new PipelineInstances();
