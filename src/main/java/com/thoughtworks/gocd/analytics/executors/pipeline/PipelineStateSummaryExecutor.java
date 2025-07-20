@@ -26,6 +26,7 @@ import com.thoughtworks.gocd.analytics.models.AnalyticsResponseBody;
 import com.thoughtworks.gocd.analytics.models.PipelineInstance;
 import com.thoughtworks.gocd.analytics.models.PipelineStateSummary;
 import com.thoughtworks.gocd.analytics.models.PipelineTimeSummary;
+import com.thoughtworks.gocd.analytics.utils.DbDateFormat;
 import java.util.List;
 
 public class PipelineStateSummaryExecutor extends AbstractSessionFactoryAwareExecutor {
@@ -45,9 +46,20 @@ public class PipelineStateSummaryExecutor extends AbstractSessionFactoryAwareExe
 
     @Override
     protected GoPluginApiResponse doExecute() {
+        DbDateFormat dateFormat = new DbDateFormat();
+
+        final String startDate = param(PARAM_START_DATE);
+        final String endDate = param(PARAM_END_DATE);
+
+        final String start =
+            (startDate == null || startDate.isEmpty()) ? dateFormat.getMonthStart() :
+                startDate;
+        final String end = (endDate == null || endDate.isEmpty()) ? dateFormat.getTodaysDate() :
+            endDate;
 
         List<PipelineStateSummary> summary =
-            doInTransaction(sqlSession -> pipelineDAO.pipelineStateSummary(sqlSession));
+            doInTransaction(sqlSession -> pipelineDAO.pipelineStateSummary(sqlSession, start,
+                end));
 
         AnalyticsResponseBody responseBody = new AnalyticsResponseBody(summary,
             "pipeline-state-summary-chart.html");

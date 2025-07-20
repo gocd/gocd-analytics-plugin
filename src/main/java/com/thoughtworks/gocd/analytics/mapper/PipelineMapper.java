@@ -180,8 +180,12 @@ public interface PipelineMapper {
         @Result(property = "totalTimeSecs", column = "total_time_secs"),
         @Result(property = "timeWaitingSecs", column = "time_waiting_secs"),
     })
-    @Select("select id ,result, total_time_secs, time_waiting_secs from pipelines p;")
-    List<PipelineStateSummary> pipelineStateSummary();
+    @Select("select id, result, total_time_secs, time_waiting_secs from pipelines p" +
+        " WHERE created_at >= DATE(#{startDate}) AND created_at <= DATE(#{endDate});")
+    List<PipelineStateSummary> pipelineStateSummary(
+        @Param("startDate") String startDate,
+        @Param("endDate") String endDate
+    );
 
     @Results(id = "pipeline_summary_two", value = {
         @Result(property = "name", column = "name"),

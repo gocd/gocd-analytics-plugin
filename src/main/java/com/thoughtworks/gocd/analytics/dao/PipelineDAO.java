@@ -49,8 +49,9 @@ public class PipelineDAO {
         return mapper(sqlSession).pipelineSummaryTwo(startDate, endDate, result);
     }
 
-    public List<PipelineStateSummary> pipelineStateSummary(SqlSession sqlSession) {
-        return mapper(sqlSession).pipelineStateSummary();
+    public List<PipelineStateSummary> pipelineStateSummary(SqlSession sqlSession, String startDate
+        , String endDate) {
+        return mapper(sqlSession).pipelineStateSummary(startDate, endDate);
     }
 
     public void updateOrInsert(SqlSession sqlSession, PipelineInstance pipeline) {
