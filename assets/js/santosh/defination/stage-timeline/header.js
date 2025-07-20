@@ -14,6 +14,7 @@ import {
 import waitBuildTimeRatioHeader from "./wait-build-time-ratio-header";
 import agentMetricsHeader from "./agent-metrics-header";
 import doraMetricsHeader from "./dora-metrics-header";
+import pipelineStateSummaryHeader from "./pipeline-state-summary-header";
 
 class Header {
 
@@ -874,6 +875,43 @@ class Header {
         }
 
         console.log("Santosh getWaitBuildTimeRatioHeader returning settings = ", settings);
+
+        return settings;
+    }
+
+    async getPipelineStateSummaryHeader(changeHandler, savedSettings) {
+
+        console.log("Santosh getPipelineStateSummaryHeader savedSettings = ", savedSettings);
+
+        let settings = {
+            startDate: getFirstDayOfTheCurrentMonth(),
+            endDate: getTodaysDateInDBFormat(),
+        };
+
+        const selectors = await pipelineStateSummaryHeader(this.#dom, handleDateSelect);
+
+        function handleDateSelect(date1, date2) {
+            console.log("handleDateSelect from header.js date1, date2 = ", date1, date2);
+
+            settings.startDate = convertDateObjectToDBDateFormat(date1);
+            settings.endDate = convertDateObjectToDBDateFormat(date2);
+
+            changeHandler(settings);
+        }
+
+        if (savedSettings != undefined) {
+            console.log("Santosh savedSettings check");
+
+            console.log('savedSettings = ', savedSettings);
+
+            selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(savedSettings.startDate)} - ${getHumanReadableDateFromDBFormatDate(savedSettings.endDate)}`;
+
+            return savedSettings;
+        } else {
+            console.log("Santosh savedSettings check is undefined");
+            console.log("getting start date and end date from settings = ", settings.startDate, settings.endDate);
+            selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(settings.startDate)} - ${getHumanReadableDateFromDBFormatDate(settings.endDate)}`;
+        }
 
         return settings;
     }
