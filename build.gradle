@@ -74,8 +74,8 @@ configurations {
 
 ext {
   deps = [
-          gocdPluginApi: 'cd.go.plugin:go-plugin-api:25.2.0',
-          flyway:        'org.flywaydb:flyway-core:11.10.5',
+          gocdPluginApi: 'cd.go.plugin:go-plugin-api:25.3.0',
+          flyway:        'org.flywaydb:flyway-core:11.11.2',
   ]
 
   versions = project.ext.deps.collectEntries { lib, libGav -> [lib, libGav.split(':').last()] }
@@ -97,10 +97,10 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter-api'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
   testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-  testImplementation 'org.mockito:mockito-core:5.18.0'
-  testImplementation 'org.assertj:assertj-core:3.27.3'
+  testImplementation 'org.mockito:mockito-core:5.19.0'
+  testImplementation 'org.assertj:assertj-core:3.27.4'
   testImplementation 'org.skyscreamer:jsonassert:1.5.3'
-  testImplementation 'org.jsoup:jsoup:1.21.1'
+  testImplementation 'org.jsoup:jsoup:1.21.2'
   testImplementation project.deps.gocdPluginApi
 
   integrationTestImplementation 'org.slf4j:slf4j-simple:2.0.17'
