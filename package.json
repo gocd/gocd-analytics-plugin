@@ -41,7 +41,7 @@
     "karma-tap-pretty-reporter": "^4.2.0",
     "karma-webpack": "^5.0.1",
     "lodash-webpack-plugin": "^0.11.5",
-    "mini-css-extract-plugin": "^1.6.2",
+    "mini-css-extract-plugin": "^2.9.4",
     "puppeteer": "^24.15.0",
     "sass": "^1.89.2",
     "sass-loader": "^10.5.2",
