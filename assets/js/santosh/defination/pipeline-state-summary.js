@@ -61,7 +61,6 @@ class PipelineStateSummary {
     var option;
     option = {
       title: {
-        text: "Pipeline Summary",
         left: "center",
         top: 0,
       },

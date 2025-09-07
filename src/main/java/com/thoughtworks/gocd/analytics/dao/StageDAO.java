@@ -81,9 +81,9 @@ public class StageDAO {
             order, limit);
     }
 
-    public List<Stage> getStageReruns(SqlSession sqlSession, String pipelineName, String order,
-        int limit) {
-        return mapper(sqlSession).stageReruns(pipelineName, null, order, limit);
+    public List<Stage> getStageReruns(SqlSession sqlSession, String pipelineName, String start,
+        String end) {
+        return mapper(sqlSession).stageReruns(pipelineName, start, end);
     }
 
     public List<Stage> getStageRerunsForPipelineStageAndCounter(SqlSession sqlSession,

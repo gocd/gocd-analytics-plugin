@@ -146,18 +146,38 @@ public interface StageMapper {
         @Param("startDate") String startDate, @Param("endDate") String endDate,
         @Param("order") String order, @Param("limit") int limit);
 
+//    @Select("<script>"
+//        + "SELECT pipeline_name, stage_name, pipeline_counter, MAX(stage_counter) AS stage_counter\n"
+//        + "FROM stages s \n"
+//        + "WHERE pipeline_name = #{pipelineName} \n"
+//        + "GROUP BY pipeline_name, stage_name, pipeline_counter\n"
+//        + "HAVING MAX(stage_counter) > 1\n"
+//        + "order by stage_counter ${order} limit #{limit} ;"
+//        + "</script>"
+//    )
+
     @ResultMap("Stage")
     @Select("<script>"
-        + "SELECT pipeline_name, stage_name, pipeline_counter, MAX(stage_counter) AS stage_counter\n"
-        + "FROM stages s \n"
-        + "WHERE pipeline_name = #{pipelineName} \n"
-        + "GROUP BY pipeline_name, stage_name, pipeline_counter\n"
-        + "HAVING MAX(stage_counter) > 1\n"
-        + "order by stage_counter ${order} limit #{limit} ;"
-        + "</script>"
-    )
-    List<Stage> stageReruns(@Param("pipelineName") String pipelineName, @Param(
-        "result") String result, @Param("order") String order, @Param("limit") int limit);
+        + "SELECT pipeline_name, stage_name, pipeline_counter, stage_counter, scheduled_at\n"
+        + "FROM (\n"
+        + "    SELECT DISTINCT ON (s.pipeline_name, s.stage_name, s.pipeline_counter)\n"
+        + "           s.pipeline_name,\n"
+        + "           s.stage_name,\n"
+        + "           s.pipeline_counter,\n"
+        + "           s.stage_counter,\n"
+        + "           s.scheduled_at\n"
+        + "    FROM stages s\n"
+        + "    WHERE s.pipeline_name = #{pipelineName}\n"
+        + "    ORDER BY s.pipeline_name, s.stage_name, s.pipeline_counter, s.stage_counter DESC\n"
+        + ") AS subquery_results\n"
+        + "WHERE stage_counter > 1\n"
+        + "AND\n"
+        + "scheduled_at >= DATE(#{startDate}) and scheduled_at <= DATE(#{endDate})\n"
+        + "ORDER BY stage_counter DESC\n"
+        + "</script>")
+    List<Stage> stageReruns(@Param("pipelineName") String pipelineName,
+        @Param("startDate") String startDate,
+        @Param("endDate") String endDate);
 
     @ResultMap("Stage")
     @Select("<script>"
