@@ -147,17 +147,63 @@ public interface StageMapper {
         @Param("order") String order, @Param("limit") int limit);
 
     @ResultMap("Stage")
-    @Select("<script>"
-        + "SELECT pipeline_name, stage_name, pipeline_counter, MAX(stage_counter) AS stage_counter\n"
-        + "FROM stages s \n"
-        + "WHERE pipeline_name = #{pipelineName} \n"
-        + "GROUP BY pipeline_name, stage_name, pipeline_counter\n"
-        + "HAVING MAX(stage_counter) > 1\n"
-        + "order by stage_counter ${order} limit #{limit} ;"
-        + "</script>"
-    )
-    List<Stage> stageReruns(@Param("pipelineName") String pipelineName, @Param(
-        "result") String result, @Param("order") String order, @Param("limit") int limit);
+
+//    @Select("<script>"
+//        + "SELECT pipeline_name, stage_name, pipeline_counter, MAX(stage_counter) AS stage_counter\n"
+//        + "FROM stages s \n"
+//        + "WHERE pipeline_name = #{pipelineName} \n"
+//        + "GROUP BY pipeline_name, stage_name, pipeline_counter\n"
+//        + "HAVING MAX(stage_counter) > 1\n"
+//        + "order by stage_counter ${order} limit #{limit} ;"
+//        + "</script>"
+//    )
+
+    // ought to work in postgres
+//    @Select("<script>"
+//        + "SELECT pipeline_name, stage_name, pipeline_counter, stage_counter, scheduled_at\n"
+//        + "FROM (\n"
+//        + "SELECT DISTINCT ON (s.pipeline_name, s.stage_name, s.pipeline_counter)\n"
+//        + "s.pipeline_name,\n"
+//        + "s.stage_name,\n"
+//        + "s.pipeline_counter,\n"
+//        + "s.stage_counter,\n"
+//        + "s.scheduled_at\n"
+//        + "FROM stages s \n"
+//        + "WHERE s.scheduled_at >= DATE(#{startDate}) AND s.scheduled_at <= DATE(#{endDate})\n"
+//        + "AND s.pipeline_name = #{pipelineName}\n"
+//        + "ORDER BY s.pipeline_name, s.stage_name, s.pipeline_counter, s.stage_counter DESC\n"
+//        + ") AS subquery_results\n"
+//        + "WHERE stage_counter > 1\n"
+//        + "ORDER BY scheduled_at DESC\n"
+//        + "LIMIT #{limit};"
+//        + "</script>"
+//    )
+
+    @Select({
+        "<script>",
+        "SELECT pipeline_name, stage_name, pipeline_counter, stage_counter, scheduled_at",
+        "FROM (",
+        "  SELECT DISTINCT ON (s.pipeline_name, s.stage_name, s.pipeline_counter)",
+        "         s.pipeline_name,",
+        "         s.stage_name,",
+        "         s.pipeline_counter,",
+        "         s.stage_counter,",
+        "         s.scheduled_at",
+        "  FROM stages s",
+        "  WHERE s.scheduled_at >= #{startDate}",
+        "    AND s.scheduled_at <= #{endDate}",
+        "    AND s.pipeline_name = #{pipelineName}",
+        "  ORDER BY s.pipeline_name, s.stage_name, s.pipeline_counter, s.stage_counter DESC",
+        ") AS subquery_results",
+        "WHERE stage_counter > 1",
+        "ORDER BY scheduled_at DESC",
+        "LIMIT #{limit}",
+        "</script>"
+    })
+
+    List<Stage> stageReruns(@Param("startDate") String startDate,
+        @Param("endDate") String endDate, @Param("pipelineName") String pipelineName,
+        @Param("result") String result, @Param("order") String order, @Param("limit") int limit);
 
     @ResultMap("Stage")
     @Select("<script>"

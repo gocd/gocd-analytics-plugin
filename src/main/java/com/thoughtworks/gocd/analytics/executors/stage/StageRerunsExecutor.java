@@ -81,7 +81,8 @@ public class StageRerunsExecutor extends AbstractSessionFactoryAwareExecutor {
                 } else if ((stageName == null || stageName.isEmpty() || stageName.isBlank()) && (
                     pipelineCounter == null || pipelineCounter.isEmpty()
                         || pipelineCounter.isBlank())) {
-                    return stageDAO.getStageReruns(sqlSession, pipelineName, order, limit);
+                    return stageDAO.getStageReruns(sqlSession, start, end, pipelineName, order,
+                        limit);
                 } else {
                     return stageDAO.getStageRerunsForPipelineStageAndCounter(sqlSession,
                         pipelineName, stageName, counter, order, limit);
