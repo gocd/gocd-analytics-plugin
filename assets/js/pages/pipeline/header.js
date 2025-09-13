@@ -6,7 +6,15 @@ function drawChartStats(range, callback, am) {
 
     const highChartsMainClassContainer = document.createElement("div");
     highChartsMainClassContainer.classList.add("highcharts-container", "area-chart");
-    highChartsMainClassContainer.style = "position: relative;overflow: hidden;width: 649px;height: 145px;text-align: left;line-height: normal;z-index: 0;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);";
+    highChartsMainClassContainer.style =
+        "position: relative;" +
+        "overflow: hidden;" +
+        // "width: 649px;" +
+        "height: 145px;" +
+        "text-align: left;" +
+        "line-height: normal;" +
+        "z-index: 0;" +
+        "-webkit-tap-highlight-color: rgba(0, 0, 0, 0);";
 
     const rangeSelectorDiv = document.createElement("div");
     rangeSelectorDiv.classList.add("range-selector");
@@ -38,11 +46,13 @@ function drawChartStats(range, callback, am) {
         btn.classList.add("range-button");
 
         btn.innerText = r.text;
+        btn.id = r.id;
+
         if (r.selected) {
             btn.classList.add("selected");
         }
         btn.onclick = () => {
-            handleButtonClick(r.id, range);
+            handleButtonClick(btn, r.id, range);
             callback(r.id);
         }
         rangeSelectorDiv.appendChild(btn);
@@ -66,12 +76,18 @@ function drawChartStats(range, callback, am) {
 
 }
 
-function handleButtonClick(id, range) {
+function handleButtonClick(btn, id, range) {
+    console.log("Button clicked with id ", id);
     range.forEach(r => {
+        console.log("r.id = ", r.id);
         if (id == r.id) {
             r.selected = true;
+            btn.classList.add("selected");
+            console.log("selected = true");
         } else {
             r.selected = false;
+            btn.classList.remove("selected");
+            console.log("selected = false");
         }
     })
 }

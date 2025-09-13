@@ -146,6 +146,16 @@ public interface StageMapper {
         @Param("startDate") String startDate, @Param("endDate") String endDate,
         @Param("order") String order, @Param("limit") int limit);
 
+//    @Select("<script>"
+//        + "SELECT pipeline_name, stage_name, pipeline_counter, MAX(stage_counter) AS stage_counter\n"
+//        + "FROM stages s \n"
+//        + "WHERE pipeline_name = #{pipelineName} \n"
+//        + "GROUP BY pipeline_name, stage_name, pipeline_counter\n"
+//        + "HAVING MAX(stage_counter) > 1\n"
+//        + "order by stage_counter ${order} limit #{limit} ;"
+//        + "</script>"
+//    )
+
     @ResultMap("Stage")
 
 //    @Select("<script>"

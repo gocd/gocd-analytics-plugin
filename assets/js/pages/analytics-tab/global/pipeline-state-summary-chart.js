@@ -72,16 +72,28 @@ async function graphOneHeaderChangeHandler(changedSettings) {
 
   console.log("📞 I am informed of changedSettings", changedSettings);
 
+  // showGraphLoading();
+
+  // const chart_container = document.getElementById("chart-container");
+  // chart_container.innerHTML = "";
+  // chart_container.classList.add("loader");
+
+  graphManager.chart.showLoading();
+
   const pipelines = await requestMaster.getPipelineStateSummary(changedSettings);
 
-  graphManager.clear();
-
   if (pipelines.length === 0) {
+    graphManager.clear();
     footer.showMessage("No data to display", "Error", true);
   } else {
+    graphManager.clear();
     graphManager.call_initStandaloneWithNewData(pipelines);
     footer.clear()
   }
+
+  // hideGraphLoading();
+
+  graphManager.chart.hideLoading();
 
 }
 

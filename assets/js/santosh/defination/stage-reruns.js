@@ -1,6 +1,6 @@
 import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import {getBarSeries} from "../template";
-import {getDateFromTimestampString, groupBy, secondsToHms} from "../utils";
+import {getDateFromTimestampString, secondsToHms} from "../utils";
 import TooltipManager from "../TooltipManager";
 
 /**
@@ -9,27 +9,25 @@ import TooltipManager from "../TooltipManager";
  */
 class StageReruns {
 
-  data = null;
-  c = null;
+    data = null;
+    c = null;
 
-  constructor(settings) {
-    this.settings = settings;
+    constructor(settings) {
+        this.settings = settings;
 
-    // console.log('stage-reruns.js settings', settings);
-  }
+        // console.log('stage-reruns.js settings', settings);
+    }
 
-  isPipelineSelected() {
-    // console.log('this.settings.selectedPipeline = ', this.settings.selectedPipeline);
-    // console.log('isPipelineSelected = ', this.settings.selectedPipeline !== '' || this.settings.selectedPipeline !== '*** All ***');
-    return this.settings.selectedPipeline !== '*** All ***';
-  }
+    isPipelineSelected() {
+        // console.log('this.settings.selectedPipeline = ', this.settings.selectedPipeline);
+        // console.log('isPipelineSelected = ', this.settings.selectedPipeline !== '' || this.settings.selectedPipeline !== '*** All ***');
+        return this.settings.selectedPipeline !== '*** All ***';
+    }
 
-  draw(data, c) {
+    draw(data, c) {
 
-    console.log("stage-reruns.js draw()");
-
-    this.data = data;
-    this.c = c;
+        this.data = data;
+        this.c = c;
 
     if (this.settings.selectedPipeline !== '*** All ***') {
       return this.drawForSelectedPipeline(data, c)
@@ -195,41 +193,41 @@ class StageReruns {
       ]
     };
 
-    option.tooltip.formatter = this.tooltipFormatter();
-    // option.tooltip.valueFormatter = (value) => secondsToHms(value);
+        option.tooltip.formatter = this.tooltipFormatter();
+        // option.tooltip.valueFormatter = (value) => secondsToHms(value);
 
-    return option;
-  }
+        return option;
+    }
 
-  tooltipFormatter() {
-    return (params) => {
+    tooltipFormatter() {
+        return  (params) => {
 
-      console.log("params = ", params);
+            console.log("params = ", params);
 
-      const info = this.data[params.dataIndex];
+            const info = this.data[params.dataIndex];
 
-      const tooltip = new TooltipManager();
-      tooltip.addTitle(info.stage_name);
+            const tooltip = new TooltipManager();
+            tooltip.addTitle(info.stage_name);
 
-      tooltip.addItem(params.marker, "Pipeline name", info.pipeline_name);
-      tooltip.addItem(params.marker, "Pipeline counter", info.pipeline_counter);
+            tooltip.addItem(params.marker, "Pipeline name", info.pipeline_name);
+            tooltip.addItem(params.marker, "Pipeline counter", info.pipeline_counter);
 
-      tooltip.addFooter("Click to see specific details");
+            tooltip.addFooter("Click to see specific details");
 
-      return tooltip.getStandard();
-    };
-  }
+            return tooltip.getStandard();
+        };
+    }
 
-  prepareData(data) {
-    const categories = [];
-    const data1 = [];
-    const data2 = [];
+    prepareData(data) {
+        const categories = [];
+        const data1 = [];
+        const data2 = [];
 
-    data.forEach(m => {
-      categories.push(m.name);
-      data1.push(m.avg_wait_time_secs);
-      data2.push(m.avg_build_time_secs);
-    });
+        data.forEach(m => {
+            categories.push(m.name);
+            data1.push(m.avg_wait_time_secs);
+            data2.push(m.avg_build_time_secs);
+        });
 
     return {
       categories: categories,
@@ -239,64 +237,65 @@ class StageReruns {
     }
   }
 
-  get_requestParamsPoint(index) {
-    // console.log('stage-reruns.js get_requestParamsPoint ', this.data[index]);
-    const selectedStage = this.data[index];
 
-    console.log("selectedStage", selectedStage);
+    get_requestParamsPoint(index) {
+        // console.log('stage-reruns.js get_requestParamsPoint ', this.data[index]);
+        const selectedStage = this.data[index];
 
-    let ret = {
-      "pipeline_name": selectedStage.pipeline_name,
-      // "stage_name": selectedStage.stage_name
-    };
+        console.log("selectedStage", selectedStage);
 
-    // if (this.isPipelineSelected()) {
-    ret.stage_name = selectedStage.stage_name;
-    ret.pipeline_counter = selectedStage.pipeline_counter;
-    // }
+        let ret = {
+            "pipeline_name": selectedStage.pipeline_name,
+            // "stage_name": selectedStage.stage_name
+        };
 
-    // console.log('ret = ', ret);
+        // if (this.isPipelineSelected()) {
+        ret.stage_name = selectedStage.stage_name;
+        ret.pipeline_counter = selectedStage.pipeline_counter;
+        // }
 
-    return ret;
-  }
+        // console.log('ret = ', ret);
 
-  getNextGraphName() {
-    // if (this.isPipelineSelected()) {
-    return "StageRerunsInstances";
-    // } else {
-    //     return "StageReruns";
-    // }
-  }
+        return ret;
+    }
 
-  insertBreadcrumb() {
-    return false;
-  }
+    getNextGraphName() {
+        // if (this.isPipelineSelected()) {
+        return "StageRerunsInstances";
+        // } else {
+        //     return "StageReruns";
+        // }
+    }
 
-  breadcrumbCaption() {
-    return "Stage reruns";
-  }
+    insertBreadcrumb() {
+        return false;
+    }
 
-  breadcrumbTooltip() {
-    return "List all Pipelines";
-  }
+    breadcrumbCaption() {
+        return "Stage reruns";
+    }
 
-  getSeriesIndex() {
-    return 0;
-  }
+    breadcrumbTooltip() {
+        return "List all Pipelines";
+    }
 
-  nativeClickHandler2remove(transport, params) {
-    console.log('nativeClickHandler params', params);
+    getSeriesIndex() {
+        return 0;
+    }
 
-    // const selectedDate = params.name.toString();
-    // console.log("Searching for data on ", selectedDate);
-    //
-    // const filteredData =
-    //     this.data.filter(item => selectedDate === getDateFromTimestampString(item.scheduled_at));
-    //
-    // console.log(filteredData);
-    //
-    // return filteredData;
-  }
+    nativeClickHandler2remove(transport, params) {
+        console.log('nativeClickHandler params', params);
+
+        // const selectedDate = params.name.toString();
+        // console.log("Searching for data on ", selectedDate);
+        //
+        // const filteredData =
+        //     this.data.filter(item => selectedDate === getDateFromTimestampString(item.scheduled_at));
+        //
+        // console.log(filteredData);
+        //
+        // return filteredData;
+    }
 }
 
 export default StageReruns;
