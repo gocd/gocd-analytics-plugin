@@ -179,27 +179,59 @@ public interface StageMapper {
 //        + "</script>"
 //    )
 
-    @Select({
-        "<script>",
-        "SELECT pipeline_name, stage_name, pipeline_counter, stage_counter, scheduled_at",
-        "FROM (",
-        "  SELECT DISTINCT ON (s.pipeline_name, s.stage_name, s.pipeline_counter)",
-        "         s.pipeline_name,",
-        "         s.stage_name,",
-        "         s.pipeline_counter,",
-        "         s.stage_counter,",
-        "         s.scheduled_at",
-        "  FROM stages s",
-        "  WHERE s.scheduled_at >= #{startDate}",
-        "    AND s.scheduled_at <= #{endDate}",
-        "    AND s.pipeline_name = #{pipelineName}",
-        "  ORDER BY s.pipeline_name, s.stage_name, s.pipeline_counter, s.stage_counter DESC",
-        ") AS subquery_results",
-        "WHERE stage_counter > 1",
-        "ORDER BY scheduled_at DESC",
-        "LIMIT #{limit}",
-        "</script>"
-    })
+    // Postgres specific
+    // Casting scheduled_at column to DATE is not performant
+    // Recommended way to do the same is bound the date to < next_date
+
+    @Select(
+//        "<script>"
+        "SELECT pipeline_name, stage_name, pipeline_counter, stage_counter, scheduled_at"
+        +" FROM ("
+        +"  SELECT DISTINCT ON (s.pipeline_name, s.stage_name, s.pipeline_counter)"
+        +"         s.pipeline_name,"
+        +"         s.stage_name,"
+        +"         s.pipeline_counter,"
+        +"         s.stage_counter,"
+        +"         s.scheduled_at"
+        +"  FROM stages s"
+        +"  WHERE s.scheduled_at::DATE >= DATE(#{startDate})"
+        +"    AND s.scheduled_at::DATE <= DATE(#{endDate})"
+        +"    AND s.pipeline_name = #{pipelineName}"
+        +"  ORDER BY s.pipeline_name, s.stage_name, s.pipeline_counter, s.stage_counter DESC"
+        +" ) AS subquery_results"
+        +" WHERE stage_counter > 1"
+        +" ORDER BY scheduled_at DESC"
+        +" LIMIT #{limit}"
+//        +"</script>"
+    )
+
+    // Standard SQL
+
+//    @Select(
+//        "<script>"
+//        +
+//            "SELECT pipeline_name, stage_name, pipeline_counter, stage_counter, scheduled_at\n"
+//            + "FROM (\n"
+//            + "    SELECT s.pipeline_name,\n"
+//            + "           s.stage_name,\n"
+//            + "           s.pipeline_counter,\n"
+//            + "           s.stage_counter,\n"
+//            + "           s.scheduled_at,\n"
+//            + "           ROW_NUMBER() OVER (\n"
+//            + "               PARTITION BY s.pipeline_name, s.stage_name, s.pipeline_counter\n"
+//            + "               ORDER BY s.stage_counter DESC\n"
+//            + "           ) AS rn\n"
+//            + "    FROM stages s\n"
+//            + "    WHERE s.scheduled_at >= CAST(#{startDate} AS DATE)\n"
+//            + "      AND s.scheduled_at <= CAST(#{endDate} AS DATE)\n"
+//            + "      AND s.pipeline_name = #{pipelineName}\n"
+//            + ") t\n"
+//            + "WHERE rn = 1\n"
+//            + "  AND stage_counter > 1\n"
+//            + "ORDER BY scheduled_at DESC\n"
+//            + "LIMIT 10;"
+//        + "</script>"
+//    )
 
     List<Stage> stageReruns(@Param("startDate") String startDate,
         @Param("endDate") String endDate, @Param("pipelineName") String pipelineName,
