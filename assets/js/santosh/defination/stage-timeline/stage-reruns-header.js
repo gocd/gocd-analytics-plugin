@@ -15,6 +15,33 @@ function onViewClick(event) {
   console.log("you clicked ", selectedOptions);
 }
 
+function nativeOnPipelineClick(event) {
+  console.log("nativeOnPipelineClick with selectedIndex", event.target.selectedIndex);
+  if(event.target.selectedIndex === 0) {
+    disableAllOptionsOfExceptForIndex();
+  } else {
+    enableAllOptions();
+  }
+}
+
+function disableAllOptionsOfExceptForIndex(selector, index) {
+  if(viewSelector) {
+    for(let i = 1; i < viewSelector.options.length; i++) {
+      viewSelector.options[i].disabled = true;
+    }
+  } else {
+    console.log("invalid selector");
+  }
+}
+
+function enableAllOptions() {
+  if(viewSelector) {
+    for(let i = 0; i < viewSelector.options.length; i++) {
+      viewSelector.options[i].disabled = false;
+    }
+  }
+}
+
 async function stageRerunsHeader(pipelines, settingsDOM, dateSelectedEvent) {
 
     await addOptionHeader(settingsDOM);
