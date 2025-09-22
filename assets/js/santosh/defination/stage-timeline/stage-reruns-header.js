@@ -13,6 +13,21 @@ let viewSelector = undefined;
 function onViewClick(event) {
   const selectedOptions = Array.from(event.target.selectedOptions).map(option => option.value);
   console.log("you clicked ", selectedOptions);
+
+  // TODO: check to see if there' a pipeline selected
+
+  switch(event.target.selectedIndex) {
+    case 1:
+      break;
+    case 2:
+      break;
+    case 3:
+      break;
+    case 4:
+      break;
+    default:
+      console.error("Unknown selected index", event);
+  }
 }
 
 function nativeOnPipelineClick(event) {
@@ -85,6 +100,7 @@ async function stageRerunsHeader(pipelines, settingsDOM, dateSelectedEvent) {
         dateFilterSelector: dateFilterSelector,
         pipelineSelector,
         requestOrderSelector,
+      viewSelector
     };
 }
 
@@ -118,7 +134,7 @@ async function addOptionHeader(settingsDOM) {
    </div>
    <div id="setting-1" style="display: flex; flex-direction: row">
       <div style="font-size:16px; flex-grow: 1"><b>Associated Settings</b></div>
-      ${custom_date_setting_html}
+      <div id="associated-settings-body">${custom_date_setting_html}</div>
    </div>
 </div>
 <hr>
