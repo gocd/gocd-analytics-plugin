@@ -546,6 +546,7 @@ class Header {
             requestMinimumStageCounter: 2,
             startDate: getFirstDayOfTheCurrentMonth(),
             endDate: getTodaysDateInDBFormat(),
+          otherDate: undefined
         };
 
         const pipelines = await this.requestMaster.getPipelineList();
@@ -564,6 +565,8 @@ class Header {
         // handleResultSelect(selectors.resultFilterSelector);
         // handleDataSelect(selectors.dataFilterSelector);
         // handleLegendSelect(selectors.legendVisibilityFilterSelector);
+
+      handleViewSelect(selectors.viewSelector);
 
         function handleDateSelect(date1, date2) {
             console.log("handleDateSelect from header.js date1, date2 = ", date1, date2);
@@ -602,12 +605,37 @@ class Header {
             settings.showLegend = data;
         }
 
+        function setView(viewIndex) {
+          switch (viewIndex) {
+            case 1:
+              settings.view = StageRerunsViewState.CUSTOM;
+              break;
+            case 2:
+              settings.view = StageRerunsViewState.MONTH_TO_MONTH;
+              break;
+            case 3:
+              settings.view = StageRerunsViewState.YEARLY;
+              break;
+            case 4:
+                settings.view = StageRerunsViewState.YEAR_TO_YEAR;
+                break;
+            default:
+              console.error("Unknown view index", viewIndex);
+          }
+        }
+
         function handlePipelineSelect(selector) {
             selector.addEventListener("change", () => {
                 setSelectedPipeline(selector.value);
 
                 changeHandler(settings);
             });
+        }
+
+        function handleViewSelect(selector) {
+          setView(selector.selectedIndex);
+
+          changeHandler(settings);
         }
 
         function handleRequestResultSelect(selector) {
