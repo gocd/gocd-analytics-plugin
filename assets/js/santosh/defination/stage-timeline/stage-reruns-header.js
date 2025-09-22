@@ -31,6 +31,8 @@ async function stageRerunsHeader(pipelines, settingsDOM, dateSelectedEvent) {
     dateFilterSelector.addEventListener("click", onDatePickerClick);
     viewSelector.addEventListener("change", onViewClick);
 
+    pipelineSelector.addEventListener("change", nativeOnPipelineClick);
+
     function onDatePickerClick() {
         datePicker.show();
     }
