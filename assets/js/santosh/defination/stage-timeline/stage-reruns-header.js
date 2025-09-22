@@ -68,11 +68,7 @@ async function stageRerunsHeader(pipelines, settingsDOM, dateSelectedEvent) {
 
     await addOptionsToSelect(viewSelector, ["Custom date", "Month to month", "Yearly", "Year to year"]);
 
-  if(viewSelector) {
-    for(let i = 1; i < viewSelector.options.length; i++) {
-      viewSelector.options[i].disabled = true;
-    }
-  }
+    disableAllOptionsOfExceptForIndex(viewSelector, 1);
 
     new SlimSelect({
         select: '#pipeline'
