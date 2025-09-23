@@ -16,14 +16,17 @@ async function onViewClick(event) {
 
   // TODO: check to see if there' a pipeline selected
 
+  const div_associated_settings_body = document.getElementById("associated-settings-body");
+
   switch(event.target.selectedIndex) {
+    case 0:
+      break;
     case 1:
+      await monthly_date_setting_html(div_associated_settings_body);
       break;
     case 2:
       break;
     case 3:
-      break;
-    case 4:
       break;
     default:
       console.error("Unknown selected index", event);
