@@ -10,7 +10,7 @@ let dateSelector = undefined;
 let requestOrderSelector = undefined;
 let viewSelector = undefined;
 
-function onViewClick(event) {
+async function onViewClick(event) {
   const selectedOptions = Array.from(event.target.selectedOptions).map(option => option.value);
   console.log("you clicked ", selectedOptions);
 
