@@ -120,6 +120,17 @@ async function monthly_date_setting_html(output_div) {
   </div>
 `;
 
+  output_div.innerHTML = html;
+
+  const month_1_selector = document.getElementById("month_1");
+  const month_2_selector = document.getElementById("month_2");
+
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+  await addOptionsToSelect(month_1_selector, months);
+  await addOptionsToSelect(month_2_selector, months);
+}
+
 async function addOptionHeader(settingsDOM) {
     settingsDOM.innerHTML = `
 <div style="position:relative; display: flex; flex-direction: column">
