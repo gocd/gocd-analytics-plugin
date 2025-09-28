@@ -122,10 +122,11 @@ const monthly_date_setting_html = `
   </div>
 `;
 
-  output_div.innerHTML = html;
-
-  const month_1_selector = document.getElementById("month_1");
-  const month_2_selector = document.getElementById("month_2");
+const yearly_date_setting_html = `
+      <div id="yearly_date_setting_div" style="display: flex; flex-direction: row; flex-grow: 1">
+         Year: <input id="year_input" type="number" />
+      </div>
+`;
 
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
