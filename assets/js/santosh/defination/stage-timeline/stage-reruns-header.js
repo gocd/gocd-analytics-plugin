@@ -19,10 +19,10 @@ let year_2_selector = undefined;
 
 let date_selected_event_hook = undefined;
 
-let associated_setting_custom = undefined;
-let associated_setting_monthly = undefined;
-let associated_setting_yearly = undefined;
-let associated_setting_year_to_year = undefined;
+let associated_setting_custom_selector = undefined;
+let associated_setting_monthly_selector = undefined;
+let associated_setting_yearly_selector = undefined;
+let associated_setting_year_to_year_selector = undefined;
 
 async function onViewClick(event) {
   const selectedOptions = Array.from(event.target.selectedOptions).map(option => option.value);
