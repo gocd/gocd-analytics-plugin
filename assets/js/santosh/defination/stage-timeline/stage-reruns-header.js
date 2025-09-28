@@ -149,7 +149,12 @@ async function addOptionHeader(settingsDOM) {
    <div id="setting-1" style="display: flex; flex-direction: row">
       <div style="font-size:16px; flex-direction: row; flex-grow: 1">
         <b>Associated Settings</b>
-        <div id="associated-settings-body">${custom_date_setting_html}</div>
+        <div id="associated-settings-body">
+            ${custom_date_setting_html}
+            ${monthly_date_setting_html}
+            ${yearly_date_setting_html}
+            ${year_to_year_date_setting_html}
+        </div>
       </div>
    </div>
 </div>
