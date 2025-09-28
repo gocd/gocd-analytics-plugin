@@ -128,11 +128,12 @@ const yearly_date_setting_html = `
       </div>
 `;
 
-  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-  await addOptionsToSelect(month_1_selector, months);
-  await addOptionsToSelect(month_2_selector, months);
-}
+const year_to_year_date_setting_html = `
+      <div id="year_to_year_date_setting_div" style="display: flex; flex-direction: row; flex-grow: 1">
+         Year 1: <input id="year_1_input" type="number" />
+         Year 2: <input id="year_2_input" type="number" />
+      </div>
+`;
 
 async function addOptionHeader(settingsDOM) {
     settingsDOM.innerHTML = `
