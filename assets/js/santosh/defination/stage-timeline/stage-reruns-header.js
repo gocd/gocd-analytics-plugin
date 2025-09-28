@@ -115,9 +115,8 @@ const custom_date_setting_html = `
       </div>
 `;
 
-async function monthly_date_setting_html(output_div) {
-  const html = `
-  <div style="display: flex; flex-direction: row; flex-grow: 1">
+const monthly_date_setting_html = `
+  <div id="monthly_date_setting_div" style="display: flex; flex-direction: row; flex-grow: 1">
          Month 1: <select id="month_1"></select>
          Month 2: <select id="month_2"></select>
   </div>
