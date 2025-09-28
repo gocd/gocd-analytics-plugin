@@ -47,6 +47,15 @@ async function onViewClick(event) {
   }
 }
 
+function hideAllAdditionalSettings(except) {
+  associated_setting_custom_selector.style.display = "none";
+  associated_setting_monthly_selector.style.display = "none";
+  associated_setting_yearly_selector.style.display = "none";
+  associated_setting_year_to_year_selector.style.display = "none";
+
+  except.style.display = "flex";
+}
+
 function nativeOnPipelineClick(event) {
   console.log("nativeOnPipelineClick with selectedIndex", event.target.selectedIndex);
   if(event.target.selectedIndex === 0) {
