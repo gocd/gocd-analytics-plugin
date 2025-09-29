@@ -1,5 +1,5 @@
 import {addOptionsToSelect, formatDatePicker} from "../../utils";
-import SlimSelect from 'slim-select';
+// import SlimSelect from 'slim-select';
 import {setOrderSelector} from "../../DomManager";
 import {DateManager} from "../../DateManager";
 
@@ -30,17 +30,18 @@ async function onViewClick(event) {
 
   // TODO: check to see if there' a pipeline selected
 
-  const div_associated_settings_body = document.getElementById("associated-settings-body");
-
   switch(event.target.selectedIndex) {
     case 0:
+      hideAllAdditionalSettings(associated_setting_custom_selector);
       break;
     case 1:
-      await monthly_date_setting_html(div_associated_settings_body);
+      hideAllAdditionalSettings(associated_setting_monthly_selector);
       break;
     case 2:
+      hideAllAdditionalSettings(associated_setting_yearly_selector);
       break;
     case 3:
+      hideAllAdditionalSettings(associated_setting_year_to_year_selector);
       break;
     default:
       console.error("Unknown selected index", event);
@@ -83,31 +84,88 @@ function enableAllOptions() {
   }
 }
 
-async function stageRerunsHeader(pipelines, settingsDOM, dateSelectedEvent) {
+function defineSettingSelectors() {
+  dateFilterSelector = document.getElementById("dateFilter");
+  pipelineSelector = document.getElementById("pipeline");
+  requestOrderSelector = document.getElementById("requestOrder");
+  viewSelector = document.getElementById("view");
+}
+
+function defineAdditionalSettingSelectors() {
+  associated_setting_custom_selector = document.getElementById("custom_date_setting_div");
+  associated_setting_monthly_selector = document.getElementById("monthly_date_setting_div");
+  associated_setting_yearly_selector = document.getElementById("yearly_date_setting_div");
+  associated_setting_year_to_year_selector = document.getElementById("year_to_year_date_setting_div");
+}
+
+function defineAdditionalSettingComponentSelectors() {
+  month_1_selector = document.getElementById("month_1");
+  month_2_selector = document.getElementById("month_2");
+
+  year_selector = document.getElementById("year_input");
+
+  year_1_selector = document.getElementById("year_1_input");
+  year_2_selector = document.getElementById("year_2_input");
+}
+
+async function populateSettingComponents(pipelines) {
+  await addOptionsToSelect(pipelineSelector, ['*** All ***', ...pipelines]);
+
+  await addOptionsToSelect(viewSelector, ["Custom date", "Month to month", "Yearly", "Year to year"]);
+}
+
+async function populateAdditionalSettingComponents() {
+  const months = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"];
+
+  await addOptionsToSelect(month_1_selector, months);
+  await addOptionsToSelect(month_2_selector, months);
+}
+
+async function manageDatePicker(dateSelectedEvent) {
+  const dm = new DateManager();
+  const datePicker = await dm.addDatelitePickerDiv(dateFilterSelector, dateSelectedEvent);
+  datePicker.hide();
+
+  dateFilterSelector.addEventListener("click", onDatePickerClick);
+
+  function onDatePickerClick() {
+    datePicker.show();
+  }
+}
+
+function defineEventListeners() {
+  viewSelector.addEventListener("change", onViewClick);
+
+  pipelineSelector.addEventListener("change", nativeOnPipelineClick);
+
+  year_selector.addEventListener("change", () => {
+    date_selected_event_hook(year_selector.value, null);
+  });
+}
+
+async function  stageRerunsHeader(pipelines, settingsDOM, dateSelectedEvent) {
+
+  date_selected_event_hook = dateSelectedEvent;
 
     await addOptionHeader(settingsDOM);
 
-    dateFilterSelector = document.getElementById("dateFilter");
-    pipelineSelector = document.getElementById("pipeline");
-    requestOrderSelector = document.getElementById("requestOrder");
-    viewSelector = document.getElementById("view");
+    defineSettingSelectors();
 
-    const dm = new DateManager();
-    const datePicker = await dm.addDatelitePickerDiv(dateFilterSelector, dateSelectedEvent);
-    datePicker.hide();
+    defineAdditionalSettingSelectors();
 
-    dateFilterSelector.addEventListener("click", onDatePickerClick);
-    viewSelector.addEventListener("change", onViewClick);
+    defineAdditionalSettingComponentSelectors();
 
-    pipelineSelector.addEventListener("change", nativeOnPipelineClick);
+    await populateSettingComponents(pipelines);
 
-    function onDatePickerClick() {
-        datePicker.show();
-    }
+    await populateAdditionalSettingComponents();
 
-    await addOptionsToSelect(pipelineSelector, ['*** All ***', ...pipelines]);
+    await manageDatePicker(dateSelectedEvent);
 
-    await addOptionsToSelect(viewSelector, ["Custom date", "Month to month", "Yearly", "Year to year"]);
+    hideAllAdditionalSettings(associated_setting_custom_selector);
+
+    defineEventListeners();
+
 
     disableAllOptionsOfExceptForIndex(viewSelector, 1);
 
@@ -131,11 +189,12 @@ async function stageRerunsHeader(pipelines, settingsDOM, dateSelectedEvent) {
 }
 
 const custom_date_setting_html = `
+<div id="custom_date_setting_div">
   <span id="dateFilter"></span>
-      
       <div style="display: flex; flex-direction: row; flex-grow: 1">
          Order: <select id="requestOrder"></select>
       </div>
+</div>
 `;
 
 const monthly_date_setting_html = `
