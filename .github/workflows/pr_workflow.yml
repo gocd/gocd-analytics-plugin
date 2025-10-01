@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         # See https://endoflife.date/postgresql
-        postgres-version: [ "13", "14", "15", "16", "17" ]
+        postgres-version: [ "14", "15", "16", "17", "18" ]
       fail-fast: false
     services:
       postgres:
