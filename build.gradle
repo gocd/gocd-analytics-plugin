@@ -46,9 +46,8 @@ gocdPlugin {
 
 version = gocdPlugin.fullVersion(project)
 
-java {
-  sourceCompatibility = JavaVersion.VERSION_11
-  targetCompatibility = JavaVersion.VERSION_11
+tasks.withType(JavaCompile).configureEach {
+    options.release = 11
 }
 
 // In this section you declare where to find the dependencies of your project
