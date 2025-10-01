@@ -79,7 +79,7 @@ configurations {
 ext {
   deps = [
           gocdPluginApi: 'cd.go.plugin:go-plugin-api:25.3.0',
-          flyway:        'org.flywaydb:flyway-core:11.11.2',
+          flyway:        'org.flywaydb:flyway-core:11.13.2',
   ]
 
   versions = project.ext.deps.collectEntries { lib, libGav -> [lib, libGav.split(':').last()] }
@@ -87,22 +87,22 @@ ext {
 
 dependencies {
   compileOnly project.deps.gocdPluginApi
-  implementation 'com.google.code.gson:gson:2.13.1'
-  implementation('org.postgresql:postgresql:42.7.7') {
+  implementation 'com.google.code.gson:gson:2.13.2'
+  implementation('org.postgresql:postgresql:42.7.8') {
     exclude(module: 'checker-qual')
   }
   implementation 'org.apache.commons:commons-dbcp2:2.13.0'
   implementation 'org.mybatis:mybatis:3.4.6'
   implementation project.deps.flyway
   runtimeOnly "org.flywaydb:flyway-database-postgresql:${project.versions.flyway}"
-  runtimeOnly 'ch.qos.logback:logback-classic:1.5.18'
+  runtimeOnly 'ch.qos.logback:logback-classic:1.5.19'
 
-  testImplementation platform('org.junit:junit-bom:5.13.4')
+  testImplementation platform('org.junit:junit-bom:6.0.0')
   testImplementation 'org.junit.jupiter:junit-jupiter-api'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
   testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-  testImplementation 'org.mockito:mockito-core:5.19.0'
-  testImplementation 'org.assertj:assertj-core:3.27.4'
+  testImplementation 'org.mockito:mockito-core:5.20.0'
+  testImplementation 'org.assertj:assertj-core:3.27.6'
   testImplementation 'org.skyscreamer:jsonassert:1.5.3'
   testImplementation 'org.jsoup:jsoup:1.21.2'
   testImplementation project.deps.gocdPluginApi
