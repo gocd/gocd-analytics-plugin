@@ -25,8 +25,8 @@ group = 'com.thoughtworks.gocd'
 
 gocdPlugin {
   id = 'com.thoughtworks.gocd.analytics'
-  pluginVersion = '3.2.0'
-  goCdVersion = '20.9.0'
+  pluginVersion = '4.0.0'
+  goCdVersion = '22.1.0'
   name = 'GoCD Analytics Plugin'
   description = 'GoCD Analytics Plugin'
   vendorName = 'ThoughtWorks, Inc.'
@@ -46,8 +46,13 @@ gocdPlugin {
 
 version = gocdPlugin.fullVersion(project)
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 tasks.withType(JavaCompile).configureEach {
-    options.release = 11
+    options.release = 17
 }
 
 // In this section you declare where to find the dependencies of your project
