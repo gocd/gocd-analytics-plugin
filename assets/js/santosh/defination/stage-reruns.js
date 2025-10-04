@@ -97,6 +97,53 @@ class StageReruns {
     return option;
   }
 
+  drawYearlyForSelectedPipeline(data, c) {
+    console.log("stage-reruns.js drawYearlyForSelectedPipeline()");
+
+    const info = this.prepareYearlyDataForSelectedPipeline(this.data);
+
+    const year = new Date(this.settings.startDate).getFullYear();
+
+    const max = Math.max(...info.points.map(item => item[1]));
+
+    console.log("stage-reruns.js data preparation for yearly complete", info);
+
+    const option = {
+      title: {
+        top: 30,
+        left: 'center',
+        text: 'Yearly stage re-runs'
+      },
+      tooltip: {},
+      visualMap: {
+        min: info.min,
+        max: max,
+        type: 'piecewise',
+        orient: 'horizontal',
+        left: 'center',
+        top: 65
+      },
+      calendar: {
+        top: 120,
+        left: 30,
+        right: 30,
+        cellSize: ['auto', 13],
+        range: year,
+        itemStyle: {
+          borderWidth: 0.5
+        },
+        yearLabel: { show: false }
+      },
+      series: {
+        type: 'heatmap',
+        coordinateSystem: 'calendar',
+        data: info.points
+      }
+    };
+
+    return option;
+  }
+
   prepareDataForSelectedPipeline(data) {
 
     data.forEach(d => {
