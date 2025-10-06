@@ -201,6 +201,107 @@ class StageReruns {
       min: min,
       max: max
     };
+  };
+
+    prepareYearlyDataForSelectedPipeline(data) {
+    // console.log("🐞 1️⃣ prepareYearlyDataForSelectedPipeline() with data ", data);
+
+    data.forEach(d => {
+      d.scheduled_at = getDateFromTimestampString(d.scheduled_at);
+    });
+
+    // console.log("🐞 2️⃣ after scheduled_at conversion ", data);
+
+    const groupedData = groupBy(data, 'scheduled_at');
+
+    // console.log("🐞 3️⃣ groupedData ", groupedData);
+
+    const arr_scheduled_at = Object.keys(groupedData);
+
+    // console.log("🐞 4️⃣ arr_scheduled_at ", arr_scheduled_at);
+
+    const points = [];
+
+    let min = 0,
+        max = 0;
+
+    const keysGroupedData = Object.keys(groupedData);
+
+    console.log('dates total = keysGroupedData.length', keysGroupedData.length);
+
+    for (let i = 0; i < keysGroupedData.length; i++) {
+      console.log('date #i = ', i);
+
+      const key = keysGroupedData[i];
+
+      const value = groupedData[key];
+
+      console.log('key, value ', key, value);
+
+      let sum_stage_counter = 0;
+
+      const groupByStageName = groupBy(value, 'stage_name');
+
+      // console.log("🐞 5️⃣ groupByStageName ", groupByStageName);
+
+      const keysGroupByStageName = Object.keys(groupByStageName);
+      console.log(
+          'stages total = keysGroupByStageName.length',
+          keysGroupByStageName.length
+      );
+
+      console.log('🐞 6️⃣ keysGroupByStageName ', keysGroupByStageName);
+
+      for (let j = 0; j < keysGroupByStageName.length; j++) {
+        console.log('stage #j = ', j);
+
+        const key = keysGroupByStageName[j];
+
+        console.log('🐞 7️⃣ j for loop key ', key);
+
+        const value = groupByStageName[key];
+
+        console.log('🐞 8️⃣ j for loop value', value);
+
+        let result = {};
+
+        value.forEach(v => {
+          const pipeline_counter = v.pipeline_counter;
+          const stage_counter = v.stage_counter;
+
+          if (
+              !result[pipeline_counter] |
+              (stage_counter > result[pipeline_counter])
+          ) {
+            result[pipeline_counter] = stage_counter-1;
+          }
+        });
+
+        console.log('result = ', result);
+
+        const total = Object.values(result).reduce((a, b) => a + b, 0);
+
+        console.log('🐞 9️⃣ total = ', total);
+
+        sum_stage_counter += total;
+      }
+
+      // points.push([i, j, stage_counter || '-']);
+
+      points.push([echarts.time.format(key, '{yyyy}-{MM}-{dd}', false),
+        sum_stage_counter]);
+    }
+
+    // .map(function (item) {
+    //   return [item[1], item[0], item[2] || '-'];
+    // });
+
+    return {
+      arr_scheduled_at: arr_scheduled_at,
+      points: points,
+      min: min,
+      max: max,
+    };
   }
 
   drawForAllPipelines(draw, c) {
