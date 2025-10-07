@@ -41,4 +41,4 @@ jobs:
           node-version: 22
           cache: npm
       - name: Release
-        run: ./gradlew verifyExpRelease githubRelease
+        run: ./gradlew check githubRelease
