@@ -41,6 +41,7 @@ gocdPlugin {
   pluginProject = project
 
   prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
+  prereleaseDryrun = !"Yes".equalsIgnoreCase(System.getenv('PRERELEASE'))
   assetsToRelease = [project.tasks.findByName('jar')]
 }
 
