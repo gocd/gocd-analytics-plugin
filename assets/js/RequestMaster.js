@@ -159,6 +159,7 @@ class RequestMaster {
             "type": "dashboard",
             "metric": "stage_reruns",
             "pipeline_name": settings.selectedPipeline,
+          "view": settings.view,
             "order": settings.requestOrder,
             "limit": settings.requestLimit,
             "start": settings.startDate,
