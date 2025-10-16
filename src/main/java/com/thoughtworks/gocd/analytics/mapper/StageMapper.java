@@ -22,6 +22,7 @@ import org.apache.ibatis.annotations.*;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import org.apache.ibatis.session.SqlSession;
 
 public interface StageMapper {
 
@@ -246,6 +247,20 @@ public interface StageMapper {
     List<Stage> stageReruns(@Param("startDate") String startDate,
         @Param("endDate") String endDate, @Param("pipelineName") String pipelineName,
         @Param("result") String result, @Param("order") String order, @Param("limit") int limit);
+
+
+    @ResultMap("Stage")
+    @Select(
+        "select * from stages s\n"
+        + "where s.scheduled_at::DATE >= DATE(#{startDate})\n"
+        + "and s.scheduled_at::DATE <= DATE(#{endDate})\n"
+        + "and s.pipeline_name = #{pipelineName}\n"
+        + "and s.stage_counter > #{stage_counter}\n"
+        + ";\n"
+        )
+    List<Stage> yearlyStageRerunsForPipeline(@Param("pipelineName") String pipelineName,
+        @Param("startDate") String startDate, @Param("endDate") String endDate,
+        @Param("stage_counter") int stage_counter);
 
     @ResultMap("Stage")
     @Select("<script>"
