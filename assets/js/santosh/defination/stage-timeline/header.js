@@ -16,6 +16,7 @@ import agentMetricsHeader from "./agent-metrics-header";
 import doraMetricsHeader from "./dora-metrics-header";
 import pipelineStateSummaryHeader from "./pipeline-state-summary-header";
 import {StageRerunsViewState} from "../../constants";
+// import console from "../../Console";
 
 class Header {
 
@@ -546,7 +547,8 @@ class Header {
             requestMinimumStageCounter: 2,
             startDate: getFirstDayOfTheCurrentMonth(),
             endDate: getTodaysDateInDBFormat(),
-          otherDate: undefined
+          otherDate: undefined,
+          stageCounter: 1
         };
 
         const pipelines = await this.requestMaster.getPipelineList();
@@ -562,17 +564,43 @@ class Header {
         handlePipelineSelect(selectors.pipelineSelector);
         // handleRequestResultSelect(selectors.requestResultSelector);
         handleRequestOrderSelect(selectors.requestOrderSelector);
-        // handleResultSelect(selectors.resultFilterSelector);
-        // handleDataSelect(selectors.dataFilterSelector);
-        // handleLegendSelect(selectors.legendVisibilityFilterSelector);
+
 
       handleViewSelect(selectors.viewSelector);
 
+      // TODO: It's better that we handle the date format from the source
+      // Here we just have to worry about comma seperated multiple dates
         function handleDateSelect(date1, date2) {
-            console.log("handleDateSelect from header.js date1, date2 = ", date1, date2);
+            console.log("⭐️ handleDateSelect from header.js date1, date2 = ", date1, date2);
 
-            settings.startDate = convertDateObjectToDBDateFormat(date1);
-            settings.endDate = convertDateObjectToDBDateFormat(date2);
+          console.log("⭐️ handleDateSelect settings.view = ", settings.view);
+
+            switch(settings.view) {
+
+              case StageRerunsViewState.CUSTOM:
+                settings.startDate = convertDateObjectToDBDateFormat(date1);
+                settings.endDate = convertDateObjectToDBDateFormat(date2);
+                break;
+              case StageRerunsViewState.MONTH_TO_MONTH:
+                break;
+              case StageRerunsViewState.YEARLY:
+                console.log("🐞 Stage reruns view state is yearly, changing the"
+                    + " settings dates");
+                settings.startDate = date1;
+                settings.endDate = date2;
+                console.log("🐞 let's check the settings again", settings);
+                break;
+              case StageRerunsViewState.YEAR_TO_YEAR:
+                settings.startDate = date1;
+                settings.endDate = date2;
+                break;
+              default:
+                console.log("⭐️ handleDateSelect undefined view state");
+                return;
+            }
+
+          console.log("⭐️ stage re-runs about to call"
+              + " changeHandler(settings)", settings);
 
             changeHandler(settings);
         }
@@ -607,16 +635,16 @@ class Header {
 
         function setView(viewIndex) {
           switch (viewIndex) {
-            case 1:
+            case 0:
               settings.view = StageRerunsViewState.CUSTOM;
               break;
-            case 2:
+            case 1:
               settings.view = StageRerunsViewState.MONTH_TO_MONTH;
               break;
-            case 3:
+            case 2:
               settings.view = StageRerunsViewState.YEARLY;
               break;
-            case 4:
+            case 3:
                 settings.view = StageRerunsViewState.YEAR_TO_YEAR;
                 break;
             default:
@@ -633,9 +661,12 @@ class Header {
         }
 
         function handleViewSelect(selector) {
-          setView(selector.selectedIndex);
-
-          changeHandler(settings);
+          selector.addEventListener("change", () => {
+            setView(selector.selectedIndex);
+            changeHandler(settings);
+            console.log("🐞 handleViewSelect after changeHandler, now the"
+                + " settings are", settings);
+          });
         }
 
         function handleRequestResultSelect(selector) {
