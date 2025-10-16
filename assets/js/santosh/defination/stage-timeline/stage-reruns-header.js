@@ -1,4 +1,8 @@
-import {addOptionsToSelect, formatDatePicker} from "../../utils";
+import {
+  addOptionsToSelect,
+  firstDateOfYear,
+  formatDatePicker, lastDateOfYear
+} from "../../utils";
 // import SlimSelect from 'slim-select';
 import {setOrderSelector} from "../../DomManager";
 import {DateManager} from "../../DateManager";
@@ -16,6 +20,7 @@ let month_2_selector = undefined;
 let year_selector = undefined;
 let year_1_selector = undefined;
 let year_2_selector = undefined;
+let re_runs_after_selector = undefined;
 
 let date_selected_event_hook = undefined;
 
@@ -106,6 +111,8 @@ function defineAdditionalSettingComponentSelectors() {
 
   year_1_selector = document.getElementById("year_1_input");
   year_2_selector = document.getElementById("year_2_input");
+
+  re_runs_after_selector = document.getElementById("re_runs_after");
 }
 
 async function populateSettingComponents(pipelines) {
@@ -120,6 +127,10 @@ async function populateAdditionalSettingComponents() {
 
   await addOptionsToSelect(month_1_selector, months);
   await addOptionsToSelect(month_2_selector, months);
+
+  const trigger_after_list = ["Any", "Failure", "Success", "Cancellation"];
+
+  await addOptionsToSelect(re_runs_after_selector, trigger_after_list);
 }
 
 async function manageDatePicker(dateSelectedEvent) {
@@ -140,7 +151,8 @@ function defineEventListeners() {
   pipelineSelector.addEventListener("change", nativeOnPipelineClick);
 
   year_selector.addEventListener("change", () => {
-    date_selected_event_hook(year_selector.value, null);
+    const year = Number(year_selector.value);
+    date_selected_event_hook(firstDateOfYear(year), lastDateOfYear(year));
   });
 }
 
@@ -207,6 +219,12 @@ const monthly_date_setting_html = `
 const yearly_date_setting_html = `
       <div id="yearly_date_setting_div" style="display: flex; flex-direction: row; flex-grow: 1">
          Year: <input id="year_input" type="number" />
+         Re-runs after: <select id="re_runs_after"></select>
+         Triggered by <select>
+            <option>Any</option>
+            <option>Change</option>
+            <option>User</option>
+         </select>
       </div>
 `;
 

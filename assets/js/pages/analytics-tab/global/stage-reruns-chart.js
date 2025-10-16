@@ -24,6 +24,7 @@ import Header from "../../../santosh/defination/stage-timeline/header";
 import RequestMaster from "../../../RequestMaster";
 import Footer from "../../../santosh/defination/stage-timeline/footer";
 import Console from "../../../santosh/Console";
+import {StageRerunsViewState} from "../../../santosh/constants";
 
 let graphManager = null;
 let requestMaster = null;
@@ -46,7 +47,12 @@ AnalyticsEndpoint.onInit(function (initialData, transport) {
     graphManager = new GraphManager("series", transport, informSeriesMovement, footer);
 
     (async () => {
+
+      console.log("⭐️ stage re-runs before onInit()");
+
         const defaultSettings = await header.getStageRerunsHeader(changeHandler);
+
+        console.log("⭐️ stage re-runs after onInit()");
 
         await doStageReruns(data, defaultSettings);
     })();
@@ -69,6 +75,9 @@ async function informSeriesMovement(graphName) {
 }
 
 async function doStageReruns(data, settings) {
+
+  console.log("⭐️ doStageReruns for first time graph load with data and settings", data, settings);
+
     footer.clear();
 
     if (data.length === 0) {

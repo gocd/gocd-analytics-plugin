@@ -2,6 +2,7 @@ import GET_STACKED_BAR_TEMPLATE from "./stacked-bar";
 import {getBarSeries} from "../template";
 import {getDateFromTimestampString, groupBy, secondsToHms} from "../utils";
 import TooltipManager from "../TooltipManager";
+import * as echarts from "echarts";
 
 /**
  * @class
@@ -30,7 +31,11 @@ class StageReruns {
         this.c = c;
 
     if (this.settings.selectedPipeline !== '*** All ***') {
-      return this.drawForSelectedPipeline(data, c)
+      if(this.settings.view === "yearly") {
+        return this.drawYearlyForSelectedPipeline(data, c);
+      } else {
+        return this.drawForSelectedPipeline(data, c);
+      }
     } else {
       return this.drawForAllPipelines(data, c);
     }
@@ -109,11 +114,11 @@ class StageReruns {
     console.log("stage-reruns.js data preparation for yearly complete", info);
 
     const option = {
-      title: {
-        top: 30,
-        left: 'center',
-        text: 'Yearly stage re-runs'
-      },
+      // title: {
+      //   top: 30,
+      //   left: 'center',
+      //   text: 'Yearly stage re-runs'
+      // },
       tooltip: {},
       visualMap: {
         min: info.min,
@@ -121,10 +126,10 @@ class StageReruns {
         type: 'piecewise',
         orient: 'horizontal',
         left: 'center',
-        top: 65
+        top: 10
       },
       calendar: {
-        top: 120,
+        top: 60,
         left: 30,
         right: 30,
         cellSize: ['auto', 13],
