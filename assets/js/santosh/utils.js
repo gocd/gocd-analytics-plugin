@@ -139,7 +139,7 @@ const asyncRequest = async (transport, requestParams) => {
   });
 }
 
-async function addOptionsToSelect(selector, options) {
+async function addOptionsToSelect(selector, options, selectedIndex = 0) {
 
   options.forEach((option) => {
     const selectOption = document.createElement("option");
@@ -149,7 +149,7 @@ async function addOptionsToSelect(selector, options) {
     selector.appendChild(selectOption);
   });
 
-  selector.selectedIndex = 0;
+  selector.selectedIndex = selectedIndex;
 }
 
 function getDateFromTimestampString(timestamp) {
@@ -246,9 +246,9 @@ function getLatestAndOldestDates(dates) {
   return {latest, oldest};
 }
 
-function convertDateObjectToDBDateFormat(date) {
+function convertDateObjectToDBDateFormat(date, alreadyADateObject=false) {
   console.log("convertDateObjectToDBDateFormat()", date);
-  const dateObj = new Date(date.dateInstance);
+  const dateObj = alreadyADateObject ? date : new Date(date.dateInstance);
   const year = dateObj.getFullYear();
   const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Pad month for single digits
   const day = String(dateObj.getDate()).padStart(2, '0'); // Pad day for single digits
@@ -290,6 +290,16 @@ function hideGraphLoading() {
   //   console.log("chart-container not found");
 }
 
+function firstDateOfYear(year) {
+  return convertDateObjectToDBDateFormat(new Date(year, 0, 1), true);
+}
+
+function lastDateOfYear(year) {
+  const nextYearFirstDate = new Date(year + 1, 0, 1);
+  return convertDateObjectToDBDateFormat(
+      new Date(nextYearFirstDate.getTime() - 1), true);
+}
+
 export {
   secondsToHms,
   millisecondsToHoursMinutes,
@@ -313,6 +323,8 @@ export {
   getHumanReadableDateFromDBFormatDate,
   getFirstDayOfTheCurrentMonth,
   getLatestAndOldestDates,
+    firstDateOfYear,
+    lastDateOfYear
   // showGraphLoading,
   // hideGraphLoading
 }
