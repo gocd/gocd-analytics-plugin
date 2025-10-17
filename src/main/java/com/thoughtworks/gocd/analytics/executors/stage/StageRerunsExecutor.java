@@ -64,9 +64,6 @@ public class StageRerunsExecutor extends AbstractSessionFactoryAwareExecutor {
 
         final int counter = pipelineCounter == null ? 0 : Integer.parseInt(pipelineCounter);
 
-        final String string_stage_counter = param(PARAM_STAGE_COUNTER);
-        final int stage_counter = Integer.parseInt(string_stage_counter);
-
         final String order = requestOrder == null ? "DESC" : requestOrder;
 
         final int limit = requestLimit == null ? 10 : Integer.parseInt(requestLimit);

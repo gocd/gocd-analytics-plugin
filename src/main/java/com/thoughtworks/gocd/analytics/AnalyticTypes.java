@@ -33,8 +33,6 @@ public interface AnalyticTypes {
 
     String PARAM_PIPELINE_COUNTER = "pipeline_counter";
 
-    String PARAM_STAGE_COUNTER = "stage_counter";
-
     String PARAM_PIPELINE_COUNTER_START = "pipeline_counter_start";
     String PARAM_PIPELINE_COUNTER_END = "pipeline_counter_end";
 
