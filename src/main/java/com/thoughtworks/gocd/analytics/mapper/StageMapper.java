@@ -251,16 +251,28 @@ public interface StageMapper {
 
     @ResultMap("Stage")
     @Select(
-        "select * from stages s\n"
-        + "where s.scheduled_at::DATE >= DATE(#{startDate})\n"
-        + "and s.scheduled_at::DATE <= DATE(#{endDate})\n"
-        + "and s.pipeline_name = #{pipelineName}\n"
-        + "and s.stage_counter > #{stage_counter}\n"
-        + ";\n"
+        "select * from stages \n"
+        + " where scheduled_at::DATE >= DATE(#{startDate}) \n"
+        + " and scheduled_at::DATE <= DATE(#{endDate}) \n"
+        + " and pipeline_name = #{pipelineName} \n"
+        + " and stage_counter > 1 \n"
+        + ";"
         )
     List<Stage> yearlyStageRerunsForPipeline(@Param("pipelineName") String pipelineName,
+        @Param("startDate") String startDate, @Param("endDate") String endDate);
+
+    @ResultMap("Stage")
+    @Select(
+        "select * from stages \n"
+        + " where scheduled_at::DATE >= DATE(#{startDate}) \n"
+        + " and scheduled_at::DATE <= DATE(#{endDate}) \n"
+        + " and pipeline_name = #{pipelineName} \n"
+        + " and result = #{result} \n"
+        + ";"
+    )
+    List<Stage> yearlyStageRerunsForPipelineWithResult(@Param("pipelineName") String pipelineName,
         @Param("startDate") String startDate, @Param("endDate") String endDate,
-        @Param("stage_counter") int stage_counter);
+        @Param("result") String result);
 
     @ResultMap("Stage")
     @Select("<script>"

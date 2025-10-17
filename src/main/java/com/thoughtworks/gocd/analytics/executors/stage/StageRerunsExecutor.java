@@ -50,7 +50,7 @@ public class StageRerunsExecutor extends AbstractSessionFactoryAwareExecutor {
         final String pipelineName = param(PARAM_PIPELINE_NAME);
         final String stageName = param(PARAM_STAGE_NAME);
         final String pipelineCounter = param(PARAM_PIPELINE_COUNTER);
-//        final String requestResult = param(PARAM_RESULT);
+        final String requestResult = param(PARAM_RESULT);
         final String requestOrder = param(PARAM_ORDER);
         final String requestLimit = param(PARAM_LIMIT);
 
@@ -60,7 +60,7 @@ public class StageRerunsExecutor extends AbstractSessionFactoryAwareExecutor {
         final String startDate = param(PARAM_START_DATE);
         final String endDate = param(PARAM_END_DATE);
 
-//        final String result = new String("Any").equals(requestResult) ? null : requestResult;
+        final String result = new String("Any").equals(requestResult) ? null : requestResult;
 
         final int counter = pipelineCounter == null ? 0 : Integer.parseInt(pipelineCounter);
 
@@ -78,8 +78,13 @@ public class StageRerunsExecutor extends AbstractSessionFactoryAwareExecutor {
             @Override
             public List<Stage> execute(SqlSession sqlSession) {
                 if (view.equals("yearly")) {
-                    return stageDAO.getYearlyStageRerunsForPipeline(sqlSession, pipelineName, start,
-                        end, stage_counter);
+                    if(result == null) {
+                        return stageDAO.getYearlyStageRerunsForPipeline(sqlSession, pipelineName,
+                            start, end);
+                    } else {
+                        return stageDAO.getYearlyStageRerunsForPipelineWithResult(sqlSession,
+                            pipelineName, start, end, result);
+                    }
                 }
                 if (pipelineName == null || pipelineName.isEmpty() || pipelineName.isBlank()
                     || pipelineName.equalsIgnoreCase("*** All ***")) {

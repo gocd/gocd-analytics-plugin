@@ -87,8 +87,13 @@ public class StageDAO {
     }
 
     public List<Stage> getYearlyStageRerunsForPipeline(SqlSession sqlSession, String pipeline,
-        String start, String end, int stage_counter) {
-        return mapper(sqlSession).yearlyStageRerunsForPipeline(pipeline, start, end, stage_counter);
+        String start, String end) {
+        return mapper(sqlSession).yearlyStageRerunsForPipeline(pipeline, start, end);
+    }
+
+    public List<Stage> getYearlyStageRerunsForPipelineWithResult(SqlSession sqlSession,
+        String pipeline, String start, String end, String result) {
+        return mapper(sqlSession).yearlyStageRerunsForPipelineWithResult(pipeline, start, end, result);
     }
 
     public List<Stage> getStageRerunsForPipelineStageAndCounter(SqlSession sqlSession,
