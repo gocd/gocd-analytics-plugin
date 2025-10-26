@@ -3,7 +3,7 @@ import {
   firstDateOfYear,
   formatDatePicker, lastDateOfYear
 } from "../../utils";
-// import SlimSelect from 'slim-select';
+import SlimSelect from 'slim-select';
 import {setOrderSelector} from "../../DomManager";
 import {DateManager} from "../../DateManager";
 
