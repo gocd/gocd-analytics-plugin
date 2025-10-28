@@ -234,7 +234,7 @@ module.exports = (env) => {
                 },
                 {
                     test: /\.js$/,
-                    exclude: /node_modules/,
+                    exclude: /node_modules(?!\/slim-select)/,
                     use: [
                         {
                             loader: 'babel-loader',

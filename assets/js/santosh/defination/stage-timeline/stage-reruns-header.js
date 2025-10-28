@@ -4,6 +4,7 @@ import {
   formatDatePicker, lastDateOfYear
 } from "../../utils";
 import SlimSelect from 'slim-select';
+import 'slim-select/dist/slimselect.css';
 import {setOrderSelector} from "../../DomManager";
 import {DateManager} from "../../DateManager";
 
