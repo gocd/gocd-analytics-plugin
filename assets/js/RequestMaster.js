@@ -163,7 +163,8 @@ class RequestMaster {
             "order": settings.requestOrder,
             "limit": settings.requestLimit,
             "start": settings.startDate,
-            "end": settings.endDate
+            "end": settings.endDate,
+          "result": settings.requestResult,
         }
         const stageReruns = await this.asyncRequest(requestParams);
         return stageReruns;

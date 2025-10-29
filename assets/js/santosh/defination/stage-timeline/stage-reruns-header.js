@@ -204,7 +204,8 @@ async function stageRerunsHeader(pipelines, settingsDOM, dateSelectedEvent) {
     dateFilterSelector: dateFilterSelector,
     pipelineSelector,
     requestOrderSelector,
-    viewSelector
+    viewSelector,
+    re_runs_after_selector
   };
 }
 

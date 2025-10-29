@@ -548,7 +548,8 @@ class Header {
             startDate: getFirstDayOfTheCurrentMonth(),
             endDate: getTodaysDateInDBFormat(),
           otherDate: undefined,
-          stageCounter: 1
+          stageCounter: 1,
+          requestResult: "Any",
         };
 
         const pipelines = await this.requestMaster.getPipelineList();
@@ -559,10 +560,14 @@ class Header {
         selectors.requestOrderSelector.value = settings.requestOrder;
         selectors.dateFilterSelector.textContent = `${getHumanReadableDateFromDBFormatDate(settings.startDate)} - ${getHumanReadableDateFromDBFormatDate(settings.endDate)}`;
 
+        // Since we are not doing anything with the compared default setting
+      // in the stage-reruns-chart.js setting the selectors right away
+      // doesn't server any purpose
+
         setSelectedPipeline(selectors.pipelineSelector.value);
 
         handlePipelineSelect(selectors.pipelineSelector);
-        // handleRequestResultSelect(selectors.requestResultSelector);
+        handleRequestResultSelect(selectors.re_runs_after_selector);
         handleRequestOrderSelect(selectors.requestOrderSelector);
 
 
@@ -610,7 +615,22 @@ class Header {
         }
 
         function setSelectedRequestResult(result) {
-            settings.requestResult = result;
+          let actual_result = "";
+
+          switch (result) {
+            case "Success":
+              actual_result = "Passed";
+              break;
+              case "Failure":
+                actual_result = "Failed";
+                break;
+            case "Cancellation":
+              actual_result = "Cancelled";
+              break;
+              default:
+                actual_result = "Any";
+          }
+            settings.requestResult = actual_result;
         }
 
         function setSelectedRequestOrder(result) {
