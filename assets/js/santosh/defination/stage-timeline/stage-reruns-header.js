@@ -31,12 +31,13 @@ let associated_setting_yearly_selector = undefined;
 let associated_setting_year_to_year_selector = undefined;
 
 async function onViewClick(event) {
-  const selectedOptions = Array.from(event.target.selectedOptions).map(option => option.value);
+  const selectedOptions = Array.from(event.target.selectedOptions).map(
+      option => option.value);
   console.log("you clicked ", selectedOptions);
 
   // TODO: check to see if there' a pipeline selected
 
-  switch(event.target.selectedIndex) {
+  switch (event.target.selectedIndex) {
     case 0:
       hideAllAdditionalSettings(associated_setting_custom_selector);
       break;
@@ -64,8 +65,9 @@ function hideAllAdditionalSettings(except) {
 }
 
 function nativeOnPipelineClick(event) {
-  console.log("nativeOnPipelineClick with selectedIndex", event.target.selectedIndex);
-  if(event.target.selectedIndex === 0) {
+  console.log("nativeOnPipelineClick with selectedIndex",
+      event.target.selectedIndex);
+  if (event.target.selectedIndex === 0) {
     disableAllOptionsOfExceptForIndex();
   } else {
     enableAllOptions();
@@ -73,8 +75,8 @@ function nativeOnPipelineClick(event) {
 }
 
 function disableAllOptionsOfExceptForIndex(selector, index) {
-  if(viewSelector) {
-    for(let i = 1; i < viewSelector.options.length; i++) {
+  if (viewSelector) {
+    for (let i = 1; i < viewSelector.options.length; i++) {
       viewSelector.options[i].disabled = true;
     }
   } else {
@@ -83,8 +85,8 @@ function disableAllOptionsOfExceptForIndex(selector, index) {
 }
 
 function enableAllOptions() {
-  if(viewSelector) {
-    for(let i = 0; i < viewSelector.options.length; i++) {
+  if (viewSelector) {
+    for (let i = 0; i < viewSelector.options.length; i++) {
       viewSelector.options[i].disabled = false;
     }
   }
@@ -98,10 +100,14 @@ function defineSettingSelectors() {
 }
 
 function defineAdditionalSettingSelectors() {
-  associated_setting_custom_selector = document.getElementById("custom_date_setting_div");
-  associated_setting_monthly_selector = document.getElementById("monthly_date_setting_div");
-  associated_setting_yearly_selector = document.getElementById("yearly_date_setting_div");
-  associated_setting_year_to_year_selector = document.getElementById("year_to_year_date_setting_div");
+  associated_setting_custom_selector = document.getElementById(
+      "custom_date_setting_div");
+  associated_setting_monthly_selector = document.getElementById(
+      "monthly_date_setting_div");
+  associated_setting_yearly_selector = document.getElementById(
+      "yearly_date_setting_div");
+  associated_setting_year_to_year_selector = document.getElementById(
+      "year_to_year_date_setting_div");
 }
 
 function defineAdditionalSettingComponentSelectors() {
@@ -119,7 +125,8 @@ function defineAdditionalSettingComponentSelectors() {
 async function populateSettingComponents(pipelines) {
   await addOptionsToSelect(pipelineSelector, ['*** All ***', ...pipelines]);
 
-  await addOptionsToSelect(viewSelector, ["Custom date", "Month to month", "Yearly", "Year to year"]);
+  await addOptionsToSelect(viewSelector,
+      ["Custom date", "Month to month", "Yearly", "Year to year"]);
 }
 
 async function populateAdditionalSettingComponents() {
@@ -136,7 +143,8 @@ async function populateAdditionalSettingComponents() {
 
 async function manageDatePicker(dateSelectedEvent) {
   const dm = new DateManager();
-  const datePicker = await dm.addDatelitePickerDiv(dateFilterSelector, dateSelectedEvent);
+  const datePicker = await dm.addDatelitePickerDiv(dateFilterSelector,
+      dateSelectedEvent);
   datePicker.hide();
 
   dateFilterSelector.addEventListener("click", onDatePickerClick);
@@ -157,48 +165,47 @@ function defineEventListeners() {
   });
 }
 
-async function  stageRerunsHeader(pipelines, settingsDOM, dateSelectedEvent) {
+async function stageRerunsHeader(pipelines, settingsDOM, dateSelectedEvent) {
 
   date_selected_event_hook = dateSelectedEvent;
 
-    await addOptionHeader(settingsDOM);
+  await addOptionHeader(settingsDOM);
 
-    defineSettingSelectors();
+  defineSettingSelectors();
 
-    defineAdditionalSettingSelectors();
+  defineAdditionalSettingSelectors();
 
-    defineAdditionalSettingComponentSelectors();
+  defineAdditionalSettingComponentSelectors();
 
-    await populateSettingComponents(pipelines);
+  await populateSettingComponents(pipelines);
 
-    await populateAdditionalSettingComponents();
+  await populateAdditionalSettingComponents();
 
-    await manageDatePicker(dateSelectedEvent);
+  await manageDatePicker(dateSelectedEvent);
 
-    hideAllAdditionalSettings(associated_setting_custom_selector);
+  hideAllAdditionalSettings(associated_setting_custom_selector);
 
-    defineEventListeners();
+  defineEventListeners();
 
+  disableAllOptionsOfExceptForIndex(viewSelector, 1);
 
-    disableAllOptionsOfExceptForIndex(viewSelector, 1);
+  new SlimSelect({
+    select: '#pipeline'
+  })
 
-    new SlimSelect({
-        select: '#pipeline'
-    })
+  // await addOptionsToSelect(requestOrderSelector, [{text: "Ascending", value: "ASC"}, {
+  //     text: "Descending",
+  //     value: "DESC"
+  // }]);
 
-    // await addOptionsToSelect(requestOrderSelector, [{text: "Ascending", value: "ASC"}, {
-    //     text: "Descending",
-    //     value: "DESC"
-    // }]);
+  await setOrderSelector(requestOrderSelector);
 
-    await setOrderSelector(requestOrderSelector);
-
-    return {
-        dateFilterSelector: dateFilterSelector,
-        pipelineSelector,
-        requestOrderSelector,
-      viewSelector
-    };
+  return {
+    dateFilterSelector: dateFilterSelector,
+    pipelineSelector,
+    requestOrderSelector,
+    viewSelector
+  };
 }
 
 const custom_date_setting_html = `
@@ -237,7 +244,7 @@ const year_to_year_date_setting_html = `
 `;
 
 async function addOptionHeader(settingsDOM) {
-    settingsDOM.innerHTML = `
+  settingsDOM.innerHTML = `
 <div style="position:relative; display: flex; flex-direction: column">
   <div id="setting-header" style="display: flex; flex-direction: row">
     <div style="font-size:18px; flex-grow: 1">
