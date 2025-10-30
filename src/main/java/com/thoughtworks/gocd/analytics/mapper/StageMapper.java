@@ -267,7 +267,6 @@ public interface StageMapper {
         + " where scheduled_at::DATE >= DATE(#{startDate}) \n"
         + " and scheduled_at::DATE <= DATE(#{endDate}) \n"
         + " and pipeline_name = #{pipelineName} \n"
-        + " and result = #{result} \n"
         + ";"
     )
     List<Stage> yearlyStageRerunsForPipelineWithResult(@Param("pipelineName") String pipelineName,

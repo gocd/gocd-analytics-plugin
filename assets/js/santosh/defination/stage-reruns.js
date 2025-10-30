@@ -105,7 +105,7 @@ class StageReruns {
   drawYearlyForSelectedPipeline(data, c) {
     console.log("stage-reruns.js drawYearlyForSelectedPipeline()");
 
-    const info = this.prepareYearlyDataForSelectedPipeline(this.data);
+    const info = this.prepareYearlyDataForSelectedPipeline(this.data, this.settings.requestResult);
 
     const year = new Date(this.settings.startDate).getFullYear();
 
@@ -208,16 +208,52 @@ class StageReruns {
     };
   };
 
-    prepareYearlyDataForSelectedPipeline(data) {
+    prepareYearlyDataForSelectedPipeline(data, result) {
     // console.log("🐞 1️⃣ prepareYearlyDataForSelectedPipeline() with data ", data);
 
-    data.forEach(d => {
-      d.scheduled_at = getDateFromTimestampString(d.scheduled_at);
-    });
+    let filtered_data = data;
+
+      if(result !== "Any") {
+        filtered_data = [];
+
+        console.log("🐞 result !== null");
+
+        data.forEach(d => {
+          console.log("typeOf d.stage_counter ", typeof d.stage_counter);
+          console.log("typeOf d.result ", typeof d.result);
+          console.log("typeOf result ", typeof result);
+          if(d.stage_counter === 1 && d.result === result) {
+            filtered_data.push(...
+                data.filter(
+                    item => item.pipeline_counter === d.pipeline_counter
+                        && item.stage_name === d.stage_name));
+
+            console.log("filtered_data", filtered_data);
+          }
+        });
+
+        console.log("🐞 final filtered_data = ", filtered_data);
+
+        const filtered_index = filtered_data
+        .map((item, index) => (item.stage_counter === 1 ? index : -1))
+        .filter(idx => idx !== -1);
+
+        console.log("🐞 filtered_index = ", filtered_index);
+
+        filtered_index.sort((a, b) => b - a).forEach(index => {
+          filtered_data.splice(index, 1);
+        });
+
+        console.log("🐞filtered_data after splicing = ", filtered_data);
+      }
+
+      filtered_data.forEach(d => {
+        d.scheduled_at = getDateFromTimestampString(d.scheduled_at);
+      });
 
     // console.log("🐞 2️⃣ after scheduled_at conversion ", data);
 
-    const groupedData = groupBy(data, 'scheduled_at');
+    const groupedData = groupBy(filtered_data, 'scheduled_at');
 
     // console.log("🐞 3️⃣ groupedData ", groupedData);
 
