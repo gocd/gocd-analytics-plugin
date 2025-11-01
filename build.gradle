@@ -80,7 +80,7 @@ configurations {
 ext {
   deps = [
     gocdPluginApi: 'cd.go.plugin:go-plugin-api:25.3.0',
-    flyway       : 'org.flywaydb:flyway-core:11.13.2',
+    flyway       : 'org.flywaydb:flyway-core:11.15.0',
   ]
 
   versions = project.ext.deps.collectEntries { lib, libGav -> [lib, libGav.split(':').last()] }
@@ -96,9 +96,9 @@ dependencies {
   implementation 'org.mybatis:mybatis:3.4.6'
   implementation project.deps.flyway
   runtimeOnly "org.flywaydb:flyway-database-postgresql:${project.versions.flyway}"
-  runtimeOnly 'ch.qos.logback:logback-classic:1.5.19'
+  runtimeOnly 'ch.qos.logback:logback-classic:1.5.20'
 
-  testImplementation platform('org.junit:junit-bom:6.0.0')
+  testImplementation platform('org.junit:junit-bom:6.0.1')
   testImplementation 'org.junit.jupiter:junit-jupiter-api'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
   testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
