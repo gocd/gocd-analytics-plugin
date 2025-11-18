@@ -44,7 +44,7 @@
     "mini-css-extract-plugin": "^1.6.2",
     "puppeteer": "^24.22.3",
     "sass": "^1.93.3",
-    "sass-loader": "^10.5.2",
+    "sass-loader": "^15.0.0",
     "script-ext-html-webpack-plugin": "^2.1.5",
     "sinon": "^15.2.0",
     "tap-diff": "^0.1.1",
