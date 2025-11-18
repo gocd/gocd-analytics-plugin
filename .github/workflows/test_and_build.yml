@@ -52,11 +52,7 @@ jobs:
         run: ./gradlew assemble check
         env:
           PGPASSWORD: postgres
-      - name: Generate and submit dependency graph
-        uses: gradle/actions/dependency-submission@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5.0.0
-        if: github.ref == 'refs/heads/master' && matrix.postgres-version == '17'
-        env:
-          DEPENDENCY_GRAPH_INCLUDE_CONFIGURATIONS: runtimeClasspath
+
   githubRelease:
     needs: test
     runs-on: ubuntu-latest
