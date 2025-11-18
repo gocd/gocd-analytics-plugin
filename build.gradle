@@ -117,7 +117,7 @@ clean.doFirst {
 }
 
 def install = tasks.register('install', NpmTask) {
-  args = ['install', '--legacy-peer-deps']
+  args = ['install']
 }
 
 tasks.register('generateWebpackAssets', NpmTask) {
