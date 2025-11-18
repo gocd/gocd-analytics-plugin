@@ -65,6 +65,9 @@
     },
     "tap-diff": {
       "diff": "^5.2.0"
+    },
+    "sinon": {
+      "@sinonjs/samsam": "8.0.2"
     }
   }
 }
