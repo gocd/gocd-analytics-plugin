@@ -43,7 +43,7 @@
     "lodash-webpack-plugin": "^0.11.5",
     "mini-css-extract-plugin": "^1.6.2",
     "puppeteer": "^24.34.0",
-    "sass": "^1.94.2",
+    "sass": "^1.97.1",
     "sass-loader": "^10.5.2",
     "script-ext-html-webpack-plugin": "^2.1.5",
     "sinon": "^15.2.0",
