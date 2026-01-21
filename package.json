@@ -32,7 +32,7 @@
     "css-loader": "^5.2.7",
     "eslint": "^9.39.2",
     "file-loader": "^6.2.0",
-    "globals": "^16.4.0",
+    "globals": "^17.0.0",
     "html-webpack-plugin": "^4.5.2",
     "karma": "^6.4.4",
     "karma-chrome-launcher": "^3.2.0",
@@ -46,7 +46,7 @@
     "sass": "^1.97.2",
     "sass-loader": "^10.5.2",
     "script-ext-html-webpack-plugin": "^2.1.5",
-    "sinon": "^15.2.0",
+    "sinon": "^21.0.1",
     "tap-diff": "^0.1.1",
     "tape": "^5.7.5",
     "tape-plus": "^1.0.0",
@@ -57,17 +57,18 @@
   },
   "overrides": {
     "webpack": {
+      "acorn": "^8.1.15",
       "micromatch": "^4.0.8",
       "terser-webpack-plugin": "^4.2.3"
     },
     "watchpack-chokidar2": {
       "chokidar": "^3.6.0"
     },
+    "cacache": {
+      "tar": "^7.5.6"
+    },
     "tap-diff": {
       "diff": "^5.2.0"
-    },
-    "sinon": {
-      "@sinonjs/samsam": "8.0.2"
     }
   }
 }
