@@ -47,7 +47,7 @@ module.exports = function (config) {
     reporters: ["tap-pretty"],
 
     tapReporter: {
-      prettify: require("tap-diff"),
+      prettify: require("faucet"),
       separator: "****************************"
     },
 
