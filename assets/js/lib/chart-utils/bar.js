@@ -140,6 +140,6 @@ export default function BarChartSkeleton(options) {
       }
     },
     series: options.series,
-    legend: Fragments.chartLegend(_.merge({legend: {margin: 3}}, options))
+    legend: Fragments.chartLegend(Object.assign({legend: {margin: 3}}, options))
   };
 }

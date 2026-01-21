@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import _ from "lodash";
-
 import moment from "js/lib/moment-humanize-for-gocd.js";
 import Constants from "js/lib/constants.js";
 import BuildMetrics from "js/lib/build-metrics.js";
@@ -26,7 +24,7 @@ import areaChart from "js/lib/chart-utils/area";
 import Fragments from "js/lib/chart-utils/fragments";
 
 import library from "js/lib/load-fontawesome";
-import { faQuestionCircle, faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import {faAngleDown, faQuestionCircle} from "@fortawesome/free-solid-svg-icons";
 
 library.add(faQuestionCircle);
 library.add(faAngleDown);
@@ -60,7 +58,7 @@ const DataTransforms = {
       return 0 === pips.length ? [] : [[0, BuildMetrics.mean(pips)], [pips.length - 1, BuildMetrics.mean(pips)]];
     },
     "Build Time": function (data) {
-      return _.map(data.instances, function (p) {
+      return data.instances.map(p => {
         return {
           y: (p.total_time_secs - p.time_waiting_secs) / 60.0,
           scheduled_at: p.scheduled_at,
@@ -73,7 +71,7 @@ const DataTransforms = {
       });
     },
     "Wait Time": function (data) {
-      return _.map(data.instances, function (p) {
+      return data.instances.map(p => {
         return {
           y: p.time_waiting_secs / 60.0,
           result: p.result,
@@ -86,7 +84,7 @@ const DataTransforms = {
 
   longestWaiting: {
     "Build Time": function (data) {
-      return _.map(data, function (p) {
+      return data.map(p => {
         return {
           name: p.name,
           type: PIPELINE_STATUS.BUILDING,
@@ -95,7 +93,7 @@ const DataTransforms = {
       });
     },
     "Wait Time": function (data) {
-      return _.map(data, function (p) {
+      return data.map(p => {
         return {
           name: p.name,
           type: PIPELINE_STATUS.WAITING,
@@ -186,7 +184,7 @@ function PipelineCharts() {
       title: "Pipelines with the Highest Wait Time",
       addendum: "(Average over the last 7 days)",
       xAxis: {
-        categories: _.map(pipelines, _.property(FIELD_NAME))
+        categories: pipelines.map(p => p[FIELD_NAME])
       },
       tooltip: {
         formatter: Formatters.makeTimingTooltipFormatter(function(cursor) {
@@ -209,7 +207,7 @@ function PipelineCharts() {
     return barChart(data);
   }
 
-  _.assign(this, {
+  Object.assign(this, {
     runs: runs,
     longestWaiting: longestWaiting
   });

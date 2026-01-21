@@ -53,7 +53,7 @@ function VsmUtils() {
 	}
 
 	function findMatchingPipeline(workflow, pipelineName) {
-		return _.filter(workflow, (pipeline) => {
+		return workflow.filter((pipeline) => {
 			return pipeline.name === pipelineName;
 		});
 	}

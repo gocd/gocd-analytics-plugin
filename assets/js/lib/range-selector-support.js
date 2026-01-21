@@ -71,7 +71,7 @@ function RangeSelector(transport, chart, options) {
       always(() => chart.hideLoading()); // in case we fail early
   }
 
-  chart.ranger = $("<div class=\"range-selector\">").append($.map(options.buttons, (b) => {
+  chart.ranger = $("<div class=\"range-selector\">").append(options.buttons.map(b => {
     return $("<button class=\"range-button\">").
       text(b.text).
       attr("data-range-params", JSON.stringify({ start: b.start, end: TODAY })).

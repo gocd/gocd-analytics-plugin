@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import _ from "lodash";
 import Stats from "../stats";
 
 function Fragments() {
@@ -165,7 +164,7 @@ function Fragments() {
   };
 
   this.chartLegend = function chartLegend(options) {
-    return _.assign({
+    return Object.assign({
       align: "right",
       layout: "horizontal",
       verticalAlign: "bottom",
@@ -181,7 +180,7 @@ function Fragments() {
   };
 
   this.chartZoomHint = function chartZoomHint(options) {
-    return _.assign({
+    return Object.assign({
       // ok, so this isn't really an axis title, but it's a super-
       // convenient place to add this. so sue me.
       text: [

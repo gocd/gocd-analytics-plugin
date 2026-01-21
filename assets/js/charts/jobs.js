@@ -43,7 +43,7 @@ function JobCharts() {
   }
 
   function durationPt(jobs, key, formatter) {
-    return _.map(jobs, function (job) {
+    return jobs.map(job => {
       const point = _.merge({
         name: identifier(job),
         y:    job[key] / 60.0
@@ -72,7 +72,7 @@ function JobCharts() {
     ].join("<br/>");
   }, "Click on data point for job details");
 
-  _.assign(this, {
+  Object.assign(this, {
     runs: function jobRuns(data) {
       const jobs = data.jobs;
 
@@ -82,7 +82,7 @@ function JobCharts() {
         xAxis: {
           title: Fragments.chartZoomHint({y: 24}),
           className: "job-runs",
-          categories: _.map(jobs, _.property(FIELD_SCHEDULED)),
+          categories: jobs.map(j => j[FIELD_SCHEDULED]),
           formatter: timeAxisFormatter
         },
         yAxis: {
@@ -121,7 +121,7 @@ function JobCharts() {
         xAxis: {
           title: Fragments.chartZoomHint({y: 24}),
           className: "job-runs",
-          categories: _.map(jobs, _.property(FIELD_SCHEDULED)),
+          categories: jobs.map(j => j[FIELD_SCHEDULED]),
           formatter: timeAxisFormatter
         },
         yAxis: {
@@ -177,7 +177,7 @@ function JobCharts() {
         addendum: "(Average over the last 7 days)",
         subtitle: Formatters.breadcrumbFormatter(pipeline),
         xAxis: {
-          categories: _.map(jobs, identifier),
+          categories: jobs.map(identifier),
           formatter: noKeys
         },
         tooltip: {
@@ -209,7 +209,7 @@ function JobCharts() {
             });
 
       function addAgentData(_j, _k, point) {
-        return _.assign(point, {
+        return Object.assign(point, {
           agent_uuid:      agentUUID,
           agent_host_name: agentHostname
         });
@@ -243,7 +243,7 @@ function JobCharts() {
         addendum: "(Average over the last 7 days)",
         subtitle: Formatters.agentBreadcrumbFormatter(agentId),
         xAxis: {
-          categories: _.map(jobs, identifier),
+          categories: jobs.map(identifier),
           formatter: noKeys
         },
         tooltip: {

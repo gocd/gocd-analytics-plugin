@@ -22,7 +22,7 @@ import barChart from "js/lib/chart-utils/bar";
 import moment from "js/lib/moment-humanize-for-gocd";
 
 function AgentCharts() {
-  _.assign(this, {
+  Object.assign(this, {
     mostUtilized: function mostUtilized(agents) {
       const data = {
         title: "Agents with the Highest Utilization",
@@ -31,7 +31,7 @@ function AgentCharts() {
           formatter: function () {
             return Formatters.agentHostnameFormatter(this.value);
           },
-          categories: _.map(agents, Formatters.agentIdentifier)
+          categories: agents.map(Formatters.agentIdentifier)
         },
         tooltip: {
           formatter: Formatters.makeTimingTooltipFormatter(function (cursor) {
@@ -42,7 +42,7 @@ function AgentCharts() {
           {
             name: "Idle Time",
             colorIndex: Constants.COLORS.waiting,
-            data: _.map(agents, function (a) {
+            data: agents.map(function (a) {
               return {
                 y: a.idle_duration_secs / 60.0,
                 agent_host_name: a.agent_host_name,
@@ -53,7 +53,7 @@ function AgentCharts() {
           {
             name: "Build Time",
             colorIndex: Constants.COLORS.building,
-            data: _.map(agents, function (a) {
+            data: agents.map(function (a) {
               return {
                 y: a.building_duration_secs / 60.0,
                 agent_uuid: a.uuid,
@@ -68,7 +68,6 @@ function AgentCharts() {
 
     transitions: function (selector, transitions, range, redraw) {
       const agentStates = ["Idle", "Building", "Cancelled", "Missing", "LostContact", "Unknown"];
-      const stateInfoForDates = [];
       const agentStateWithTimingInfo = [];
 
       for (let i = 0, current, next, len = transitions.length; i < len; ++i) {
@@ -94,14 +93,12 @@ function AgentCharts() {
             const to = D.eq(startDate, endDate) ? nextDate : D.endOfDay(startDate, true);
             const state = getAgentStateForTime(new Date(from) /* use a copy to guard from updates to startDate */, to, currentState);
             agentStateWithTimingInfo.push(state);
-            stateInfoForDates.push(state.date);
 
             from = D.addDays(startDate, 1); // does an in-place update; from and startDate reference same object
           }
         } else {
           const state = getAgentStateForTime(currentDate, nextDate, currentState);
           agentStateWithTimingInfo.push(state);
-          stateInfoForDates.push(state.date);
         }
       }
 
@@ -121,7 +118,7 @@ function AgentCharts() {
 function getRangeSelector(range, redraw) {
   window.redraw = redraw;
 
-  return _.map(range, (config) => {
+  return range.map((config) => {
     return `<button ${config.selected ? "class=\"selected\" " : ""}onclick="redraw('${config.id}')">${config.text}</button>`;
   }).join("\n");
 }
@@ -161,7 +158,7 @@ function getAgentStateTransitionSubtitle(status, data) {
   if (!timings.total) { return; }
 
   return `<div class="state-metrics">
-      ${status.map((s) => `<dl class="state-metric-item"> <dt class="key">${_.escape(s)}</dt> <dd class="val">${((timings[s] * 100) / timings.total).toFixed(1)}%</dd> </dl>`).join("")}
+      ${status.map(s => `<dl class="state-metric-item"> <dt class="key">${_.escape(s)}</dt> <dd class="val">${((timings[s] * 100) / timings.total).toFixed(1)}%</dd> </dl>`).join("")}
     </div>`;
 }
 

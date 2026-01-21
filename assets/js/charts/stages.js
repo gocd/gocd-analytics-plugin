@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import _ from "lodash";
-
 import areaChart from "js/lib/chart-utils/area";
 import moment from "js/lib/moment-humanize-for-gocd.js";
 import Formatters from "js/lib/formatters.js";
@@ -32,7 +30,7 @@ const DataTransforms = {
     },
 
     "Build Time": function (data) {
-      return _.map(data.runs, function (s) {
+      return data.runs.map(s => {
         return {
           y: (s.total_time_secs - s.time_waiting_secs) / 60.0,
           colorIndex: Utils.colorByResult(s.result),
@@ -46,7 +44,7 @@ const DataTransforms = {
     },
 
     "Wait Time": function (data) {
-      return _.map(data.runs, function (s) {
+      return data.runs.map(s => {
         return {
           y: s.time_waiting_secs / 60.0,
           result: s.result,

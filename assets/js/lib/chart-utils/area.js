@@ -24,7 +24,7 @@ function marginTop(options) {
 }
 
 export default function AreaChartSkeleton(options) {
-  const series = _.filter(options.series, function (s) {
+  const series = options.series.filter(s => {
     return "mean build time" !== s.name.toLowerCase();
   });
 

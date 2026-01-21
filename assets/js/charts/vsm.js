@@ -24,7 +24,7 @@ import xRangeChart from "js/lib/chart-utils/xrange";
 import Formatters from "js/lib/formatters.js";
 
 import library from "js/lib/load-fontawesome";
-import { faQuestionCircle, faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import {faAngleDown, faQuestionCircle} from "@fortawesome/free-solid-svg-icons";
 
 library.add(faQuestionCircle);
 library.add(faAngleDown);
@@ -61,7 +61,7 @@ const DataTransforms = {
 				return hash;
 			}, {});
 
-			return _.map(pipelineNames, function (pipelineName) {
+			return pipelineNames.map(pipelineName => {
 				let pipeline = pipelineNameToPipeline[pipelineName];
 				if (pipeline) {
 					return {
@@ -207,10 +207,10 @@ function VSMCharts() {
 		return xRangeChart(options);
 	}
 
-    _.assign(this, {
-        trends: trends,
-        details: details
-    });
+	Object.assign(this, {
+		trends: trends,
+		details: details
+	});
 }
 
 export default new VSMCharts();

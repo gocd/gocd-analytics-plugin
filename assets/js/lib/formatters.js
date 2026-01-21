@@ -54,7 +54,7 @@ function Formatters() {
     if ("number" !== typeof options.startAt) options.startAt = 0;
 
     const keys = options.keys || PARTS;
-    const result = _.reduce(name.split("/"), (memo, el, i) => {
+    const result = name.split("/").reduce((memo, el, i) => {
       if (i >= options.startAt) {
         const key = keys[i];
         memo.push(Utils.tooltipKeyVal(_.escape(key), _.escape(el), key ? key.toLowerCase() : null));

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import _ from "lodash";
-
 function throwNotImplemented(id, name) {
   return function unimplemented() {
     throw new Error(`${id} must implement ${name}()`);
@@ -31,7 +29,7 @@ function ChartFactories(instances) {
         params:  throwNotImplemented(id, "params")
       };
 
-      return _.assign(defaults, instances[id]);
+      return Object.assign(defaults, instances[id]);
     }
 
     throw new Error(`Unknown drilldown route: ${id}`);
