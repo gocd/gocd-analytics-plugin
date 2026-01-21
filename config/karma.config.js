@@ -18,7 +18,7 @@ const path = require("path"),
    webpack = require("webpack"),
      merge = require("webpack-merge");
 
-const webpackConfig = require('./webpack.config.js')();
+const webpackConfig = require("./webpack.config.js")();
 
 webpackConfig.mode = "development";
 webpackConfig.externals = { };
@@ -66,8 +66,8 @@ module.exports = function (config) {
     browsers: ["ChromeHeadlessNoSandbox"],
     customLaunchers: {
       ChromeHeadlessNoSandbox: {
-        base: 'ChromeHeadless',
-        flags: ['--no-sandbox']
+        base: "ChromeHeadless",
+        flags: ["--no-sandbox"]
       }
     },
     singleRun: false,
