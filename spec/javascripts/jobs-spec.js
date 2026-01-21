@@ -25,7 +25,7 @@ function contains(array, entry) {
 }
 
 function allTextNodes(dom) {
-  return $.map(dom.querySelectorAll("text,span,tspan"), (el) => { return $.trim($(el).text()); });
+  return Array.from(dom.querySelectorAll("text,span,tspan")).map(el => $(el).text().trim());
 }
 
 group("Jobs with the Highest Wait Time", (test) => {
