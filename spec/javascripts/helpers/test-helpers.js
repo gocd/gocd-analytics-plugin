@@ -30,8 +30,7 @@ function text(parent, selector) {
 
 /** @private helper to click on elements; works with SVG elements, where el.click() does not. */
 function clickOn(parent, selector) {
-  const e = document.createEvent("MouseEvents");
-  e.initMouseEvent("click", true, true, window);
+  const e = new MouseEvent("click", {bubbles: true, cancelable: true, view: window});
   el(parent, selector).dispatchEvent(e);
 }
 

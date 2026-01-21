@@ -18,7 +18,7 @@ import {group} from "tape-plus";
 import _ from "lodash";
 import moment from "js/lib/moment-humanize-for-gocd.js";
 import RangeSelectorSupport from "js/lib/range-selector-support";
-import {el, els, text, clickOn, chartStub, MockTransport} from "../helpers/test-helpers";
+import {chartStub, clickOn, el, els, MockTransport, text} from "../helpers/test-helpers";
 import H from "js/lib/load-highcharts.js";
 
 const testParams = {
@@ -108,5 +108,5 @@ function AssertionSeries(name, fn) {
   };
 
   this.transforms = {};
-  this.transforms[name] = (data) => _.map(data, (d) => { return { y: d }; });
+  this.transforms[name] = (data) => data.map(d => { return { y: d }; });
 }
