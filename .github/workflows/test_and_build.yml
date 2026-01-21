@@ -75,3 +75,9 @@ jobs:
         with:
           node-version: 24
           cache: npm
+      - name: Build and release with Gradle
+        run: ./gradlew githubRelease
+        env:
+          GITHUB_USER: "gocd"
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          PRERELEASE: "${{ github.event.inputs.prerelease }}"
