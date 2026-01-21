@@ -27,7 +27,7 @@ function contains(array, entry) {
 
 function allTextNodes(dom) {
   return $.map(dom.querySelectorAll("text,span,tspan"), (el) => {
-    return $.trim($(el).text());
+    return $(el).text().trim();
   });
 }
 
