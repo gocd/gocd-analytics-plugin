@@ -57,7 +57,7 @@
   },
   "overrides": {
     "webpack": {
-      "acorn": "^8.1.15",
+      "acorn": "^8.15.0",
       "micromatch": "^4.0.8",
       "terser-webpack-plugin": "^4.2.3"
     },
