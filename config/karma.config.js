@@ -16,7 +16,7 @@
 
 const path = require("path"),
    webpack = require("webpack"),
-     merge = require("webpack-merge");
+     merge = require("webpack-merge").merge;
 
 const webpackConfig = require('./webpack.config.js')();
 
