@@ -26,9 +26,7 @@ function contains(array, entry) {
 }
 
 function allTextNodes(dom) {
-  return $.map(dom.querySelectorAll("text,span,tspan"), (el) => {
-    return $(el).text().trim();
-  });
+  return Array.from(dom.querySelectorAll("text,span,tspan")).map(el => $(el).text().trim());
 }
 
 function noop() {}
@@ -58,12 +56,12 @@ group("Agents", () => {
     const selector = "body";
 
     test("should return all agent states", (t) => {
-      const result = AgentsCharts.transitions(selector, [], {}, noop);
+      const result = AgentsCharts.transitions(selector, [], [], noop);
       t.deepEqual(result.status, ["Idle", "Building", "Cancelled", "Missing", "LostContact", "Unknown"]);
     });
 
     test("should return the title of the graph", (t) => {
-      const result = AgentsCharts.transitions(selector, [], {}, noop);
+      const result = AgentsCharts.transitions(selector, [], [], noop);
       t.equal(result.title, "Agent State Transitions");
     });
 
@@ -76,7 +74,7 @@ group("Agents", () => {
           [
             {agent_state: "Idle", transition_time: wentIdleAt},
             {agent_state: "Building", transition_time: wentBuildingAt}
-          ], {}, noop
+          ], [], noop
         );
 
         t.equal(result.data.length, 1, "should have 1 datum when transition happens within the same day");
@@ -95,7 +93,7 @@ group("Agents", () => {
           [
             {agent_state: "Idle", transition_time: wentIdleAt},
             {agent_state: "Building", transition_time: wentBuildingAt}
-          ], {}, noop
+          ], [], noop
         );
 
         t.equal(result.data.length, 2, "should have 2 data points when transition spans two days");
@@ -121,7 +119,7 @@ group("Agents", () => {
           [
             {agent_state: "Idle", transition_time: wentIdleAt},
             {agent_state: "Building", transition_time: wentBuildingAt}
-          ], {}, noop
+          ], [], noop
         );
 
         t.equal(result.data.length, 3);
@@ -161,7 +159,7 @@ group("Agents", () => {
             {agent_state: "LostContact", transition_time: D.addHours(initial, 5, true)},
             {agent_state: "Unknown", transition_time: D.addHours(initial, 6, true)},
             {agent_state: "Idle", transition_time: D.addHours(initial, 7, true)},
-          ], {}, noop
+          ], [], noop
         );
 
         t.true(contains(result.subtitle, "<dl class=\"state-metric-item\"> <dt class=\"key\">Idle</dt> <dd class=\"val\">14.3%</dd> </dl>"), "Should contain idle duration percentage");
@@ -179,7 +177,7 @@ group("Agents", () => {
           [
             {agent_state: "Idle", transition_time: initial},
             {agent_state: "Building", transition_time: D.addDays(initial, 1, true)},
-          ], {}, noop
+          ], [], noop
         );
 
         t.true(contains(result.subtitle, "<dl class=\"state-metric-item\"> <dt class=\"key\">Idle</dt> <dd class=\"val\">100.0%</dd> </dl>"), "Should contain idle duration percentage");

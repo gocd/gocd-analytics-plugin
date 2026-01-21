@@ -24,7 +24,7 @@ function contains(array, entry) {
 }
 
 function allTextNodes(dom) {
-  return $.map(dom.querySelectorAll("text,span,tspan"), (el) => { return $(el).text().trim(); });
+  return Array.from(dom.querySelectorAll("text,span,tspan")).map(el => $(el).text().trim());
 }
 
 group("Pipelines Build Time", (test) => {
