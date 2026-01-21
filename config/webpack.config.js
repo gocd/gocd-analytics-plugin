@@ -17,10 +17,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const _ = require('lodash');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlBundlerPlugin = require('html-bundler-webpack-plugin');
 
 const pages = [
   {
@@ -74,40 +71,32 @@ const pages = [
 ];
 
 /* Every page outputs a corresponding HTML file (page['output_filename']). */
-function pluginsToGenerateChartHTMLFiles(env, pages) {
-  return _.map(pages, function (page) {
-    return new HtmlWebpackPlugin({
-      filename: page['output_filename'],
-      template: path.resolve(__dirname, '..', 'assets', 'templates', page['based_on_template']),
-      chunks: [page['name'], 'styles'], /* Connects this HTML file to the corresponding entry (and so the JS). */
-      title: page['name'],
-      inject: "head",
-      environment: (env && env['NODE_ENV']) || 'development'
-    });
-  });
-}
-
 module.exports = (env) => {
   return {
-    /* Every chart has a JS file (chart['entrypoint']) which will be used in the HTML file (see below). */
-    entry: _.transform(pages, function (accumulator, page) {
-      accumulator[page['name']] = path.resolve(__dirname, '..', 'assets', 'js', 'pages', page['entrypoint']);
-    }, {}),
-
     output: {
-      filename: 'js/[name].js',
       path: path.resolve(__dirname, '..', 'build', 'resources', 'webpack')
     },
 
     plugins: _.flattenDeep([
-      new ScriptExtHtmlWebpackPlugin({ defaultAttribute: "defer" }),
-      pluginsToGenerateChartHTMLFiles(env, pages),
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-      new LodashModuleReplacementPlugin({ 'collections': true }),
-      new MiniCssExtractPlugin({
-        filename: "[name]-[contenthash].css",
-        chunkFilename: "[name]-[chunkhash].css"
-      })
+      new HtmlBundlerPlugin({
+        entry: _.map(pages, function (page) {
+          return {
+            import: path.resolve(__dirname, '..', 'assets', 'templates', page['based_on_template']),
+            filename: page['output_filename'],
+            data: {
+              title: page['name'],
+            },
+          };
+        }),
+        js: {
+          filename: "js/[name].js",
+        },
+        css: {
+          filename: "[name]-[contenthash].css",
+          chunkFilename: "[name]-[chunkhash].css"
+        }
+      }),
+      new webpack.IgnorePlugin({ resourceRegExp: /^\.\/locale$/, contextRegExp: /moment$/}),
     ]),
 
     optimization: {
@@ -125,6 +114,10 @@ module.exports = (env) => {
 
     /* Look at 'assets' directory as well for JS and CSS files when resolving in 'import' statements. */
     resolve: {
+      alias: {
+        '@scripts': path.join(__dirname, 'src/assets/js'),
+        '@styles': path.join(__dirname, 'src/assets/css'),
+      },
       extensions: ['.js', '.css', '.scss'],
       modules: [path.join(__dirname, '..', 'assets'), 'node_modules']
     },
@@ -143,7 +136,6 @@ module.exports = (env) => {
         {
           test: /\.s?[ac]ss$/,
           use: [
-            MiniCssExtractPlugin.loader,
             'css-loader',
             'sass-loader'
           ]
