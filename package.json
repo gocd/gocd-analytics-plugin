@@ -19,7 +19,7 @@
     "highcharts": "^6.2.0",
     "jquery": "^4.0.0",
     "jquery-ui": "^1.14.1",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "moment": "^2.30.1",
     "moment-duration-format": "^2.3.2"
   },
