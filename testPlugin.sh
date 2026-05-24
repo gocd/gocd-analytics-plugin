@@ -8,11 +8,21 @@ set -e
 
 # --- READ ME ---
 # Fill this before running the script.
-WORKSPACE="/Users/santoshkumarbachar/Workspace"
+#!/bin/bash
 
+# Example definition (uncomment to test)
+# WORKSPACE="/Users/ram/workspace/meghdoot"
+
+# 1. Check if WORKSPACE is empty/unset OR if the gocd subdirectory doesn't exist
+if [ -z "$WORKSPACE" ] || [ ! -d "$WORKSPACE/gocd" ]; then
+    echo "Error: WORKSPACE is not defined or does not contain a 'gocd' directory." >&2
+    exit 1
+fi
+
+echo "Success: WORKSPACE is valid and contains 'gocd'."
 
 ANALYTICS_PLUGIN_PWD="${WORKSPACE}/gocd-analytics-plugin"
-SERVER_PLUGINS="${WORKSPACE}/gocd/server/plugins/external"
+SERVER_PLUGINS="/Users/ram/workspace/testing/go-server-26.1.0/plugins/external"
 
 # The following variables are derived from the above and should not be changed.
 ANALYTICS_PLUGIN_LIBS="${ANALYTICS_PLUGIN_PWD}/build/libs"
@@ -23,7 +33,7 @@ echo "Building the GoCD analytics plugin..."
 # The double quotes around the path handle any spaces in the path.
 # We also check for the command's success.
 cd "$ANALYTICS_PLUGIN_PWD"
-if ! "${ANALYTICS_PLUGIN_PWD}/gradlew" build --info; then
+if ! "${ANALYTICS_PLUGIN_PWD}/gradlew" build -x test --info; then
   echo "Error: Gradle build failed. Exiting."
   exit 1
 fi

@@ -37,6 +37,7 @@ public class SessionFactory {
 
         Environment environment = new Environment("development", new JdbcTransactionFactory(), basicDataSource);
         Configuration configuration = new Configuration(environment);
+        configuration.setLogImpl(org.apache.ibatis.logging.slf4j.Slf4jImpl.class);
 
         configureMappers(configuration);
 

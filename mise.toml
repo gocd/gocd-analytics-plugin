@@ -1,0 +1,6 @@
+# Configuration for https://mise.jdx.dev/ as an alternative to asdf, jabba, sdkman, rvm, nvm etc
+[tools]
+"java" = [
+    { version = "temurin-25", os = ["linux", "macos"] }
+]
+"node" = { version = "24", postinstall = "corepack enable && ./gradlew --stop" }

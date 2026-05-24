@@ -25,9 +25,31 @@
         </rollingPolicy>
     </appender>
 
+    <appender name="MyBatisFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${gocd.server.log.dir:-${GO_SERVER_LOG_DIR:-logs}}/plugin-com.thoughtworks.gocd.analytics.mybatis.log</file>
+        <encoder>
+            <pattern>
+                ${gocd.server.logback.defaultPattern:-%date{ISO8601} %-5level [%thread] %logger{0}:%line - %msg%n}
+            </pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${gocd.server.log.dir:-${GO_SERVER_LOG_DIR:-logs}}/plugin-com.thoughtworks.gocd.analytics.mybatis.log.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <maxFileSize>${gocd.server.logback.defaultRollingFileAppender.rotation.maxFileSize:-10 MB}</maxFileSize>
+            <maxHistory>${gocd.server.logback.defaultRollingFileAppender.rotation.maxHistory:-50}</maxHistory>
+            <totalSizeCap>${gocd.server.logback.defaultRollingFileAppender.rotation.totalSizeCap:-512 MB}</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
     <root level="WARN">
         <appender-ref ref="FileAppender"/>
     </root>
 
     <logger name="org.flywaydb" level="INFO"/>
+    <logger name="org.apache.ibatis" level="DEBUG" additivity="false">
+        <appender-ref ref="MyBatisFileAppender"/>
+    </logger>
+    <logger name="com.thoughtworks.gocd.analytics.mapper" level="DEBUG" additivity="false">
+        <appender-ref ref="MyBatisFileAppender"/>
+    </logger>
 </configuration>
