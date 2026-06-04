@@ -27,45 +27,30 @@
     "@babel/core": "^7.29.7",
     "@babel/preset-env": "^7.29.7",
     "@eslint/js": "^10.0.1",
-    "babel-loader": "^8.3.0",
+    "babel-loader": "^10.1.1",
     "babel-plugin-lodash": "^3.3.4",
-    "css-loader": "^5.2.7",
+    "css-loader": "^7.1.4",
+    "ejs": "^6.0.1",
     "eslint": "^10.4.1",
     "faucet": "^0.0.4",
-    "file-loader": "^6.2.0",
     "globals": "^17.6.0",
-    "html-webpack-plugin": "^4.5.2",
+    "html-bundler-webpack-plugin": "^4.23.2",
     "karma": "^6.4.4",
     "karma-chrome-launcher": "^3.2.0",
     "karma-cli": "^2.0.0",
     "karma-tap": "^4.2.0",
     "karma-tap-pretty-reporter": "^4.2.0",
     "karma-webpack": "^5.0.1",
-    "lodash-webpack-plugin": "^0.11.5",
-    "mini-css-extract-plugin": "^1.6.2",
+    "lodash-webpack-plugin": "^0.11.6",
     "puppeteer": "^25.1.0",
     "sass": "^1.100.0",
     "sass-loader": "^10.5.2",
-    "script-ext-html-webpack-plugin": "^2.1.5",
     "sinon": "^21.0.3",
-    "tape": "^5.7.5",
+    "tape": "^5.9.0",
     "tape-plus": "^1.0.0",
-    "terser-webpack-plugin": "^4.2.3",
-    "webpack": "^4.47.0",
-    "webpack-cli": "^4.10.0",
-    "webpack-merge": "^4.2.2"
-  },
-  "overrides": {
-    "webpack": {
-      "acorn": "^8.15.0",
-      "micromatch": "^4.0.8",
-      "terser-webpack-plugin": "^4.2.3"
-    },
-    "watchpack-chokidar2": {
-      "chokidar": "^3.6.0"
-    },
-    "cacache": {
-      "tar": "^7.5.6"
-    }
+    "terser-webpack-plugin": "^5.6.1",
+    "webpack": "^5.107.2",
+    "webpack-cli": "^7.0.3",
+    "webpack-merge": "^6.0.1"
   }
 }
