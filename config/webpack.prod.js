@@ -15,19 +15,18 @@
  */
 
 const common       = require("./webpack.config.js"),
-      merge        = require("webpack-merge"),
-      TerserPlugin = require('terser-webpack-plugin');
+      { merge }    = require("webpack-merge"),
+      TerserPlugin = require("terser-webpack-plugin");
 
-module.exports = env => {
-  return merge(common(env), {
+module.exports = (env = {}, argv = {}) => {
+  return merge(common(env, argv), {
     devtool: "source-map",
     optimization: {
       minimize: true,
       minimizer: [
         new TerserPlugin({
-          sourceMap: true,
           terserOptions: {
-            output: {
+            format: {
               ascii_only: true
             }
           }
