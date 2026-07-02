@@ -5,6 +5,7 @@
   },
   "license": "Apache-2.0",
   "scripts": {
+    "postinstall": "puppeteer browsers install chrome",
     "lint": "eslint assets/js/** spec/javascripts/**",
     "webpack-dev": "webpack --config config/webpack.config.js --mode development",
     "webpack-prod": "webpack --config config/webpack.prod.js --mode production",
