@@ -23,9 +23,8 @@ const webpackConfig = require("./webpack.config.js")();
 webpackConfig.mode = "development";
 webpackConfig.externals = { };
 
-process.env.CHROME_BIN = require("puppeteer").executablePath();
-
-module.exports = function (config) {
+module.exports = async function (config) {
+  process.env.CHROME_BIN = await require("puppeteer").executablePath();
   config.set({
     plugins: [
       require("karma-webpack"),
