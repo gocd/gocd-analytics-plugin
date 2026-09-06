@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import "css/global";
 
 import AnalyticsEndpoint from "gocd-server-comms";
 import PipelineChartFactories from "js/factories/pipeline-chart-factories.js";

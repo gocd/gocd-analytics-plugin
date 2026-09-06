@@ -37,7 +37,10 @@ module.exports = (env = {}, argv = {}) => {
           commons: {
             name: "commons",
             test: /\.js$/,
-            chunks: "all",
+            // Exclude html-bundler's internal template chunks: each also contains its page's
+            // modules, so counting them makes every page-specific module hit minChunks 2 and
+            // bloat commons with code only one page uses.
+            chunks: (chunk) => !(chunk.name || "").startsWith("__bundler-plugin-entry__"),
             minChunks: 2,
             enforce: true
           }

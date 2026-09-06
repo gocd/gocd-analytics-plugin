@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import "css/global";
 import "css/agent-state-transition-chart";
 
 import AnalyticsEndpoint from "gocd-server-comms";

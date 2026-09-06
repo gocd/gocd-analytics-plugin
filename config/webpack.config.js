@@ -110,6 +110,7 @@ module.exports = (env = {}, argv = {}) => {
     plugins: [
       new HtmlBundlerPlugin({
         entry: pageEntries(),
+        minify: "auto", // minify HTML in production mode only, as html-webpack-plugin did
         js: {
           filename: isProduction ? "js/[name].[contenthash:8].js" : "js/[name].js",
           chunkFilename: isProduction ? "js/[name].[contenthash:8].chunk.js" : "js/[name].chunk.js",

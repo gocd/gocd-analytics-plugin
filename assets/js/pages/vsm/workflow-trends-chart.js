@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import "css/global";
 
 import c from "crel";
 import vsmUtils from "js/lib/vsm-utils.js";
