@@ -13,8 +13,8 @@
     "specs-ci": "karma start config/karma.config.js --single-run --no-auto-watch --color"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.36",
-    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/fontawesome-svg-core": "^7.3.1",
+    "@fortawesome/free-solid-svg-icons": "^7.3.1",
     "crel": "^4.2.1",
     "d3": "^7.9.0",
     "highcharts": "^6.2.0",
@@ -25,8 +25,8 @@
     "moment-duration-format": "^2.3.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.7",
-    "@babel/preset-env": "^7.29.7",
+    "@babel/core": "^8.0.1",
+    "@babel/preset-env": "^8.0.2",
     "@eslint/js": "^10.0.1",
     "babel-loader": "^10.1.1",
     "babel-plugin-lodash": "^3.3.4",
@@ -49,7 +49,7 @@
     "puppeteer": "^25.10.0",
     "sass": "^1.104.0",
     "sass-loader": "^16.0.8",
-    "sinon": "^21.1.2",
+    "sinon": "^22.1.0",
     "stream-browserify": "^3.0.0",
     "tape": "^5.10.2",
     "tape-plus": "^1.0.0",
