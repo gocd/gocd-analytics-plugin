@@ -18,6 +18,21 @@ updates:
           - "*"
   - package-ecosystem: npm
     directory: /
+    commit-message:
+      prefix: ui
+      prefix-development: ui-dev
     schedule:
-      interval: monthly
+      interval: weekly
+      day: friday
+    cooldown:
+      default-days: 2
     open-pull-requests-limit: 99
+    groups:
+      babel:
+        patterns: [ "@babel/*" ]
+      fontawesome:
+        patterns: [ "@fortawesome/*" ]
+      webpack:
+        patterns: [ "webpack*", "*-loader", "*-webpack-plugin" ]
+      eslint:
+        patterns: [ "eslint*", "@eslint/*", "@types/eslint*" ]
