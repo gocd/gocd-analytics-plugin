@@ -16,11 +16,11 @@
 
 const webpack = require("webpack");
 const path = require("path");
-const _ = require("lodash");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ScriptExtHtmlWebpackPlugin = require("script-ext-html-webpack-plugin");
-const LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const HtmlBundlerPlugin = require("html-bundler-webpack-plugin");
+
+const rootPath = path.resolve(__dirname, "..");
+const assetsPath = path.join(rootPath, "assets");
+const outputPath = path.join(rootPath, "build", "resources", "webpack");
 
 const pages = [
   {
@@ -73,69 +73,98 @@ const pages = [
   }
 ];
 
-/* Every page outputs a corresponding HTML file (page['output_filename']). */
-function pluginsToGenerateChartHTMLFiles(env, pages) {
-  return pages.map(page => {
-    return new HtmlWebpackPlugin({
-      filename: page["output_filename"],
-      template: path.resolve(__dirname, "..", "assets", "templates", page["based_on_template"]),
-      chunks: [page["name"], "styles"], /* Connects this HTML file to the corresponding entry (and so the JS). */
-      title: page["name"],
-      inject: "head",
-      environment: (env && env["NODE_ENV"]) || "development"
-    });
-  });
+/*
+ * Every page outputs a corresponding HTML file (page['output_filename']), generated from its template
+ * with the page's JS entrypoint injected via the `entrypoint` template variable.
+ *
+ * The `?page=` query makes each entry a distinct template instance; without it, pages sharing a
+ * template only get shared split chunks (e.g. the production `commons` chunk) injected into the
+ * first page's HTML, silently breaking the rest.
+ */
+function pageEntries() {
+  return pages.map(page => ({
+    filename: page.output_filename,
+    import: `${path.join(assetsPath, "templates", page.based_on_template)}?page=${page.name}`,
+    data: {
+      title: page.name,
+      entrypoint: `@scripts/pages/${page.entrypoint}`,
+    }
+  }));
 }
 
-module.exports = (env) => {
+module.exports = (env = {}, argv = {}) => {
+  const mode = argv.mode || process.env.NODE_ENV || "development";
+  const isProduction = mode === "production";
+
   return {
-    /* Every chart has a JS file (chart['entrypoint']) which will be used in the HTML file (see below). */
-    entry: _.transform(pages, function (accumulator, page) {
-      accumulator[page["name"]] = path.resolve(__dirname, "..", "assets", "js", "pages", page["entrypoint"]);
-    }, {}),
+    mode,
+    context: rootPath,
+    target: "web",
 
     output: {
-      filename: "js/[name].js",
-      path: path.resolve(__dirname, "..", "build", "resources", "webpack")
+      assetModuleFilename: isProduction ? "assets/[name].[contenthash:8][ext][query]" : "assets/[name][ext][query]",
+      path: outputPath,
+      clean: true
     },
 
-    plugins: _.flattenDeep([
-      new ScriptExtHtmlWebpackPlugin({ defaultAttribute: "defer" }),
-      pluginsToGenerateChartHTMLFiles(env, pages),
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-      new LodashModuleReplacementPlugin({ "collections": true }),
-      new MiniCssExtractPlugin({
-        filename: "[name]-[contenthash].css",
-        chunkFilename: "[name]-[chunkhash].css"
-      })
-    ]),
+    plugins: [
+      new HtmlBundlerPlugin({
+        entry: pageEntries(),
+        minify: "auto", // minify HTML in production mode only, as html-webpack-plugin did
+        js: {
+          filename: isProduction ? "js/[name].[contenthash:8].js" : "js/[name].js",
+          chunkFilename: isProduction ? "js/[name].[contenthash:8].chunk.js" : "js/[name].chunk.js",
+          //inline: true, // enable to inline JS into the HTML
+        },
+        css: {
+          filename: isProduction ? "css/[name].[contenthash:8].css" : "css/[name].css",
+          chunkFilename: isProduction ? "css/[name].[contenthash:8].chunk.css" : "css/[name].chunk.css",
+          //inline: true, // enable to inline CSS into the HTML
+        },
+        loaderOptions: {
+          preprocessor: "ejs",
+          sources: [
+            {
+              tag: "script",
+              attributes: ["src"],
+              // Scripts served by the GoCD server itself at runtime must be left as-is,
+              // not resolved/bundled by webpack.
+              filter: ({ attribute, value }) => {
+                const staticFilenames = [
+                  "gocd-server-comms.js",
+                  "highcharts.src.js",
+                  "no-data-to-display.src.js",
+                  "xrange.src.js",
+                ];
+                if ("src" === attribute && staticFilenames.some(file => value.includes(file))) {
+                  return false;
+                }
+              },
+            },
+          ]
+        },
+      }),
 
-    optimization: {
-      splitChunks: {
-        cacheGroups: {
-          styles: {
-            name: "styles",
-            test: /\.s?[ac]ss$/,
-            chunks: "all",
-            enforce: true
-          }
-        }
-      }
-    },
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^\.\/locale$/,
+        contextRegExp: /moment$/
+      }),
+    ],
 
-    /* Look at 'assets' directory as well for JS and CSS files when resolving in 'import' statements. */
     resolve: {
+      alias: {
+        "@scripts": path.join(rootPath, "assets/js"),
+      },
       extensions: [".js", ".css", ".scss"],
-      modules: [path.join(__dirname, "..", "assets"), "node_modules"]
+      modules: [assetsPath, "node_modules"],
+      fallback: {
+        fs: false
+      }
     },
 
     externals: {
       "gocd-server-comms": "AnalyticsEndpoint",
-      "highcharts-shim": "Highcharts"
-    },
-
-    node: {
-      fs: "empty"
+      "highcharts-shim": "Highcharts",
     },
 
     module: {
@@ -143,29 +172,40 @@ module.exports = (env) => {
         {
           test: /\.s?[ac]ss$/,
           use: [
-            MiniCssExtractPlugin.loader,
             "css-loader",
-            "sass-loader"
+            {
+              loader: "sass-loader",
+              options: {
+                sassOptions: {
+                  // Hide deprecation warnings from highcharts' bundled SCSS; migrating our own
+                  // @import usage to @use is a separate task from the webpack 5 upgrade.
+                  quietDeps: true,
+                  silenceDeprecations: ["import"]
+                }
+              }
+            }
           ]
         },
         {
           test: /\.js$/,
           exclude: /node_modules/,
-          use: [
-            {
-              loader: "babel-loader",
-              options: {
-                plugins: ["lodash"],
-                presets: [[ "@babel/preset-env", { "modules": false } ]]
-              }
+          use: {
+            loader: "babel-loader",
+            options: {
+              plugins: ["lodash"],
+              presets: [["@babel/preset-env", {modules: false}]],
+              cacheDirectory: true
             }
-          ],
+          }
         },
         {
-          test: /\.(svg|png|jpg|gif)$/,
-          use: ["file-loader"]
+          test: /\.(svg|png|jpe?g|gif)$/i,
+          type: "asset/resource",
+          //type: "asset/inline", // HtmlBundlerPlugin embedds inline assets into CSS
         }
       ]
-    }
+    },
+
+    stats: "minimal"
   };
 };

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import "css/global";
 import "css/error";
 
 import $ from "jquery";

@@ -15,19 +15,18 @@
  */
 
 const common       = require("./webpack.config.js"),
-      merge        = require("webpack-merge"),
-      TerserPlugin = require('terser-webpack-plugin');
+      { merge }    = require("webpack-merge"),
+      TerserPlugin = require("terser-webpack-plugin");
 
-module.exports = env => {
-  return merge(common(env), {
+module.exports = (env = {}, argv = {}) => {
+  return merge(common(env, argv), {
     devtool: "source-map",
     optimization: {
       minimize: true,
       minimizer: [
         new TerserPlugin({
-          sourceMap: true,
           terserOptions: {
-            output: {
+            format: {
               ascii_only: true
             }
           }
@@ -38,7 +37,10 @@ module.exports = env => {
           commons: {
             name: "commons",
             test: /\.js$/,
-            chunks: "all",
+            // Exclude html-bundler's internal template chunks: each also contains its page's
+            // modules, so counting them makes every page-specific module hit minChunks 2 and
+            // bloat commons with code only one page uses.
+            chunks: (chunk) => !(chunk.name || "").startsWith("__bundler-plugin-entry__"),
             minChunks: 2,
             enforce: true
           }

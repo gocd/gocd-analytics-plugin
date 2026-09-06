@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import "css/global";
 
 import AnalyticsEndpoint from "gocd-server-comms";
 import H from "js/lib/load-highcharts.js";
