@@ -25,7 +25,7 @@ group = 'com.thoughtworks.gocd'
 
 gocdPlugin {
   id = 'com.thoughtworks.gocd.analytics'
-  pluginVersion = '4.0.1'
+  pluginVersion = '4.1.0'
   goCdVersion = '22.1.0'
   name = 'GoCD Analytics Plugin'
   description = 'GoCD Analytics Plugin'

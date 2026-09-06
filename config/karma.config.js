@@ -16,12 +16,17 @@
 
 const path = require("path"),
    webpack = require("webpack"),
-     merge = require("webpack-merge");
+ { merge } = require("webpack-merge");
 
 const webpackConfig = require("./webpack.config.js")();
 
 webpackConfig.mode = "development";
 webpackConfig.externals = { };
+
+// karma-webpack provides its own entry/output; generating the chart HTML pages and writing to the
+// build output directory don't apply when bundling specs.
+webpackConfig.plugins = webpackConfig.plugins.filter(plugin => plugin.constructor.name !== "HtmlBundlerPlugin");
+delete webpackConfig.output;
 
 module.exports = async function (config) {
   process.env.CHROME_BIN = await require("puppeteer").executablePath();
@@ -55,8 +60,21 @@ module.exports = async function (config) {
         new webpack.DefinePlugin({
           __TEST_DIR__: JSON.stringify("."),
           __FILE_RGX__: /^.+-(spec|test)\.js$/
+        }),
+        new webpack.ProvidePlugin({
+          Buffer: ["buffer", "Buffer"],
+          process: "process/browser.js"
         })
-      ]
+      ],
+      resolve: {
+        fallback: {
+          // tape requires these node builtins, which webpack 5 no longer polyfills automatically
+          path: require.resolve("path-browserify"),
+          stream: require.resolve("stream-browserify"),
+          buffer: require.resolve("buffer/"),
+          events: require.resolve("events/")
+        }
+      }
     }),
     port: 9876,
     colors: true,

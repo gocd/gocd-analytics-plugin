@@ -16,7 +16,7 @@
 
 const webpack = require("webpack");
 const path = require("path");
-const HtmlBundlerPlugin = require('html-bundler-webpack-plugin');
+const HtmlBundlerPlugin = require("html-bundler-webpack-plugin");
 
 const rootPath = path.resolve(__dirname, "..");
 const assetsPath = path.join(rootPath, "assets");
@@ -73,28 +73,21 @@ const pages = [
   }
 ];
 
-/**
- * Generate an array of enrties with the structure, like:
- * [
- *     {
- *       import: path.join(assetsPath, "templates", "basic-template.html5.ejs"),
- *       filename: "pipeline-instances-chart.html",
- *       data: {
- *         title: "pipeline-instances-chart",
- *         entrypoint: "@scripts/pages/pipeline/pipeline-instances-chart.js",
- *       },
- *     },
- *     // ... next entiries
- * ],
- * @return {{import: string, filename: string, data: {title: string, entrypoint: string}}[]}
+/*
+ * Every page outputs a corresponding HTML file (page['output_filename']), generated from its template
+ * with the page's JS entrypoint injected via the `entrypoint` template variable.
+ *
+ * The `?page=` query makes each entry a distinct template instance; without it, pages sharing a
+ * template only get shared split chunks (e.g. the production `commons` chunk) injected into the
+ * first page's HTML, silently breaking the rest.
  */
 function pageEntries() {
   return pages.map(page => ({
     filename: page.output_filename,
-    import: path.join(assetsPath, "templates", page.based_on_template),
+    import: `${path.join(assetsPath, "templates", page.based_on_template)}?page=${page.name}`,
     data: {
       title: page.name,
-      entrypoint: path.join("@scripts", "pages", page.entrypoint),
+      entrypoint: `@scripts/pages/${page.entrypoint}`,
     }
   }));
 }
@@ -128,22 +121,21 @@ module.exports = (env = {}, argv = {}) => {
           //inline: true, // enable to inline CSS into the HTML
         },
         loaderOptions: {
-          preprocessor: 'ejs', // use EJS template engine
-          // resolving source files in templates
+          preprocessor: "ejs",
           sources: [
             {
-              tag: 'script',
-              attributes: ['src'],
-              // return false to disable resolving the static scripts in templates
-              filter: ({ tag, attribute, value, }) => {
-                 const staticFilenames = [
+              tag: "script",
+              attributes: ["src"],
+              // Scripts served by the GoCD server itself at runtime must be left as-is,
+              // not resolved/bundled by webpack.
+              filter: ({ attribute, value }) => {
+                const staticFilenames = [
                   "gocd-server-comms.js",
                   "highcharts.src.js",
                   "no-data-to-display.src.js",
                   "xrange.src.js",
                 ];
-                if ('src' === attribute && staticFilenames.some(file => value.includes(file))) {
-                  // doesn't resolve the static file as a source
+                if ("src" === attribute && staticFilenames.some(file => value.includes(file))) {
                   return false;
                 }
               },
@@ -158,22 +150,9 @@ module.exports = (env = {}, argv = {}) => {
       }),
     ],
 
-    optimization: {
-      splitChunks: {
-        cacheGroups: {
-          styles: {
-            name: "styles",
-            test: /\.s?[ac]ss$/,
-            chunks: "all",
-            enforce: true
-          }
-        }
-      }
-    },
-
     resolve: {
       alias: {
-        '@scripts': path.join(rootPath, 'assets/js'),
+        "@scripts": path.join(rootPath, "assets/js"),
       },
       extensions: [".js", ".css", ".scss"],
       modules: [assetsPath, "node_modules"],
@@ -193,7 +172,17 @@ module.exports = (env = {}, argv = {}) => {
           test: /\.s?[ac]ss$/,
           use: [
             "css-loader",
-            "sass-loader"
+            {
+              loader: "sass-loader",
+              options: {
+                sassOptions: {
+                  // Hide deprecation warnings from highcharts' bundled SCSS; migrating our own
+                  // @import usage to @use is a separate task from the webpack 5 upgrade.
+                  quietDeps: true,
+                  silenceDeprecations: ["import"]
+                }
+              }
+            }
           ]
         },
         {
