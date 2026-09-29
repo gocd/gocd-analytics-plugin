@@ -39,3 +39,6 @@ updates:
         patterns: [ "webpack*", "*-loader", "*-webpack-plugin" ]
       eslint:
         patterns: [ "eslint*", "@eslint/*", "@types/eslint*" ]
+      ui-deps:
+        patterns: [ "*" ]
+  
