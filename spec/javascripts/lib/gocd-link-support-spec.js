@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import test from "tape-plus";
+import test from "tape";
 import sinon from "sinon";
-import GoCDLinkSupport from"js/lib/gocd-link-support";
+import GoCDLinkSupport from "js/lib/gocd-link-support";
 
 function noop() {}
 
-test("GoCD Link Support should add a config point onclick handler", (t) => {
+test("GoCD Link Support should add a config point onclick handler", t => {
   const config = {series: [{name: "first"}]};
 
   const transport   = {};
@@ -31,9 +31,10 @@ test("GoCD Link Support should add a config point onclick handler", (t) => {
   const pointOnclick = config.series[0].point.events.click;
 
   t.is(typeof pointOnclick, "function", "events.click should be a function");
+  t.end();
 });
 
-test("GoCD Link Support should make transport request to job details page", (t) => {
+test("GoCD Link Support should make transport request to job details page", t => {
   const config = {series: [{name: "first"}]};
 
   const transport = {};
@@ -66,9 +67,10 @@ test("GoCD Link Support should make transport request to job details page", (t) 
     stage_counter: point.stage_counter,
     job_name: point.job_name
   }), "should have requested and passed the correct params to `link-to`");
+  t.end();
 });
 
-test("GoCD Link Support should add a config point onclick handler for vsm page", (t) => {
+test("GoCD Link Support should add a config point onclick handler for vsm page", t => {
   const config = {series: [{name: "first"}]};
 
   const transport   = {};
@@ -79,9 +81,10 @@ test("GoCD Link Support should add a config point onclick handler for vsm page",
   const pointOnclick = config.series[0].point.events.click;
 
   t.is(typeof pointOnclick, "function", "events.click should be a function");
+  t.end();
 });
 
-test("GoCD Link Support should make transport request to vsm page", (t) => {
+test("GoCD Link Support should make transport request to vsm page", t => {
   const config = {series: [{name: "first"}]};
 
   const transport = {};
@@ -108,4 +111,5 @@ test("GoCD Link Support should make transport request to vsm page", (t) => {
     pipeline_name: point.pipeline_name,
     pipeline_counter: point.pipeline_counter
   }), "should have requested and passed the correct params to `link-to`");
+  t.end();
 });

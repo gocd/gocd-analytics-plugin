@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import {group} from "tape-plus";
+import test from "tape";
 import BuildMetrics from "js/lib/build-metrics.js";
 
-group("MTTR", (test) => {
-  test("should calculate correctly", (t) => {
+test("MTTR", t => {
+  t.test("should calculate correctly", t => {
     const expected = 300000,
       CREATED = new Date("2000-01-01T01:00:00");
 
@@ -60,20 +60,23 @@ group("MTTR", (test) => {
 
     t.is(BuildMetrics.mttr(models), expected, "calc should measure times between a failure and the next success");
     t.is(BuildMetrics.mttr(trimmed), BuildMetrics.mttr(models), "calc should start measuring only on the first failure of a sequence until it encounters a success");
+    t.end();
   });
 
-  test("should return 0 if there are no failures", (t) => {
+  t.test("should return 0 if there are no failures", t => {
     const models = [ { result: "passed" }, { result: "passed" } ];
     t.is(BuildMetrics.mttr(models), 0, "cannot calculate when no failures present");
+    t.end();
   });
 
-  test("should return 0 if no models are provided", (t) => {
+  t.test("should return 0 if no models are provided", t => {
     t.is(BuildMetrics.mttr([]), 0, "cannot calculate when no data is present");
+    t.end();
   });
 });
 
-group("MTBF", (test) => {
-  test("should calculate correctly", (t) => {
+test("MTBF", t => {
+  t.test("should calculate correctly", t => {
     const expected = 10800000,
       CREATED = new Date("2000-01-01T01:00:00");
 
@@ -119,34 +122,39 @@ group("MTBF", (test) => {
 
     t.is(BuildMetrics.mtbf(models), expected, "calc should measure times between a success and the next failure");
     t.is(BuildMetrics.mtbf(trimmed), BuildMetrics.mtbf(models), "calc should start measuring only on the first failure of a sequence until it encounters a success");
+    t.end();
   });
 
-  test("should return 0 if there are no failures", (t) => {
+  t.test("should return 0 if there are no failures", t => {
     const models = [ { result: "passed" }, { result: "passed" } ];
     t.is(BuildMetrics.mtbf(models), 0, "cannot calculate when no failures present");
+    t.end();
   });
 
-  test("should return 0 if no models are provided", (t) => {
+  t.test("should return 0 if no models are provided", t => {
     t.is(BuildMetrics.mtbf([]), 0, "cannot calculate when no data is present");
+    t.end();
   });
 });
 
-group("run frequency", (test) => {
-  test("return the expected text", (t) => {
+test("run frequency", t => {
+  t.test("return the expected text", t => {
     const models = [
       { scheduled_at: new Date("2018-01-01T19:00:00") },
       { scheduled_at: new Date("2018-01-08T19:00:00") }
     ];
     t.is(BuildMetrics.runFrequency(models), "2.00 <span class=\"value-desc\">per week</span>");
+    t.end();
   });
 
-  test("should return 0 if no models are provided", (t) => {
+  t.test("should return 0 if no models are provided", t => {
     t.is(BuildMetrics.runFrequency([]), "N/A", "should return N/A if none are provided");
+    t.end();
   });
 });
 
-group("failure frequency", (test) => {
-  test("return the expected text", (t) => {
+test("failure frequency", t => {
+  t.test("return the expected text", t => {
     const models = [
       { scheduled_at: new Date("2018-01-01T19:00:00"), result: "failed" },
       { scheduled_at: new Date("2018-01-02T19:00:00"), result: "passed" },
@@ -155,15 +163,17 @@ group("failure frequency", (test) => {
       { scheduled_at: new Date("2018-01-08T19:00:00"), result: "passed" }
     ];
     t.is(BuildMetrics.failureFrequency(models), "2.00 failures per week");
+    t.end();
   });
 
-  test("should return 0 if no models are provided", (t) => {
+  t.test("should return 0 if no models are provided", t => {
     t.is(BuildMetrics.failureFrequency([]), 0, "should return 0 if none are provided");
+    t.end();
   });
 });
 
-group("failure Rate", (test) => {
-  test("return the expected text", (t) => {
+test("failure Rate", t => {
+  t.test("return the expected text", t => {
     const models = [
       { result: "failed" },
       { result: "passed" },
@@ -173,15 +183,17 @@ group("failure Rate", (test) => {
       { result: "passed" }
     ];
     t.is(BuildMetrics.failureRate(models), "33.33% <span class=\"value-desc\">(1 out of 3 runs)</span>");
+    t.end();
   });
 
-  test("should return 0 if no models are provided", (t) => {
+  t.test("should return 0 if no models are provided", t => {
     t.is(BuildMetrics.failureRate([]), 0, "should return 0 if none are provided");
+    t.end();
   });
 });
 
-group("failure %", (test) => {
-  test("should calculate correctly", (t) => {
+test("failure %", t => {
+  t.test("should calculate correctly", t => {
     const models = [
       { result: "passed" },
       { result: "failed" },
@@ -189,9 +201,11 @@ group("failure %", (test) => {
       { result: "failed" }
     ];
     t.is(BuildMetrics.failurePercent(models), "75.00%", "didn't calc the % correctly");
+    t.end();
   });
 
-  test("should return 0% if no models are provided", (t) => {
+  t.test("should return 0% if no models are provided", t => {
     t.is(BuildMetrics.failurePercent([]), "0%", "should return 0 if none are provided");
+    t.end();
   });
 });

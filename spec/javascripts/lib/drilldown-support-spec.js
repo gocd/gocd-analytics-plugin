@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { group } from "tape-plus";
-import {el, text, clickOn, MockFactories, MockTransport} from "../helpers/test-helpers";
+import test from "tape";
+import {clickOn, el, MockFactories, MockTransport, text} from "../helpers/test-helpers";
 import H from "js/lib/load-highcharts.js";
 import DDS from "js/lib/drilldown-support";
 
-group("DrilldownSupport", (test) => {
-  test("charts should be able to drill down through multiple levels", (t, done) => {
+test("DrilldownSupport", t => {
+  t.test("charts should be able to drill down through multiple levels", t => {
     const c = document.createElement("div");
 
     const Level1 = {
@@ -53,7 +53,7 @@ group("DrilldownSupport", (test) => {
         t.ok(el(c, ".highcharts-series-0 .highcharts-point"), "should render point");
         t.notOk(el(c, ".drilldown-series .highcharts-point"), "point should not be a drilldown point");
         t.notOk(point.series.options.downstream, "point should not have a downstream metric reference");
-        done();
+        t.end();
       }
     };
 
@@ -76,7 +76,7 @@ group("DrilldownSupport", (test) => {
     });
   });
 
-  test("charts should be able to drill back up", (t, done) => {
+  t.test("charts should be able to drill back up", t => {
     const c = document.createElement("div");
 
     const Level1Assertions = [
@@ -97,8 +97,7 @@ group("DrilldownSupport", (test) => {
         t.equal(text(c, ".highcharts-title"), "Level 1", "should have returned to top-level");
         t.equal(point.series.options.downstream, "Level 2", "point still references next downstream metric");
         t.notOk(el(c, ".upstream-button"), "drillup button should not be present");
-
-        done();
+        t.end();
       }
     ];
 

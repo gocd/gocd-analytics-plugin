@@ -14,40 +14,44 @@
  * limitations under the License.
  */
 
-import test from "tape-plus";
+import test from "tape";
 import Fragments from "js/lib/chart-utils/fragments";
 
-const group = test.group;
-group("Fragments.chartTitle()", (test) => {
+test("Fragments.chartTitle()", t => {
 
-  test("should return a title with the correct text", (t) => {
+  t.test("should return a title with the correct text", t => {
     const expected = "<span class=\"title-text\">title</span>",
     actual = Fragments.chartTitle({title: "title"});
     t.is(actual.text, expected, "should match provided title");
+    t.end();
   });
 
-  test("should correctly add the addendum", (t) => {
+  t.test("should correctly add the addendum", t => {
     const expected = "<span class=\"title-text\">title</span> <span class=\"auxiliary-text\">ax</span>",
     actual = Fragments.chartTitle({title: "title", addendum: "ax"});
     t.is(actual.text, expected, "should append addendum");
+    t.end();
   });
 
-  test("should return a title with null text if no title is given", (t) => {
+  t.test("should return a title with null text if no title is given", t => {
     t.is(Fragments.chartTitle({}).text, null, "should have no title");
+    t.end();
   });
 
 });
 
-group("Fragments.chartSubtitle()", (test) => {
+test("Fragments.chartSubtitle()", t => {
 
-  test("should return a subtitle with the correct text and y", (t) => {
+  t.test("should return a subtitle with the correct text and y", t => {
     const actual = Fragments.chartSubtitle({subtitle: "subtitle"});
     t.is(actual.text, "subtitle", "should match provided subtitle");
     t.is(actual.y, 64, "should calculate correct vertical offset");
+    t.end();
   });
 
-  test("should return a subtitle with null text if no subtitle is given", (t) => {
+  t.test("should return a subtitle with null text if no subtitle is given", t => {
     t.is(Fragments.chartSubtitle({}).text, null, "should have no subtitle");
+    t.end();
   });
 
 });

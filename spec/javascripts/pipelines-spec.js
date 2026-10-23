@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {group} from "tape-plus";
+import test from "tape";
 import $ from "jquery";
 import H from "js/lib/load-highcharts.js";
 import PipelineCharts from "js/charts/pipelines.js";
@@ -27,8 +27,8 @@ function allTextNodes(dom) {
   return Array.from(dom.querySelectorAll("text,span,tspan")).map(el => $(el).text().trim());
 }
 
-group("Pipelines Build Time", (test) => {
-  test("should load chart", (t, done) => {
+test("Pipelines Build Time", t => {
+  t.test("should load chart", t => {
     const date = "2018-05-09",
            dom = document.createElement("div");
 
@@ -49,14 +49,14 @@ group("Pipelines Build Time", (test) => {
       const text = allTextNodes(dom);
 
       t.true(contains(text, "Pipeline Build Time"), "should contain chart title");
-      done();
+      t.end();
     });
   });
 });
 
-group("Pipelines Longest Waiting", (test) => {
+test("Pipelines Longest Waiting", t => {
 
-  test("should load chart", (t, done) => {
+  t.test("should load chart", t => {
     const dom = document.createElement("div");
 
     H.chart(dom, PipelineCharts.longestWaiting([{
@@ -69,7 +69,7 @@ group("Pipelines Longest Waiting", (test) => {
 
       t.true(contains(text, expected), "should contain chart title");
       t.true(contains(text, "pip1"), "should contain pipeline name");
-      done();
+      t.end();
     });
   });
 });

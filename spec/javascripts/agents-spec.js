@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {group} from "tape-plus";
+import test from "tape";
 import $ from "jquery";
 import H from "js/lib/load-highcharts.js";
 import AgentsCharts from "js/charts/agents.js";
@@ -31,9 +31,9 @@ function allTextNodes(dom) {
 
 function noop() {}
 
-group("Agents", () => {
-  group("Agents with the Highest Utilization", (test) => {
-    test("should load chart", (t, done) => {
+test("Agents", t => {
+  t.test("Agents with the Highest Utilization", t => {
+    t.test("should load chart", t => {
       const dom = document.createElement("div");
 
       H.chart(dom, AgentsCharts.mostUtilized([{
@@ -47,26 +47,28 @@ group("Agents", () => {
 
         t.true(contains(text, expected), "should contain chart title");
         t.true(contains(text, "agent.go.cd"), "should contain agent hostname");
-        done();
+        t.end();
       });
     });
   });
 
-  group("Agent transitions", (test) => {
+  t.test("Agent transitions", t => {
     const selector = "body";
 
-    test("should return all agent states", (t) => {
+    t.test("should return all agent states", t => {
       const result = AgentsCharts.transitions(selector, [], [], noop);
       t.deepEqual(result.status, ["Idle", "Building", "Cancelled", "Missing", "LostContact", "Unknown"]);
+      t.end();
     });
 
-    test("should return the title of the graph", (t) => {
+    t.test("should return the title of the graph", t => {
       const result = AgentsCharts.transitions(selector, [], [], noop);
       t.equal(result.title, "Agent State Transitions");
+      t.end();
     });
 
-    group("Transitions", (test) => {
-      test("should compute states for the provided agent transitions", (t) => {
+    t.test("Transitions", t => {
+      t.test("should compute states for the provided agent transitions", t => {
         const wentIdleAt = new Date(2018, 4, 21, 11, 0, 0, 0);
         const wentBuildingAt = D.addHours(wentIdleAt, 1, true);
         const result = AgentsCharts.transitions(
@@ -83,9 +85,10 @@ group("Agents", () => {
         t.deepEqual(firstTransition.endDate, D.relativeTime(wentBuildingAt), "should generate end timestamp relative to beginning of day");
         t.equal(firstTransition.date, "Mon 21 May", "axis date should be friendly formatted");
         t.equal(firstTransition.status, "Idle", "should match status");
+        t.end();
       });
 
-      test("should compute states for the provided agent transitions between two dates", (t) => {
+      t.test("should compute states for the provided agent transitions between two dates", t => {
         const wentIdleAt = new Date(2018, 4, 21, 11, 0, 0, 0);
         const wentBuildingAt = D.addDays(wentIdleAt, 1, true);
         const result = AgentsCharts.transitions(
@@ -109,9 +112,10 @@ group("Agents", () => {
         t.deepEqual(result.data[1].startDate, D.relativeTime(startOfDay), "should generate start timestamp relative to beginning of day");
         t.deepEqual(result.data[1].endDate, D.relativeTime(wentBuildingAt), "should generate end timestamp relative to beginning of day");
         t.deepEqual(result.data[1].status, "Idle", "should match status");
+        t.end();
       });
 
-      test("should compute states for the provided agent transitions with no events between days", (t) => {
+      t.test("should compute states for the provided agent transitions with no events between days", t => {
         const wentIdleAt = new Date(2018, 4, 21, 11, 0, 0, 0);
         const wentBuildingAt = D.addDays(wentIdleAt, 2, true);
         const result = AgentsCharts.transitions(
@@ -142,11 +146,12 @@ group("Agents", () => {
         t.deepEqual(result.data[2].startDate, D.relativeTime(startOfDay), "should generate start timestamp relative to beginning of day");
         t.deepEqual(result.data[2].endDate, D.relativeTime(wentBuildingAt), "should generate end timestamp relative to beginning of day");
         t.deepEqual(result.data[2].status, "Idle", "should match status");
+        t.end();
       });
     });
 
-    group("Percentage", (test) => {
-      test("should compute states for the provided transition", (t) => {
+    t.test("Percentage", t => {
+      t.test("should compute states for the provided transition", t => {
         const initial = new Date(2018, 4, 21, 11, 0, 0, 0);
 
         const result = AgentsCharts.transitions(
@@ -168,9 +173,10 @@ group("Agents", () => {
         t.true(contains(result.subtitle, "<dl class=\"state-metric-item\"> <dt class=\"key\">Missing</dt> <dd class=\"val\">14.3%</dd> </dl>"), "Should contain missing duration percentage");
         t.true(contains(result.subtitle, "<dl class=\"state-metric-item\"> <dt class=\"key\">LostContact</dt> <dd class=\"val\">14.3%</dd> </dl>"), "Should contain lost contact duration percentage");
         t.true(contains(result.subtitle, "<dl class=\"state-metric-item\"> <dt class=\"key\">Unknown</dt> <dd class=\"val\">14.3%</dd> </dl>"), "Should contain unknown duration percentage");
+        t.end();
       });
 
-      test("should compute states even when few transition states are missing", (t) => {
+      t.test("should compute states even when few transition states are missing", t => {
         const initial = new Date(2018, 4, 21, 11, 0, 0, 0);
         const result = AgentsCharts.transitions(
           selector,
@@ -186,10 +192,11 @@ group("Agents", () => {
         t.true(contains(result.subtitle, "<dl class=\"state-metric-item\"> <dt class=\"key\">Missing</dt> <dd class=\"val\">0.0%</dd> </dl>"), "Should contain missing duration percentage");
         t.true(contains(result.subtitle, "<dl class=\"state-metric-item\"> <dt class=\"key\">LostContact</dt> <dd class=\"val\">0.0%</dd> </dl>"), "Should contain lost contact duration percentage");
         t.true(contains(result.subtitle, "<dl class=\"state-metric-item\"> <dt class=\"key\">Unknown</dt> <dd class=\"val\">0.0%</dd> </dl>"), "Should contain unknown duration percentage");
+        t.end();
       });
     });
 
-    test("should create range selector buttons for the provided range", (t) => {
+    t.test("should create range selector buttons for the provided range", t => {
       const range = [
         {id: "7", text: "Last 7 Days", start: moment().subtract(7, "days").format("YYYY-MM-DD"), selected: true},
         {id: "15", text: "Last 15 Days", start: moment().subtract(15, "days").format("YYYY-MM-DD"), selected: false},
@@ -202,6 +209,7 @@ group("Agents", () => {
         "<button onclick=\"redraw('30')\">Last 30 Days</button>"].join("\n");
 
       t.equal(result.rangeSelector, expected, "should generate the correct range selector buttons");
+      t.end();
     });
   });
 });

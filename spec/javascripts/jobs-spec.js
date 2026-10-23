@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {group} from "tape-plus";
+import test from "tape";
 import $ from "jquery";
 import H from "js/lib/load-highcharts.js";
 import JobCharts from "js/charts/jobs.js";
@@ -28,8 +28,8 @@ function allTextNodes(dom) {
   return Array.from(dom.querySelectorAll("text,span,tspan")).map(el => $(el).text().trim());
 }
 
-group("Jobs with the Highest Wait Time", (test) => {
-  test("should load chart", (t, done) => {
+test("Jobs with the Highest Wait Time", t => {
+  t.test("should load chart", t => {
     const date = "2018-05-09",
            dom = document.createElement("div");
 
@@ -50,13 +50,13 @@ group("Jobs with the Highest Wait Time", (test) => {
 
       t.true(contains(text, "Jobs with the Highest Wait Time (Average over the last 7 days)"), "should contain chart title");
       t.true(contains(text, "job1"), "should contain job label");
-      done();
     });
+    t.end();
   });
 });
 
-group("Jobs with the Highest Wait Time on an Agent", (test) => {
-  test("should load chart", (t, done) => {
+test("Jobs with the Highest Wait Time on an Agent", t => {
+  t.test("should load chart", t => {
     const date = "2018-05-09",
            dom = document.createElement("div");
 
@@ -78,13 +78,13 @@ group("Jobs with the Highest Wait Time on an Agent", (test) => {
 
       t.true(contains(text, expected), "should contain chart title");
       t.true(contains(text, "job1"), "should contain job label");
-      done();
     });
+    t.end();
   });
 });
 
-group("Job Build Time", (test) => {
-  test("should load chart", (t, done) => {
+test("Job Build Time", t => {
+  t.test("should load chart", t => {
     const date = "2018-05-09",
            dom = document.createElement("div");
 
@@ -109,7 +109,7 @@ group("Job Build Time", (test) => {
 
       t.true(contains(text, expected), "should contain chart title");
       t.true(contains(text, "job1"), "should contain job label");
-      done();
     });
+    t.end();
   });
 });

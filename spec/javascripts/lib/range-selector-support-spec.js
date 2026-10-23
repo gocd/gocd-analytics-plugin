@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {group} from "tape-plus";
+import test from "tape";
 import _ from "lodash";
 import moment from "js/lib/moment-humanize-for-gocd.js";
 import RangeSelectorSupport from "js/lib/range-selector-support";
@@ -26,18 +26,19 @@ const testParams = {
   metric: "testMetric"
 };
 
-group("RangeSelectorSupport", (test) => {
+test("RangeSelectorSupport", t => {
 
-  test("should add elements to container", (t) => {
+  t.test("should add elements to container", t => {
     const chart = chartStub();
     RangeSelectorSupport.inject(null, chart, {});
     t.ok(chart.ranger, "should create elements and assign to chart ref");
     t.equal(chart.ranger, el(chart.container, ".range-selector"), "range selector should have correct class and be attached to the chart container");
     t.deepEqual(_.map(els(chart.ranger, ".range-button"), (el) => text(el)), ["Last 24 Hours", "Last 7 Days", "Last 30 Days", "All"], "should have the correct button options");
     t.equal(text(chart.ranger, ".selected"), "Last 30 Days", "default button should be selected");
+    t.end();
   });
 
-  test("clicking button should invoke request with params", (t, done) => {
+  t.test("clicking button should invoke request with params", t => {
     const chart = chartStub(), transport = new MockTransport({data: [1, 2, 3]});
     RangeSelectorSupport.inject(transport, chart, {params: testParams});
 
@@ -49,13 +50,13 @@ group("RangeSelectorSupport", (test) => {
       t.equal(params.type, "testType", "type param should be passed through");
       t.equal(params.metric, "testMetric", "metric param should be passed through");
       t.equal(moment(params.end).diff(moment(params.start), "days"), 7, "range selection should have appended the correct range params");
-      done();
+      t.end();
     });
 
     clickOn(last7days(chart));
   });
 
-  test("shows no data when range returns empty set", (t, done) => {
+  t.test("shows no data when range returns empty set", t => {
     let displayedNoDataMsg = false;
     const chart = chartStub({ showNoData: () => { displayedNoDataMsg = true; } }), transport = new MockTransport({data: []});
     RangeSelectorSupport.inject(transport, chart, {});
@@ -63,16 +64,16 @@ group("RangeSelectorSupport", (test) => {
     transport.afterDone((data) => {
       t.deepEqual(data, [], "should have received an empty data set");
       t.ok(displayedNoDataMsg, "should show the no-data message");
-      done();
+      t.end();
     });
 
     clickOn(last7days(chart));
   });
 
-  test("series data is updated upon range selection", (t, done) => {
+  t.test("series data is updated upon range selection", t => {
     const s1 = new AssertionSeries("s1", function onSetData(data) {
       t.deepEqual(data, [ { y: 3 }, { y: 5 }, { y: 7 } ], "setData() should be called with the transformed data");
-      done();
+      t.end();
     });
 
     const chart = chartStub({ series: [s1] }), transport = new MockTransport({data: [3, 5, 7]});
@@ -81,12 +82,12 @@ group("RangeSelectorSupport", (test) => {
     clickOn(last7days(chart));
   });
 
-  test("fires range event after range selected", (t, done) => {
+  t.test("fires range event after range selected", t => {
     const chart = chartStub(), transport = new MockTransport({data: []});
 
     H.addEvent(chart, "range", function() {
       t.ok(true, "should call the range event on chart");
-      done();
+      t.end();
     });
 
     RangeSelectorSupport.inject(transport, chart, {});

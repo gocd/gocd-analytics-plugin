@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-import test from "tape-plus";
+import test from "tape";
 import VsmUtils from "js/lib/vsm-utils";
 
-test("VsmUtils.workflowDuration() should return total time taken by a workflow for id 1", (t) => {
+test("VsmUtils.workflowDuration() should return total time taken by a workflow for id 1", t => {
 	t.is(VsmUtils.workflowDuration(workflows[1]).humanizeForGoCD(), "22m");
+  t.end();
 });
 
-test("VsmUtils.workflowDuration() should return total time taken by a workflow for id 2", (t) => {
+test("VsmUtils.workflowDuration() should return total time taken by a workflow for id 2", t => {
 	t.is(VsmUtils.workflowDuration(workflows[2]).humanizeForGoCD(), "1h 6m");
+  t.end();
 });
 
-test("VsmUtils.calculateAverageCycleTime() should calculate average cycle time", (t) => {
+test("VsmUtils.calculateAverageCycleTime() should calculate average cycle time", t => {
 	t.is(VsmUtils.calculateAverageCycleTime(["plugins", "installers"], workflows), "44m");
+  t.end();
 });
 
-test("VsmUtils.calculateThroughput() should calculate throughput", (t) => {
+test("VsmUtils.calculateThroughput() should calculate throughput", t => {
 	t.is(VsmUtils.calculateThroughput(["plugins", "installers"], workflows), 75);
+  t.end();
 });
 
 const workflows = {
