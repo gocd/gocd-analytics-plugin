@@ -95,7 +95,7 @@ dependencies {
     exclude(module: 'checker-qual')
   }
   implementation 'org.apache.commons:commons-dbcp2:2.14.0'
-  implementation 'org.mybatis:mybatis:3.5.19'
+  implementation 'org.mybatis:mybatis:3.6.0'
   implementation(project.deps.flyway) {
     exclude(module: 'jackson-annotations')
   }
