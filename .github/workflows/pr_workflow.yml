@@ -8,6 +8,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     name: test (postgres-${{ matrix.postgres-version }})
     strategy:
       matrix:
