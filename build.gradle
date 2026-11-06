@@ -80,7 +80,7 @@ configurations {
 ext {
   deps = [
     gocdPluginApi: 'cd.go.plugin:go-plugin-api:26.1.0',
-    flyway       : 'org.flywaydb:flyway-core:13.11.1',
+    flyway       : 'org.flywaydb:flyway-core:13.12.0',
   ]
 
   versions = project.ext.deps.collectEntries { lib, libGav -> [lib, libGav.split(':').last()] }
@@ -112,7 +112,7 @@ dependencies {
   testImplementation 'org.mockito:mockito-core:5.24.0'
   testImplementation 'org.assertj:assertj-core:3.27.7'
   testImplementation 'org.skyscreamer:jsonassert:1.5.3'
-  testImplementation 'org.jsoup:jsoup:1.23.2'
+  testImplementation 'org.jsoup:jsoup:1.24.1'
   testImplementation project.deps.gocdPluginApi
 
   integrationTestImplementation 'org.slf4j:slf4j-simple:2.0.20'
