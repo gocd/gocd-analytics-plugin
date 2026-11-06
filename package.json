@@ -37,7 +37,7 @@
     "events": "^3.3.0",
     "faucet": "^0.0.4",
     "globals": "^17.13.0",
-    "html-bundler-webpack-plugin": "^4.23.2",
+    "html-bundler-webpack-plugin": "^4.24.0",
     "karma": "^6.4.4",
     "karma-chrome-launcher": "^3.2.0",
     "karma-cli": "^2.0.0",
@@ -48,13 +48,13 @@
     "process": "^0.11.10",
     "puppeteer": "^25.16.0",
     "sass": "^1.106.0",
-    "sass-loader": "^17.0.1",
+    "sass-loader": "^17.1.0",
     "sinon": "^22.1.0",
     "stream-browserify": "^3.0.0",
     "tape": "^5.10.2",
     "terser-webpack-plugin": "^5.6.1",
-    "webpack": "~5.111.1",
-    "webpack-cli": "^7.2.3",
+    "webpack": "~5.112.2",
+    "webpack-cli": "^7.3.1",
     "webpack-merge": "^6.0.1"
   }
 }
