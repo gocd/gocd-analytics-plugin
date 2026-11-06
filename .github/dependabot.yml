@@ -27,8 +27,6 @@ updates:
     schedule:
       interval: weekly
       day: friday
-    cooldown:
-      default-days: 2
     open-pull-requests-limit: 99
     groups:
       babel:
@@ -39,6 +37,6 @@ updates:
         patterns: [ "webpack*", "*-loader", "*-webpack-plugin" ]
       eslint:
         patterns: [ "eslint*", "@eslint/*", "@types/eslint*" ]
-      ui-deps:
+      deps:
         patterns: [ "*" ]
   
